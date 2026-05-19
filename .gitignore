@@ -1,0 +1,13 @@
+node_modules
+.next
+.open-next
+.wrangler
+.env*.local
+.dev.vars
+coverage
+playwright-report
+test-results
+.DS_Store
+*.log
+markdowns
+// test change
