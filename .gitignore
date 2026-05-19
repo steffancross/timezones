@@ -10,3 +10,5 @@ test-results
 .DS_Store
 *.log
 markdowns
+scripts/build-cities/cache/
+public/search-index.json

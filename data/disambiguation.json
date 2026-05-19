@@ -1,0 +1,18 @@
+{
+  "san-jose": [
+    "san-jose-ca",
+    "san-jose-cr"
+  ],
+  "hyderabad": [
+    "hyderabad-in",
+    "hyderabad-pk"
+  ],
+  "suzhou": [
+    "suzhou-cn",
+    "suzhou-cn-2"
+  ],
+  "taizhou": [
+    "taizhou-cn",
+    "taizhou-cn-2"
+  ]
+}

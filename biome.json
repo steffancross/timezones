@@ -13,7 +13,10 @@
       "!**/test-results",
       "!**/*-snapshots",
       "!**/worker-configuration.d.ts",
-      "!**/next-env.d.ts"
+      "!**/next-env.d.ts",
+      "!data/cities.json",
+      "!data/disambiguation.json",
+      "!public/search-index.json"
     ]
   },
   "formatter": {
