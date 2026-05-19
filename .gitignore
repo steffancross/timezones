@@ -13,6 +13,7 @@ markdowns
 scripts/build-cities/cache/
 public/search-index.json
 tsconfig.tsbuildinfo
+tsconfig.tsbuildinfo.gz
 .worktreeinclude
 .vitest-attachments/
 **/__screenshots__/
