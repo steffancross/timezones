@@ -14,3 +14,5 @@ scripts/build-cities/cache/
 public/search-index.json
 tsconfig.tsbuildinfo
 .worktreeinclude
+.vitest-attachments/
+  **/__screenshots__/
