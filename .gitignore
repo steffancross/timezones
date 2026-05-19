@@ -12,3 +12,5 @@ test-results
 markdowns
 scripts/build-cities/cache/
 public/search-index.json
+tsconfig.tsbuildinfo
+.worktreeinclude
