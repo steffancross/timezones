@@ -23,20 +23,24 @@ describe('loadPersistedPrefs', () => {
   it('round-trips a valid pref shape', () => {
     set({
       format: '24',
-      overlay: { band: 'workHours', weekend: true },
+      overlay: { dayNight: true, workHours: true, weekend: true },
       workingHours: { start: 8, end: 18, days: [1, 2, 3, 4, 5] },
     });
     const prefs = loadPersistedPrefs();
     expect(prefs).toEqual({
       format: '24',
-      overlay: { band: 'workHours', weekend: true },
+      overlay: { dayNight: true, workHours: true, weekend: true },
       workingHours: { start: 8, end: 18, days: [1, 2, 3, 4, 5] },
     });
   });
 
-  it('coerces unknown band to dayNight', () => {
-    set({ format: '12', overlay: { band: 'wildBand', weekend: false } });
-    expect(loadPersistedPrefs()?.overlay.band).toBe('dayNight');
+  it('coerces missing overlay flags to false', () => {
+    set({ format: '12', overlay: {} });
+    expect(loadPersistedPrefs()?.overlay).toEqual({
+      dayNight: false,
+      workHours: false,
+      weekend: false,
+    });
   });
 
   it('coerces unknown format to 12', () => {

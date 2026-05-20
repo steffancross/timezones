@@ -1,61 +1,170 @@
 @import "tailwindcss";
 
-/* === Design tokens === */
+/* === Tailwind v4 theme registration (fonts) ===
+   The actual font faces are loaded via next/font in app/layout.tsx,
+   which exposes --font-geist-sans / --font-geist-mono as CSS vars on <html>. */
 @theme {
-  --font-sans: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
-  --font-mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-mono: var(--font-geist-mono), ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
 }
 
-/* === Color tokens, light + dark === */
-@layer base {
-  :root {
-    --background: 0 0% 100%;
-    --foreground: 240 10% 3.9%;
-    --card: 0 0% 100%;
-    --card-foreground: 240 10% 3.9%;
-    --popover: 0 0% 100%;
-    --popover-foreground: 240 10% 3.9%;
-    --primary: 240 5.9% 10%;
-    --primary-foreground: 0 0% 98%;
-    --secondary: 240 4.8% 95.9%;
-    --secondary-foreground: 240 5.9% 10%;
-    --muted: 240 4.8% 95.9%;
-    --muted-foreground: 240 3.8% 46.1%;
-    --accent: 240 4.8% 95.9%;
-    --accent-foreground: 240 5.9% 10%;
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 0 0% 98%;
-    --border: 240 5.9% 90%;
-    --input: 240 5.9% 90%;
-    --ring: 240 5.9% 10%;
-    --radius: 0.5rem;
-  }
-
-  [data-theme="dark"] {
-    --background: 240 10% 3.9%;
-    --foreground: 0 0% 98%;
-    --card: 240 10% 3.9%;
-    --card-foreground: 0 0% 98%;
-    --popover: 240 10% 3.9%;
-    --popover-foreground: 0 0% 98%;
-    --primary: 0 0% 98%;
-    --primary-foreground: 240 5.9% 10%;
-    --secondary: 240 3.7% 15.9%;
-    --secondary-foreground: 0 0% 98%;
-    --muted: 240 3.7% 15.9%;
-    --muted-foreground: 240 5% 64.9%;
-    --accent: 240 3.7% 15.9%;
-    --accent-foreground: 0 0% 98%;
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 0 0% 98%;
-    --border: 240 3.7% 15.9%;
-    --input: 240 3.7% 15.9%;
-    --ring: 240 4.9% 83.9%;
-  }
+/* Map shadcn HSL surface tokens to Tailwind v4 color utilities. `inline` keeps
+   the var(--…) reference live so dark-mode swap actually re-resolves. Without
+   this, utilities like `bg-popover`, `bg-card`, `text-popover-foreground`
+   used by the installed shadcn primitives evaluate to nothing — rendering
+   them transparent. */
+@theme inline {
+  --color-background: hsl(var(--background));
+  --color-foreground: hsl(var(--foreground));
+  --color-card: hsl(var(--card));
+  --color-card-foreground: hsl(var(--card-foreground));
+  --color-popover: hsl(var(--popover));
+  --color-popover-foreground: hsl(var(--popover-foreground));
+  --color-primary: hsl(var(--primary));
+  --color-primary-foreground: hsl(var(--primary-foreground));
+  --color-secondary: hsl(var(--secondary));
+  --color-secondary-foreground: hsl(var(--secondary-foreground));
+  --color-muted: hsl(var(--muted));
+  --color-muted-foreground: hsl(var(--muted-foreground));
+  --color-accent: hsl(var(--accent));
+  --color-accent-foreground: hsl(var(--accent-foreground));
+  --color-destructive: hsl(var(--destructive));
+  --color-destructive-foreground: hsl(var(--destructive-foreground));
+  --color-border: hsl(var(--border));
+  --color-input: hsl(var(--input));
+  --color-ring: hsl(var(--ring));
 }
 
 /* === Tailwind dark variant wired to data-theme === */
 @custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
+
+/* === Token layer ===
+   Two coexisting palettes that should always agree visually:
+
+   1. shadcn surface tokens (HSL triplets, no hsl() wrapper) — used by installed
+      shadcn primitives (Button, Input, Popover, Switch, Dialog, …) via the
+      `hsl(var(--name))` pattern.
+   2. Design converter tokens (oklch values, used directly) — used by converter-
+      specific surfaces (tiles, bands, weekend recolor, anchor). Sourced from
+      markdowns/E/design_handoff_converter/styles.css.
+
+   Design's "--accent" was renamed to "--brand" here to avoid colliding with
+   shadcn's "--accent" (which is the muted hover bg, semantically different).
+   shadcn's "--primary" and design's "--brand" intentionally point at the same
+   color, so the two systems agree where they meet. */
+@layer base {
+  :root {
+    /* shadcn surface tokens (HSL) */
+    --background: 48 14% 98%;
+    --foreground: 240 5% 11%;
+    --card: 0 0% 100%;
+    --card-foreground: 240 5% 11%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 240 5% 11%;
+    --primary: 230 70% 50%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 240 5% 96%;
+    --secondary-foreground: 240 5% 11%;
+    --muted: 240 5% 96%;
+    --muted-foreground: 240 4% 47%;
+    --accent: 240 5% 96%;
+    --accent-foreground: 240 5% 11%;
+    --destructive: 14 80% 50%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 240 4% 89%;
+    --input: 240 4% 89%;
+    --ring: 230 70% 55%;
+    --radius: 0.375rem;
+
+    /* design converter tokens (oklch, use directly: var(--tile-bg)) */
+    --bg: oklch(0.985 0.003 80);
+    --fg: oklch(0.18 0.005 260);
+    --fg-muted: oklch(0.52 0.008 260);
+    --fg-subtle: oklch(0.65 0.008 260);
+    --border-strong: oklch(0.85 0.005 260);
+    --input-bg: #ffffff;
+    --hover: oklch(0.96 0.004 260);
+
+    --tile-bg: oklch(0.965 0.005 250);
+    --tile-bg-alt: oklch(0.95 0.006 250);
+    --tile-hover: oklch(0.93 0.01 250);
+    --tile-fg: oklch(0.45 0.006 260);
+
+    --brand: oklch(0.62 0.18 250);
+    --brand-hover: oklch(0.56 0.19 250);
+    --brand-fg: #ffffff;
+    --brand-soft: oklch(0.62 0.18 250 / 0.12);
+    --brand-ring: oklch(0.62 0.18 250 / 0.45);
+
+    --band-night: oklch(0.55 0.11 250);
+    --band-night-alpha: 0.30;
+    --band-work: oklch(0.72 0.13 75);
+    --band-work-alpha: 0.42;
+    --band-weekend: oklch(0.85 0.09 75);
+    --band-weekend-alpha: 0.45;
+
+    --weekend-fg: oklch(0.55 0.12 35);
+    --weekend-tick: oklch(0.62 0.10 35);
+    --weekend-base: oklch(0.78 0.08 35);
+
+    --radius-tile: 3px;
+    --radius-pill: 999px;
+  }
+
+  [data-theme="dark"] {
+    /* shadcn surface tokens (HSL) */
+    --background: 240 7% 9%;
+    --foreground: 240 5% 97%;
+    --card: 240 6% 12%;
+    --card-foreground: 240 5% 97%;
+    --popover: 240 6% 12%;
+    --popover-foreground: 240 5% 97%;
+    --primary: 228 75% 68%;
+    --primary-foreground: 240 8% 8%;
+    --secondary: 240 6% 16%;
+    --secondary-foreground: 240 5% 97%;
+    --muted: 240 6% 16%;
+    --muted-foreground: 240 5% 66%;
+    --accent: 240 6% 16%;
+    --accent-foreground: 240 5% 97%;
+    --destructive: 14 70% 45%;
+    --destructive-foreground: 240 5% 97%;
+    --border: 240 5% 25%;
+    --input: 240 5% 25%;
+    --ring: 228 75% 68%;
+
+    /* design converter tokens (oklch) */
+    --bg: oklch(0.16 0.006 260);
+    --fg: oklch(0.97 0.003 260);
+    --fg-muted: oklch(0.66 0.006 260);
+    --fg-subtle: oklch(0.50 0.008 260);
+    --border-strong: oklch(0.35 0.008 260);
+    --input-bg: oklch(0.22 0.006 260);
+    --hover: oklch(0.24 0.007 260);
+
+    --tile-bg: oklch(0.24 0.008 260);
+    --tile-bg-alt: oklch(0.27 0.008 260);
+    --tile-hover: oklch(0.31 0.01 260);
+    --tile-fg: oklch(0.72 0.005 260);
+
+    --brand: oklch(0.68 0.17 248);
+    --brand-hover: oklch(0.74 0.17 248);
+    --brand-fg: oklch(0.12 0.01 260);
+    --brand-soft: oklch(0.68 0.17 248 / 0.18);
+    --brand-ring: oklch(0.68 0.17 248 / 0.5);
+
+    --band-night: oklch(0.40 0.10 255);
+    --band-night-alpha: 0.60;
+    --band-work: oklch(0.60 0.14 75);
+    --band-work-alpha: 0.40;
+    --band-weekend: oklch(0.62 0.10 75);
+    --band-weekend-alpha: 0.32;
+
+    --weekend-fg: oklch(0.78 0.13 35);
+    --weekend-tick: oklch(0.70 0.11 35);
+    --weekend-base: oklch(0.50 0.10 35);
+  }
+}
 
 /* === Base resets and global styles === */
 @layer base {
@@ -73,6 +182,7 @@
     background-color: hsl(var(--background));
     color: hsl(var(--foreground));
     min-height: 100vh;
+    font-feature-settings: "ss01", "cv11";
   }
 }
 
@@ -81,5 +191,17 @@
   :focus-visible {
     outline: 2px solid hsl(var(--ring));
     outline-offset: 2px;
+  }
+}
+
+/* === Utilities === */
+@layer utilities {
+  .grid-cols-24 {
+    grid-template-columns: repeat(24, minmax(0, 1fr));
+  }
+
+  .tabular {
+    font-variant-numeric: tabular-nums;
+    font-feature-settings: "tnum";
   }
 }

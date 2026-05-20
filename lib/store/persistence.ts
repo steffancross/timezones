@@ -17,13 +17,11 @@ export function loadPersistedPrefs(): PersistedPrefs | null {
     if (!raw) return null;
     const parsed = JSON.parse(raw);
     if (typeof parsed !== 'object' || parsed === null) return null;
-    const bands: readonly string[] = ['dayNight', 'workHours', 'none'];
     return {
       format: parsed.format === '24' ? '24' : '12',
       overlay: {
-        band: bands.includes(parsed.overlay?.band)
-          ? (parsed.overlay.band as 'dayNight' | 'workHours' | 'none')
-          : 'dayNight',
+        dayNight: Boolean(parsed.overlay?.dayNight),
+        workHours: Boolean(parsed.overlay?.workHours),
         weekend: Boolean(parsed.overlay?.weekend),
       },
       workingHours: validateWorkingHours(parsed.workingHours) ?? DEFAULT_WORKING_HOURS,

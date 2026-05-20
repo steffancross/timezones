@@ -208,3 +208,81 @@ describe('resetAnchor', () => {
     expect(next.overlay.weekend).toBe(true);
   });
 });
+
+describe('resetAll', () => {
+  beforeEach(resetStore);
+
+  it('resets anchor + format + overlays + workingHours but keeps zones', () => {
+    const s = useConverterStore.getState();
+    s.addZone(pst);
+    s.addZone(est);
+    s.setAnchorHour(15);
+    s.setAnchorDate('2026-01-01');
+    s.setFormat('24');
+    s.toggleWorkHoursOverlay();
+    s.toggleWeekendOverlay();
+    s.setWorkingHours({ start: 8, end: 18, days: [1, 2, 3, 4, 5, 6] });
+    s.resetAll();
+    const next = useConverterStore.getState();
+    expect(next.zones).toHaveLength(2);
+    expect(next.anchorHour).toBeNull();
+    expect(next.previewHour).toBeNull();
+    expect(next.anchorDate).not.toBe('2026-01-01');
+    expect(next.format).toBe('12');
+    expect(next.overlay).toEqual({ dayNight: true, workHours: false, weekend: false });
+    expect(next.workingHours).toEqual({ start: 9, end: 17, days: [1, 2, 3, 4, 5] });
+  });
+});
+
+describe('defaultAnchorDate snapshot', () => {
+  beforeEach(resetStore);
+
+  it('matches anchorDate immediately after the first zone is added', () => {
+    useConverterStore.getState().addZone(pst);
+    const { anchorDate, defaultAnchorDate } = useConverterStore.getState();
+    expect(anchorDate).toBe(defaultAnchorDate);
+  });
+
+  it('stays put when the user picks a non-default date via setAnchorDate', () => {
+    const s = useConverterStore.getState();
+    s.addZone(pst);
+    const snapshot = useConverterStore.getState().defaultAnchorDate;
+    s.setAnchorDate('2026-12-25');
+    const next = useConverterStore.getState();
+    expect(next.anchorDate).toBe('2026-12-25');
+    expect(next.defaultAnchorDate).toBe(snapshot);
+  });
+
+  it('resyncs to anchorDate on resetAll', () => {
+    const s = useConverterStore.getState();
+    s.addZone(pst);
+    s.setAnchorDate('2026-12-25');
+    s.resetAll();
+    const next = useConverterStore.getState();
+    expect(next.anchorDate).toBe(next.defaultAnchorDate);
+  });
+
+  it('resyncs to anchorDate on resetAnchor', () => {
+    const s = useConverterStore.getState();
+    s.addZone(pst);
+    s.setAnchorDate('2026-12-25');
+    s.resetAnchor();
+    const next = useConverterStore.getState();
+    expect(next.anchorDate).toBe(next.defaultAnchorDate);
+  });
+
+  it('updates when initialize re-derives the date for a new home zone', () => {
+    useConverterStore.getState().initialize({ zones: [tokyo] });
+    const { anchorDate, defaultAnchorDate } = useConverterStore.getState();
+    expect(anchorDate).toBe(defaultAnchorDate);
+  });
+
+  it('still reflects the home-zone today when initialize is called with an explicit anchorDate', () => {
+    // URL ?d=... case: caller pins the date but ResetButton still needs to
+    // know what "default" would have been so it can tell the URL date apart.
+    useConverterStore.getState().initialize({ zones: [tokyo], anchorDate: '2026-12-25' });
+    const next = useConverterStore.getState();
+    expect(next.anchorDate).toBe('2026-12-25');
+    expect(next.defaultAnchorDate).not.toBe('2026-12-25');
+  });
+});
