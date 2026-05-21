@@ -26,7 +26,7 @@ export function SearchDropdown({ results, loading, query, onSelect }: Props) {
   useEffect(() => {
     function handleKey(e: KeyboardEvent) {
       const root = containerRef.current?.parentElement;
-      if (!root || !root.contains(document.activeElement)) return;
+      if (!root?.contains(document.activeElement)) return;
 
       switch (e.key) {
         case 'ArrowDown':
