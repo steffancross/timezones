@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import env from '@/lib/env';
+import { ThemeToggle } from './ThemeToggle';
 
 export function Header() {
   return (
@@ -9,7 +10,7 @@ export function Header() {
           {env.NEXT_PUBLIC_SITE_NAME}
         </Link>
         <div className="flex items-center gap-2">
-          {/* Per-site: nav links, theme toggle, search, etc. */}
+          <ThemeToggle />
         </div>
       </div>
     </header>
