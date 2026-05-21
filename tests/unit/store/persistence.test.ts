@@ -20,32 +20,37 @@ describe('loadPersistedPrefs', () => {
     expect(loadPersistedPrefs()).toBeNull();
   });
 
-  it('round-trips a valid pref shape', () => {
+  it('round-trips a valid pref shape (overlay + workingHours only)', () => {
     set({
-      format: '24',
       overlay: { dayNight: true, workHours: true, weekend: true },
       workingHours: { start: 8, end: 18, days: [1, 2, 3, 4, 5] },
     });
     const prefs = loadPersistedPrefs();
     expect(prefs).toEqual({
-      format: '24',
       overlay: { dayNight: true, workHours: true, weekend: true },
       workingHours: { start: 8, end: 18, days: [1, 2, 3, 4, 5] },
     });
   });
 
+  it('ignores a persisted `format` field — format is intentionally not persisted', () => {
+    // Defends the "12 by default on every page" decision. If format ever
+    // sneaks back into persistence, this fails loudly.
+    set({
+      format: '24',
+      overlay: { dayNight: true, workHours: false, weekend: false },
+      workingHours: { start: 9, end: 17, days: [1, 2, 3, 4, 5] },
+    });
+    const prefs = loadPersistedPrefs();
+    expect(prefs).not.toHaveProperty('format');
+  });
+
   it('coerces missing overlay flags to false', () => {
-    set({ format: '12', overlay: {} });
+    set({ overlay: {} });
     expect(loadPersistedPrefs()?.overlay).toEqual({
       dayNight: false,
       workHours: false,
       weekend: false,
     });
-  });
-
-  it('coerces unknown format to 12', () => {
-    set({ format: 'wallclock' });
-    expect(loadPersistedPrefs()?.format).toBe('12');
   });
 
   it('falls back to default workingHours on corrupt shape (start out of range)', () => {

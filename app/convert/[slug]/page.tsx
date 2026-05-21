@@ -2,6 +2,7 @@ import { notFound } from 'next/navigation';
 import { Converter } from '@/components/converter/Converter';
 import { ConverterStateProvider } from '@/components/converter/ConverterStateProvider';
 import { Breadcrumbs } from '@/components/site/Breadcrumbs';
+import { PairContent } from '@/components/templates/PairContent';
 import { buildMetadata } from '@/lib/seo/metadata';
 import { getCuratedPairSlugs } from '@/lib/sitemap/pair-slugs';
 import { type ParsedPair, parsePairSlug } from '@/lib/slugs/parse';
@@ -69,9 +70,7 @@ export default async function PairPage({
         <Converter />
       </ConverterStateProvider>
 
-      <section className="mt-12 rounded-[var(--radius)] border border-dashed border-[color:var(--border)] p-6 text-sm text-[color:var(--fg-muted)]">
-        Full conversion table, DST notes, and FAQ are coming soon.
-      </section>
+      <PairContent pair={pair} slug={slug} />
     </div>
   );
 }

@@ -60,11 +60,10 @@ describe('ConverterStateProvider bootstrap', () => {
     expect(useConverterStore.getState().zones[0]?.iana).toBe('America/Los_Angeles');
   });
 
-  it('applies persisted prefs from localStorage when no initialState supplies them', async () => {
+  it('applies persisted prefs (overlay + workingHours) from localStorage when no initialState supplies them', async () => {
     localStorage.setItem(
       STORAGE_KEY,
       JSON.stringify({
-        format: '24',
         overlay: { dayNight: false, workHours: true, weekend: true },
         workingHours: { start: 8, end: 18, days: [1, 2, 3, 4, 5] },
       }),
@@ -77,30 +76,32 @@ describe('ConverterStateProvider bootstrap', () => {
     );
 
     const state = useConverterStore.getState();
-    expect(state.format).toBe('24');
     expect(state.overlay).toEqual({ dayNight: false, workHours: true, weekend: true });
     expect(state.workingHours).toEqual({ start: 8, end: 18, days: [1, 2, 3, 4, 5] });
+    // format is intentionally not persisted — should stay at the baseline 12.
+    expect(state.format).toBe('12');
   });
 
   it('initialState wins over persisted prefs on overlapping keys', async () => {
-    // Persisted says format=24; page-level initialState says format=12.
-    // initialState (URL/page) takes precedence.
+    // Persisted says workHours overlay is on; page-level initialState turns
+    // it off. initialState (URL/page) takes precedence.
     localStorage.setItem(
       STORAGE_KEY,
       JSON.stringify({
-        format: '24',
-        overlay: { dayNight: true, workHours: false, weekend: false },
+        overlay: { dayNight: true, workHours: true, weekend: false },
         workingHours: DEFAULT_WORKING_HOURS,
       }),
     );
 
     await render(
-      <ConverterStateProvider initialState={{ format: '12' }}>
+      <ConverterStateProvider
+        initialState={{ overlay: { dayNight: true, workHours: false, weekend: false } }}
+      >
         <div>child</div>
       </ConverterStateProvider>,
     );
 
-    expect(useConverterStore.getState().format).toBe('12');
+    expect(useConverterStore.getState().overlay.workHours).toBe(false);
   });
 
   it('does not re-run initialize across re-renders (hydrated ref guard)', async () => {
@@ -136,15 +137,17 @@ describe('ConverterStateProvider bootstrap', () => {
       </ConverterStateProvider>,
     );
 
-    // attachPersistence subscribed during mount. A user-action store change
-    // should now show up in localStorage.
-    useConverterStore.getState().setFormat('24');
+    // attachPersistence subscribed during mount. A user-action store change to
+    // a persisted field (overlay/workingHours) should now show up in
+    // localStorage. format is intentionally not persisted, so we don't use it
+    // as the signal.
+    useConverterStore.getState().toggleWeekendOverlay();
 
     // The persistence subscribe writes synchronously on change.
     const raw = localStorage.getItem(STORAGE_KEY);
     if (raw === null) throw new Error('expected persistence to write to localStorage');
     const parsed = JSON.parse(raw);
-    expect(parsed.format).toBe('24');
+    expect(parsed.overlay.weekend).toBe(true);
   });
 
   it('applies a full URL-shaped initialState (zones + anchor fields + format)', async () => {

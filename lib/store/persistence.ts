@@ -4,8 +4,16 @@ import { useConverterStore } from './converter';
 
 const STORAGE_KEY = 'converter_prefs';
 
+/**
+ * `format` (12/24) is intentionally NOT persisted. Pages default to 12, and
+ * users opt into 24 via the URL `?f=24` param or the per-page toggle. The
+ * toggle change still rewrites the URL via UrlSync, so the choice survives
+ * reloads on the same page but doesn't bleed across navigations.
+ *
+ * Overlay flags + working-hours config are higher-stakes user preferences and
+ * still persist via localStorage.
+ */
 interface PersistedPrefs {
-  format: ConverterState['format'];
   overlay: ConverterState['overlay'];
   workingHours: ConverterState['workingHours'];
 }
@@ -18,7 +26,6 @@ export function loadPersistedPrefs(): PersistedPrefs | null {
     const parsed = JSON.parse(raw);
     if (typeof parsed !== 'object' || parsed === null) return null;
     return {
-      format: parsed.format === '24' ? '24' : '12',
       overlay: {
         dayNight: Boolean(parsed.overlay?.dayNight),
         workHours: Boolean(parsed.overlay?.workHours),
@@ -54,7 +61,6 @@ export function attachPersistence(): (() => void) | undefined {
 
   return useConverterStore.subscribe(
     (state) => ({
-      format: state.format,
       overlay: state.overlay,
       workingHours: state.workingHours,
     }),
