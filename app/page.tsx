@@ -41,6 +41,42 @@ export default async function HomePage() {
       <ConverterStateProvider initialState={{ zones, homeZoneIndex: 0 }}>
         <Converter />
       </ConverterStateProvider>
+
+      <article className="mt-12 grid gap-10 md:grid-cols-2">
+        <section>
+          <h2 className="text-xl font-semibold">About</h2>
+          <p className="mt-3 text-sm leading-relaxed text-[color:var(--fg-muted)]">
+            A quick way to compare time across cities and zones. Add the rows you care about and
+            see day-and-night and working-hour bands at a glance.
+          </p>
+          <p className="mt-3 text-sm leading-relaxed text-[color:var(--fg-muted)]">
+            DST transitions are handled automatically; offsets shift on the right date in each zone
+            without you doing anything.
+          </p>
+        </section>
+
+        <section>
+          <h2 className="text-xl font-semibold">Getting started</h2>
+          <ol className="mt-3 space-y-2 text-sm leading-relaxed text-[color:var(--fg-muted)]">
+            <li>
+              <span className="font-medium text-[color:var(--fg)]">1.</span> Search for a city or
+              zone in the toolbar and add it.
+            </li>
+            <li>
+              <span className="font-medium text-[color:var(--fg)]">2.</span> Hover any hour to
+              highlight that moment across every row.
+            </li>
+            <li>
+              <span className="font-medium text-[color:var(--fg)]">3.</span> Use the date picker to
+              plan meetings on a specific day.
+            </li>
+            <li>
+              <span className="font-medium text-[color:var(--fg)]">4.</span> Open Settings to
+              highlight working hours and weekends across every row.
+            </li>
+          </ol>
+        </section>
+      </article>
     </div>
   );
 }
