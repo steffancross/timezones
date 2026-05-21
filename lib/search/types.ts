@@ -13,6 +13,9 @@ export interface SearchDoc {
   iana: string;
   popularity: number;
 
+  /** City tier (1 = major, 2 = significant, 3 = other). Undefined for zones. */
+  tier?: 1 | 2 | 3;
+
   // ===== searchable fields =====
   name: string;
   alt_names: string;

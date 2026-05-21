@@ -17,6 +17,8 @@ export const STORE_FIELDS = [
   'slug',
   'iana',
   'popularity',
+  'abbreviations',
+  'tier',
 ] as const;
 
 export const SEARCH_CONFIG = {

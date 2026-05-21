@@ -58,19 +58,27 @@ async function main() {
       .map((r) => {
         const popularity = typeof r.popularity === 'number' ? r.popularity : 0;
         const displayName = typeof r.display_name === 'string' ? r.display_name : '';
-        const prefixBonus = displayName.toLowerCase().startsWith(qLower) ? 1.5 : 1;
-        const finalScore = (r.score + popularity * 0.5) * prefixBonus;
-        return { r, popularity, prefixBonus, finalScore };
+        const abbrevTokens =
+          typeof r.abbreviations === 'string'
+            ? r.abbreviations.toLowerCase().split(/\s+/).filter(Boolean)
+            : [];
+        const matchesName = displayName.toLowerCase().startsWith(qLower);
+        const matchesAbbrev = abbrevTokens.some((t) => t.startsWith(qLower));
+        const prefixBonus = matchesName || matchesAbbrev ? 1.5 : 1;
+        const tierMult = r.type === 'city' ? (r.tier === 1 ? 1.1 : r.tier === 3 ? 0.9 : 1) : 1;
+        const finalScore = (r.score + popularity * 0.5) * prefixBonus * tierMult;
+        return { r, popularity, prefixBonus, tierMult, finalScore };
       })
       .sort((a, b) => b.finalScore - a.finalScore);
 
     console.warn(`\n=== "${q}" (top 10) ===`);
-    for (const { r, popularity, prefixBonus, finalScore } of ranked.slice(0, 10)) {
+    for (const { r, popularity, prefixBonus, tierMult, finalScore } of ranked.slice(0, 10)) {
       const ms = r.score.toFixed(2);
       const fs = finalScore.toFixed(2);
       const prefix = prefixBonus > 1 ? ' ★' : '  ';
+      const tierMark = tierMult > 1 ? '↑' : tierMult < 1 ? '↓' : ' ';
       console.warn(
-        `${prefix} ${r.type}: ${r.display_name.padEnd(25)} | pop=${String(popularity).padStart(3)} | ms=${ms.padStart(6)} | final=${fs.padStart(6)}`,
+        `${prefix}${tierMark} ${r.type}: ${r.display_name.padEnd(25)} | pop=${String(popularity).padStart(3)} | ms=${ms.padStart(6)} | final=${fs.padStart(6)}`,
       );
     }
   }

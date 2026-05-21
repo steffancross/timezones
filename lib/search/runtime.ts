@@ -85,14 +85,18 @@ function boostsForLength(len: number) {
 /**
  * Execute a search and return ranked results. Final ranking:
  *
- *   (msScore + popularity * 0.5) * prefixBonus
+ *   (msScore + popularity * 0.5) * prefixBonus * tierMult
  *
  * - Length-gated boosts (above) suppress noisy alt_names / iata matches on
  *   short queries.
  * - The additive popularity term acts as a floor so high-pop cities (London,
  *   Los Angeles, Madrid) can't get buried under low-pop coincidences.
- * - prefixBonus = 1.5× when display_name starts with the query — guarantees
- *   "what I literally typed" beats "fuzzy match somewhere in alt_names".
+ * - prefixBonus = 1.5× when display_name OR any abbreviation token
+ *   prefix-matches the query. The abbreviation arm is what lifts zones like
+ *   IST / EST / PST level with cities that happen to share the letters via
+ *   IATA collisions.
+ * - tierMult biases Tier 1 cities up (1.1×) and Tier 3 down (0.9×) so major
+ *   cities win close score contests against equally-typed niche ones.
  */
 export async function searchAll(query: string, limit = 8): Promise<SearchResult[]> {
   const q = query.trim();
@@ -107,8 +111,15 @@ export async function searchAll(query: string, limit = 8): Promise<SearchResult[
       .map((r) => {
         const popularity = typeof r.popularity === 'number' ? r.popularity : 0;
         const displayName = typeof r.display_name === 'string' ? r.display_name : '';
-        const prefixBonus = displayName.toLowerCase().startsWith(qLower) ? 1.5 : 1;
-        const finalScore = (r.score + popularity * 0.5) * prefixBonus;
+        const abbrevTokens =
+          typeof r.abbreviations === 'string'
+            ? r.abbreviations.toLowerCase().split(/\s+/).filter(Boolean)
+            : [];
+        const matchesName = displayName.toLowerCase().startsWith(qLower);
+        const matchesAbbrev = abbrevTokens.some((t) => t.startsWith(qLower));
+        const prefixBonus = matchesName || matchesAbbrev ? 1.5 : 1;
+        const tierMult = r.type === 'city' ? (r.tier === 1 ? 1.1 : r.tier === 3 ? 0.9 : 1) : 1;
+        const finalScore = (r.score + popularity * 0.5) * prefixBonus * tierMult;
         return { hit: r, finalScore };
       })
       .sort((a, b) => b.finalScore - a.finalScore)
