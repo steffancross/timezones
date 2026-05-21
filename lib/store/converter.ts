@@ -1,6 +1,6 @@
+import { DateTime } from 'luxon';
 import { create } from 'zustand';
 import { subscribeWithSelector } from 'zustand/middleware';
-import { DateTime } from 'luxon';
 import type { TimeFormat } from '@/lib/time/format';
 import { DEFAULT_WORKING_HOURS, type WorkingHours } from '@/lib/time/working-hours';
 

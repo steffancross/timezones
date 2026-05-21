@@ -1,8 +1,8 @@
 import { beforeEach, describe, expect, it } from 'vitest';
 import { render } from 'vitest-browser-react';
+import type { ColumnData } from '@/components/converter/HourStrip';
 import { HourTile } from '@/components/converter/HourTile';
 import { useConverterStore } from '@/lib/store/converter';
-import type { ColumnData } from '@/components/converter/HourStrip';
 
 function resetStore() {
   useConverterStore.setState({

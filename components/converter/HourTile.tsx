@@ -70,9 +70,7 @@ export function HourTile({
     // Base minor tick (left edge of each cell). Mobile-compact shrinks
     // 6 → 5px and majors 12 → 9px per Mobile compact spec.
     "before:content-[''] before:absolute before:left-0 before:bottom-0 before:w-px before:h-1.5 max-md:before:h-[5px]",
-    isWeekend
-      ? 'before:bg-[color:var(--weekend-tick)]'
-      : 'before:bg-[color:var(--border-strong)]',
+    isWeekend ? 'before:bg-[color:var(--weekend-tick)]' : 'before:bg-[color:var(--border-strong)]',
     // Major tick every 6 columns: taller + brighter (weekend variant uses --weekend-fg).
     isMajorTick &&
       (isWeekend
@@ -86,8 +84,7 @@ export function HourTile({
     // Preview: soft accent band behind tile.
     isPreviewAligned && !isAnchorAligned && 'bg-[var(--brand-soft)] text-[color:var(--fg)]',
     // Anchor: solid accent fill, tick hidden.
-    isAnchorAligned &&
-      'bg-[var(--brand)] text-[color:var(--brand-fg)] font-semibold before:hidden',
+    isAnchorAligned && 'bg-[var(--brand)] text-[color:var(--brand-fg)] font-semibold before:hidden',
   );
 
   const content = (
@@ -123,6 +120,7 @@ export function HourTile({
       data-hour={column.localHour}
       data-home-hour={column.homeHour}
       aria-label={`Hour ${column.localHour}`}
+      role="gridcell"
     >
       {content}
     </div>

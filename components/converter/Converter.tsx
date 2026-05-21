@@ -2,6 +2,8 @@
 
 import { useCallback } from 'react';
 import { useNow } from '@/lib/hooks/useNow';
+import type { SearchResult } from '@/lib/search/types';
+import type { ZoneRef } from '@/lib/store/converter';
 import { useConverterStore } from '@/lib/store/converter';
 import { AnchorPill } from './AnchorPill';
 import { DatePicker } from './DatePicker';
@@ -12,8 +14,6 @@ import { ResetButton } from './ResetButton';
 import { SearchInput } from './SearchInput';
 import { SettingsMenu } from './SettingsMenu';
 import { ZoneRow } from './ZoneRow';
-import type { SearchResult } from '@/lib/search/types';
-import type { ZoneRef } from '@/lib/store/converter';
 
 interface Props {
   /**
@@ -43,7 +43,10 @@ export function Converter({ title = 'Time converter' }: Props) {
 
   const homeIana = zones[0]?.iana;
   const liveStamp = homeIana
-    ? now.setZone(homeIana).toFormat(format === '24' ? 'HH:mm' : 'h:mm a').toLowerCase()
+    ? now
+        .setZone(homeIana)
+        .toFormat(format === '24' ? 'HH:mm' : 'h:mm a')
+        .toLowerCase()
     : null;
 
   return (

@@ -1,17 +1,16 @@
 'use client';
 
-import { DateTime } from 'luxon';
-import { Moon, Sun } from 'lucide-react';
-import { useMemo } from 'react';
 import { useNow } from '@/lib/hooks/useNow';
+import type { ZoneRef } from '@/lib/store/converter';
 import { useConverterStore } from '@/lib/store/converter';
 import { anchorToZones } from '@/lib/time/luxon';
 import { getNightHours } from '@/lib/time/sun';
 import { getWorkingHoursOnDay, type WorkingHours } from '@/lib/time/working-hours';
 import { getZoneByIana } from '@/lib/zones/resolve';
-import { cn } from '@/lib/utils';
+import { Moon, Sun } from 'lucide-react';
+import { DateTime } from 'luxon';
+import { useMemo } from 'react';
 import { HourTile } from './HourTile';
-import type { ZoneRef } from '@/lib/store/converter';
 
 interface Props {
   zone: ZoneRef;
@@ -70,7 +69,7 @@ export function HourStrip({ zone, index }: Props) {
     if (columns.length === 0) return anchorDate;
     const counts = new Map<string, number>();
     for (const c of columns) counts.set(c.localDate, (counts.get(c.localDate) ?? 0) + 1);
-    let best = columns[0]!.localDate;
+    let best = columns[0]?.localDate ?? anchorDate;
     let bestCount = 0;
     for (const [d, count] of counts) {
       if (count > bestCount) {
@@ -147,9 +146,7 @@ export function HourStrip({ zone, index }: Props) {
 
         {anchorHour !== null && <AnchorGuide columnIndex={anchorHour} />}
 
-        {nowColumnIndex !== null && (
-          <NowGuide columnIndex={nowColumnIndex} showBadge={isHomeRow} />
-        )}
+        {nowColumnIndex !== null && <NowGuide columnIndex={nowColumnIndex} showBadge={isHomeRow} />}
 
         {boundaries.map((b) => (
           <DateBoundaryChip key={b.columnIndex} columnIndex={b.columnIndex} date={b.date} />
@@ -220,9 +217,7 @@ function BandOverlay({
     let night: Array<[number, number]> = [];
     let day: Array<[number, number]> = [];
     if (dayNightOn) {
-      const nightSet = new Set(
-        getNightHours(zone.iana, primaryDate, zoneMeta.lat, zoneMeta.lng),
-      );
+      const nightSet = new Set(getNightHours(zone.iana, primaryDate, zoneMeta.lat, zoneMeta.lng));
       const nightCols: number[] = [];
       const dayCols: number[] = [];
       columns.forEach((c, i) => {

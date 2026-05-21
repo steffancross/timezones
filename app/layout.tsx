@@ -1,6 +1,6 @@
-import type { Metadata } from 'next';
-import { GeistSans } from 'geist/font/sans';
 import { GeistMono } from 'geist/font/mono';
+import { GeistSans } from 'geist/font/sans';
+import type { Metadata } from 'next';
 import { Footer } from '@/components/site/Footer';
 import { Header } from '@/components/site/Header';
 import env from '@/lib/env';
@@ -22,29 +22,14 @@ export const metadata: Metadata = {
   twitter: { card: 'summary_large_image' },
 };
 
-const themeScript = `
-(function() {
-  try {
-    var stored = localStorage.getItem('theme');
-    var system = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
-    var theme = stored === 'light' || stored === 'dark' ? stored : system;
-    document.documentElement.setAttribute('data-theme', theme);
-  } catch (e) {}
-})();
-`;
-
 export default function RootLayout({ children }: { children: React.ReactNode }) {
+  // Light mode is the default — no `data-theme` attribute applied. A future
+  // toggle in Header can set `document.documentElement.dataset.theme = 'dark'`
+  // (and persist to localStorage) to opt into dark mode. No auto-detection of
+  // the OS preference.
   return (
-    <html
-      lang="en"
-      suppressHydrationWarning
-      className={`${GeistSans.variable} ${GeistMono.variable}`}
-    >
-      <head>
-        {/* biome-ignore lint/security/noDangerouslySetInnerHtml: themeScript is a static constant, no user input */}
-        <script dangerouslySetInnerHTML={{ __html: themeScript }} />
-      </head>
-      <body suppressHydrationWarning className="flex min-h-screen flex-col">
+    <html lang="en" className={`${GeistSans.variable} ${GeistMono.variable}`}>
+      <body className="flex min-h-screen flex-col">
         <Providers>
           <Header />
           <main className="flex-1">{children}</main>

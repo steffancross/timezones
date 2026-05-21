@@ -11,8 +11,8 @@ import {
 } from '@/components/ui/dialog';
 import { Label } from '@/components/ui/label';
 import { useConverterStore } from '@/lib/store/converter';
-import { cn } from '@/lib/utils';
 import type { WorkingHours } from '@/lib/time/working-hours';
+import { cn } from '@/lib/utils';
 
 const DAYS: Array<{ idx: number; name: string }> = [
   { idx: 1, name: 'Mon' },
@@ -69,10 +69,7 @@ export function WorkingHoursEditor({ onClose }: Props) {
 
           <div className="flex items-center gap-3">
             <Label className="w-16 text-sm">End</Label>
-            <HourSelect
-              value={draft.end}
-              onChange={(v) => setDraft((d) => ({ ...d, end: v }))}
-            />
+            <HourSelect value={draft.end} onChange={(v) => setDraft((d) => ({ ...d, end: v }))} />
           </div>
 
           <div>
@@ -100,9 +97,7 @@ export function WorkingHoursEditor({ onClose }: Props) {
           </div>
 
           {invalid && (
-            <p className="text-xs text-[color:hsl(var(--destructive))]">
-              Start must be before end
-            </p>
+            <p className="text-xs text-[color:hsl(var(--destructive))]">Start must be before end</p>
           )}
         </div>
 
