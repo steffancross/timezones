@@ -1,11 +1,11 @@
 'use client';
 
+import type { ZoneRef } from '@/lib/store/converter';
 import { useConverterStore } from '@/lib/store/converter';
 import { cn } from '@/lib/utils';
 import { HourStrip } from './HourStrip';
 import { ZoneLabel } from './ZoneLabel';
 import { ZoneRowControls } from './ZoneRowControls';
-import type { ZoneRef } from '@/lib/store/converter';
 
 interface ZoneRowProps {
   zone: ZoneRef;
@@ -42,19 +42,10 @@ export function ZoneRow({ zone, index }: ZoneRowProps) {
           'md:col-start-1 md:row-start-1 md:justify-self-center',
         )}
       >
-        <ZoneRowControls
-          index={index}
-          isFirst={index === 0}
-          isLast={index === totalZones - 1}
-        />
+        <ZoneRowControls index={index} isFirst={index === 0} isLast={index === totalZones - 1} />
       </div>
 
-      <div
-        className={cn(
-          'col-start-1 row-start-1 min-w-0',
-          'md:col-start-2 md:row-start-1',
-        )}
-      >
+      <div className={cn('col-start-1 row-start-1 min-w-0', 'md:col-start-2 md:row-start-1')}>
         <ZoneLabel zone={zone} index={index} isHome={isHome} />
       </div>
 

@@ -1,14 +1,14 @@
 'use client';
 
-import { DateTime } from 'luxon';
 import { Home } from 'lucide-react';
+import { DateTime } from 'luxon';
+import { getZoneById } from '@/data/zones';
 import { getCityById } from '@/lib/cities/resolve';
 import { useNow } from '@/lib/hooks/useNow';
+import type { ZoneRef } from '@/lib/store/converter';
 import { useConverterStore } from '@/lib/store/converter';
 import { formatDate, formatOffset, formatTime } from '@/lib/time/format';
 import { cn } from '@/lib/utils';
-import { getZoneById } from '@/data/zones';
-import type { ZoneRef } from '@/lib/store/converter';
 
 interface Props {
   zone: ZoneRef;
@@ -44,10 +44,7 @@ export function ZoneLabel({ zone, isHome }: Props) {
     <div className="min-w-0">
       <div className="flex items-center gap-1.5">
         {isHome && (
-          <Home
-            className="size-3.5 shrink-0 text-[color:var(--brand)]"
-            aria-label="Home zone"
-          />
+          <Home className="size-3.5 shrink-0 text-[color:var(--brand)]" aria-label="Home zone" />
         )}
         <span
           className="truncate text-[15px] font-semibold leading-tight tracking-[-0.005em] text-[color:var(--fg)]"
@@ -71,9 +68,7 @@ export function ZoneLabel({ zone, isHome }: Props) {
         <span
           className={cn(
             'font-mono text-[11px] tabular-nums',
-            isNextDay
-              ? 'font-medium text-[color:var(--brand)]'
-              : 'text-[color:var(--fg-subtle)]',
+            isNextDay ? 'font-medium text-[color:var(--brand)]' : 'text-[color:var(--fg-subtle)]',
           )}
         >
           {formatDate(displayTime)}

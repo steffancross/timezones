@@ -1,8 +1,8 @@
 'use client';
 
 import { Building2, Globe2 } from 'lucide-react';
-import { cn } from '@/lib/utils';
 import type { SearchResult } from '@/lib/search/types';
+import { cn } from '@/lib/utils';
 
 interface Props {
   result: SearchResult;

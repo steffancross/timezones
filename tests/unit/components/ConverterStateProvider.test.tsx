@@ -116,9 +116,7 @@ describe('ConverterStateProvider bootstrap', () => {
 
     // Simulate the user adding a zone after mount — initialize must NOT re-run
     // and clobber it back to the single seed zone.
-    useConverterStore
-      .getState()
-      .addZone({ kind: 'zone', slug: 'est', iana: 'America/New_York' });
+    useConverterStore.getState().addZone({ kind: 'zone', slug: 'est', iana: 'America/New_York' });
     expect(useConverterStore.getState().zones).toHaveLength(2);
 
     // Re-render with a new (irrelevant) wrapping element; initialize stays put.
@@ -144,8 +142,76 @@ describe('ConverterStateProvider bootstrap', () => {
 
     // The persistence subscribe writes synchronously on change.
     const raw = localStorage.getItem(STORAGE_KEY);
-    expect(raw).not.toBeNull();
-    const parsed = JSON.parse(raw!);
+    if (raw === null) throw new Error('expected persistence to write to localStorage');
+    const parsed = JSON.parse(raw);
     expect(parsed.format).toBe('24');
+  });
+
+  it('applies a full URL-shaped initialState (zones + anchor fields + format)', async () => {
+    // Mirrors the shape G3 (pair page) passes: zones from slug, anchor/format
+    // from search params. Verifies the refactor still wires URL state through
+    // even when multiple fields are supplied at once.
+    await render(
+      <ConverterStateProvider
+        initialState={{
+          zones: [
+            { kind: 'zone', slug: 'pst', iana: 'America/Los_Angeles' },
+            { kind: 'zone', slug: 'est', iana: 'America/New_York' },
+          ],
+          homeZoneIndex: 0,
+          anchorDate: '2026-12-25',
+          anchorHour: 15,
+          format: '24',
+        }}
+      >
+        <div>child</div>
+      </ConverterStateProvider>,
+    );
+
+    const s = useConverterStore.getState();
+    expect(s.zones).toHaveLength(2);
+    expect(s.zones[0]?.iana).toBe('America/Los_Angeles');
+    expect(s.anchorDate).toBe('2026-12-25');
+    expect(s.anchorHour).toBe(15);
+    expect(s.format).toBe('24');
+  });
+
+  it('derives defaultAnchorDate from the home zone when initialState pins a URL date', async () => {
+    // The store's `initialize` action snapshots `defaultAnchorDate` even when
+    // the caller pins an explicit anchorDate (URL ?d=…). ResetButton relies on
+    // this snapshot to know the URL date is non-default. If the snapshot stops
+    // being derived here, ResetButton's enabled state regresses.
+    await render(
+      <ConverterStateProvider
+        initialState={{
+          zones: [{ kind: 'zone', slug: 'jst', iana: 'Asia/Tokyo' }],
+          homeZoneIndex: 0,
+          anchorDate: '2026-12-25',
+        }}
+      >
+        <div>child</div>
+      </ConverterStateProvider>,
+    );
+
+    const s = useConverterStore.getState();
+    expect(s.anchorDate).toBe('2026-12-25');
+    // defaultAnchorDate should be today-in-Tokyo, NOT the URL-supplied date.
+    expect(s.defaultAnchorDate).not.toBe('2026-12-25');
+    expect(s.defaultAnchorDate).toMatch(/^\d{4}-\d{2}-\d{2}$/);
+  });
+
+  it('handles an empty initialState object without altering baseline defaults', async () => {
+    // Edge case: provider mounted with `initialState={}` (G2 home page might
+    // do this if cf-timezone is missing and no zones are seeded).
+    await render(
+      <ConverterStateProvider initialState={{}}>
+        <div>child</div>
+      </ConverterStateProvider>,
+    );
+
+    const s = useConverterStore.getState();
+    expect(s.zones).toEqual([]);
+    expect(s.format).toBe('12');
+    expect(s.overlay).toEqual({ dayNight: true, workHours: false, weekend: false });
   });
 });

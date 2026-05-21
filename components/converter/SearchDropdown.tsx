@@ -1,9 +1,9 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
+import type { SearchResult } from '@/lib/search/types';
 import { cn } from '@/lib/utils';
 import { SearchResultItem } from './SearchResultItem';
-import type { SearchResult } from '@/lib/search/types';
 
 interface Props {
   results: SearchResult[];

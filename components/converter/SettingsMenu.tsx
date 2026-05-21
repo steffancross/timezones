@@ -1,10 +1,10 @@
 'use client';
 
+import { Settings } from 'lucide-react';
+import { useState } from 'react';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { useConverterStore } from '@/lib/store/converter';
 import { cn } from '@/lib/utils';
-import { Settings } from 'lucide-react';
-import { useState } from 'react';
 import { WorkingHoursEditor } from './WorkingHoursEditor';
 
 const DAY_NAMES = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];

@@ -4,7 +4,8 @@
    The actual font faces are loaded via next/font in app/layout.tsx,
    which exposes --font-geist-sans / --font-geist-mono as CSS vars on <html>. */
 @theme {
-  --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-sans:
+    var(--font-geist-sans), ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
   --font-mono: var(--font-geist-mono), ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
 }
 
@@ -97,14 +98,14 @@
     --brand-ring: oklch(0.62 0.18 250 / 0.45);
 
     --band-night: oklch(0.55 0.11 250);
-    --band-night-alpha: 0.30;
+    --band-night-alpha: 0.3;
     --band-work: oklch(0.72 0.13 75);
     --band-work-alpha: 0.42;
     --band-weekend: oklch(0.85 0.09 75);
     --band-weekend-alpha: 0.45;
 
     --weekend-fg: oklch(0.55 0.12 35);
-    --weekend-tick: oklch(0.62 0.10 35);
+    --weekend-tick: oklch(0.62 0.1 35);
     --weekend-base: oklch(0.78 0.08 35);
 
     --radius-tile: 3px;
@@ -137,7 +138,7 @@
     --bg: oklch(0.16 0.006 260);
     --fg: oklch(0.97 0.003 260);
     --fg-muted: oklch(0.66 0.006 260);
-    --fg-subtle: oklch(0.50 0.008 260);
+    --fg-subtle: oklch(0.5 0.008 260);
     --border-strong: oklch(0.35 0.008 260);
     --input-bg: oklch(0.22 0.006 260);
     --hover: oklch(0.24 0.007 260);
@@ -153,16 +154,16 @@
     --brand-soft: oklch(0.68 0.17 248 / 0.18);
     --brand-ring: oklch(0.68 0.17 248 / 0.5);
 
-    --band-night: oklch(0.40 0.10 255);
-    --band-night-alpha: 0.60;
-    --band-work: oklch(0.60 0.14 75);
-    --band-work-alpha: 0.40;
-    --band-weekend: oklch(0.62 0.10 75);
+    --band-night: oklch(0.4 0.1 255);
+    --band-night-alpha: 0.6;
+    --band-work: oklch(0.6 0.14 75);
+    --band-work-alpha: 0.4;
+    --band-weekend: oklch(0.62 0.1 75);
     --band-weekend-alpha: 0.32;
 
     --weekend-fg: oklch(0.78 0.13 35);
-    --weekend-tick: oklch(0.70 0.11 35);
-    --weekend-base: oklch(0.50 0.10 35);
+    --weekend-tick: oklch(0.7 0.11 35);
+    --weekend-base: oklch(0.5 0.1 35);
   }
 }
 

@@ -4,9 +4,9 @@ import { Search } from 'lucide-react';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { Input } from '@/components/ui/input';
 import { loadSearchIndex, searchAll } from '@/lib/search/runtime';
+import type { SearchResult } from '@/lib/search/types';
 import { cn } from '@/lib/utils';
 import { SearchDropdown } from './SearchDropdown';
-import type { SearchResult } from '@/lib/search/types';
 
 interface Props {
   onSelect: (result: SearchResult) => void;
@@ -111,12 +111,7 @@ export function SearchInput({
       />
 
       {open && (
-        <SearchDropdown
-          results={results}
-          loading={loading}
-          query={query}
-          onSelect={handleSelect}
-        />
+        <SearchDropdown results={results} loading={loading} query={query} onSelect={handleSelect} />
       )}
     </div>
   );
