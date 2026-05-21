@@ -11,7 +11,7 @@ vi.mock('next/navigation', () => ({
   __esModule: true,
   default: {},
   useRouter: () => ({ replace: () => {}, push: () => {}, prefetch: () => {} }),
-  usePathname: () => '/sandbox/converter',
+  usePathname: () => '/',
 }));
 
 const STORAGE_KEY = 'converter_prefs';

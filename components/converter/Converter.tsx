@@ -1,10 +1,13 @@
 'use client';
 
 import { useCallback } from 'react';
+import { getZoneById } from '@/data/zones';
+import { getCityById } from '@/lib/cities/resolve';
 import { useNow } from '@/lib/hooks/useNow';
 import type { SearchResult } from '@/lib/search/types';
 import type { ZoneRef } from '@/lib/store/converter';
 import { useConverterStore } from '@/lib/store/converter';
+import { formatDate } from '@/lib/time/format';
 import { AnchorPill } from './AnchorPill';
 import { DatePicker } from './DatePicker';
 import { DSTBanner } from './DSTBanner';
@@ -15,15 +18,13 @@ import { SearchInput } from './SearchInput';
 import { SettingsMenu } from './SettingsMenu';
 import { ZoneRow } from './ZoneRow';
 
-interface Props {
-  /**
-   * Heading text rendered to the left of the live-time stamp + anchor pill.
-   * Pages can override per route; landing default is "Time converter".
-   */
-  title?: string;
+function getHomeName(zone: ZoneRef | undefined): string | null {
+  if (!zone) return null;
+  if (zone.kind === 'zone') return getZoneById(zone.slug).display_name;
+  return getCityById(zone.slug)?.name ?? zone.slug;
 }
 
-export function Converter({ title = 'Time converter' }: Props) {
+export function Converter() {
   const zones = useConverterStore((s) => s.zones);
   const addZone = useConverterStore((s) => s.addZone);
   const format = useConverterStore((s) => s.format);
@@ -41,30 +42,44 @@ export function Converter({ title = 'Time converter' }: Props) {
     [addZone],
   );
 
-  const homeIana = zones[0]?.iana;
-  const liveStamp = homeIana
-    ? now
-        .setZone(homeIana)
-        .toFormat(format === '24' ? 'HH:mm' : 'h:mm a')
-        .toLowerCase()
+  const homeZone = zones[0];
+  const homeIana = homeZone?.iana;
+  const homeName = getHomeName(homeZone);
+  const homeNow = homeIana ? now.setZone(homeIana) : null;
+  const liveStamp = homeNow
+    ? homeNow.toFormat(format === '24' ? 'HH:mm' : 'h:mm a').toLowerCase()
     : null;
+  const dateStamp = homeNow ? formatDate(homeNow) : null;
 
   return (
     <div className="space-y-4">
-      {/* Heading row — title, live stamp, anchor pill (right-aligned). */}
-      <div className="flex min-h-8 items-center justify-between gap-4">
-        <div className="flex min-w-0 items-baseline gap-2.5">
-          <h2 className="m-0 text-[22px] font-semibold tracking-[-0.015em] text-[color:var(--fg)]">
-            {title}
-          </h2>
-          {liveStamp && (
-            <span className="font-mono text-[12px] font-medium tabular-nums text-[color:var(--fg-subtle)]">
-              {liveStamp}
+      {/*
+        Heading row — home-zone identity (name + live time + date) on the left,
+        anchor pill on the right. The page-level H1 above the converter already
+        carries the route's SEO title; this row is contextual data, not a
+        section heading, so it deliberately reads as a status line rather than
+        echoing the H1.
+      */}
+      {homeName && (
+        <div className="flex min-h-8 items-center justify-between gap-4">
+          <div className="flex min-w-0 flex-wrap items-baseline gap-x-2.5 gap-y-0.5">
+            <span className="text-[22px] font-semibold tracking-[-0.015em] text-[color:var(--fg)]">
+              {homeName}
             </span>
-          )}
+            {liveStamp && (
+              <span className="font-mono text-[12px] font-medium tabular-nums text-[color:var(--fg-subtle)]">
+                {liveStamp}
+              </span>
+            )}
+            {dateStamp && (
+              <span className="font-mono text-[12px] tabular-nums text-[color:var(--fg-muted)]">
+                {dateStamp}
+              </span>
+            )}
+          </div>
+          <AnchorPill />
         </div>
-        <AnchorPill />
-      </div>
+      )}
 
       <DSTBanner />
 

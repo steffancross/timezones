@@ -1,4 +1,3 @@
-import { notFound } from 'next/navigation';
 import { Converter } from '@/components/converter/Converter';
 import { ConverterStateProvider } from '@/components/converter/ConverterStateProvider';
 import { Breadcrumbs } from '@/components/site/Breadcrumbs';
@@ -7,6 +6,7 @@ import { buildMetadata } from '@/lib/seo/metadata';
 import { getCuratedPairSlugs } from '@/lib/sitemap/pair-slugs';
 import { type ParsedPair, parsePairSlug } from '@/lib/slugs/parse';
 import { parseSearchParams, urlToState } from '@/lib/store/from-url';
+import { notFound } from 'next/navigation';
 
 export const revalidate = 86400;
 export const dynamicParams = true;
@@ -61,9 +61,6 @@ export default async function PairPage({
         <h1 className="text-3xl font-semibold">
           {fromLabel} to {toLabel} Converter
         </h1>
-        <p className="mt-2 text-[color:var(--fg-muted)]">
-          Convert {fromLabel} to {toLabel}.
-        </p>
       </header>
 
       <ConverterStateProvider initialState={initialState}>
