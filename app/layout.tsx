@@ -22,13 +22,21 @@ export const metadata: Metadata = {
   twitter: { card: 'summary_large_image' },
 };
 
+// Pre-hydration: applies the persisted theme to <html> before React mounts so
+// dark-mode users don't see a flash of the light palette. No OS auto-detection.
+const themeBoot = `try{var t=localStorage.getItem('theme');if(t==='dark')document.documentElement.dataset.theme='dark'}catch(e){}`;
+
 export default function RootLayout({ children }: { children: React.ReactNode }) {
-  // Light mode is the default — no `data-theme` attribute applied. A future
-  // toggle in Header can set `document.documentElement.dataset.theme = 'dark'`
-  // (and persist to localStorage) to opt into dark mode. No auto-detection of
-  // the OS preference.
   return (
-    <html lang="en" className={`${GeistSans.variable} ${GeistMono.variable}`}>
+    <html
+      lang="en"
+      className={`${GeistSans.variable} ${GeistMono.variable}`}
+      suppressHydrationWarning
+    >
+      <head>
+        {/* biome-ignore lint/security/noDangerouslySetInnerHtml: tiny static theme-boot script */}
+        <script dangerouslySetInnerHTML={{ __html: themeBoot }} />
+      </head>
       <body className="flex min-h-screen flex-col">
         <Providers>
           <Header />
