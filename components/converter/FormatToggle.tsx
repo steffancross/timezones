@@ -46,7 +46,7 @@ function SegmentButton({
       aria-pressed={active}
       onClick={onClick}
       className={cn(
-        'inline-flex items-center rounded-[3px] px-2.5 py-0.5 font-mono text-[12px] tracking-[0.02em] transition-colors',
+        'inline-flex items-center rounded-[3px] px-2.5 py-1 font-mono text-[12px] tracking-[0.02em] transition-colors',
         active
           ? 'bg-[color:var(--fg)] text-[color:var(--bg)]'
           : 'text-[color:var(--fg-muted)] hover:text-[color:var(--fg)]',
