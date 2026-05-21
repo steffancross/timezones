@@ -20,5 +20,9 @@ export default defineConfig({
   },
   resolve: {
     alias: { '@': new URL('.', import.meta.url).pathname },
+    // Dedupe React so Radix-based shadcn components (Dialog, Popover, etc.)
+    // see the same React instance as vitest-browser-react. Without this Vite
+    // optimizes Radix separately and its `useRef` returns null (dual-React).
+    dedupe: ['react', 'react-dom'],
   },
 });
