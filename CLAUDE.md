@@ -100,7 +100,3 @@ Env vars are validated via Zod in `lib/env.ts`. Missing `NEXT_PUBLIC_*` values t
 - **`zones[0]` is the home zone in practice**, even though `homeZoneIndex` exists. `Converter.tsx` reads `zones[0]?.iana` directly. `addZone` does not bootstrap `homeZoneIndex` to 0 on the first add — this is a known wart.
 - **Recolor over text labels**: prefer recoloring existing elements (ticks, baselines, labels) to indicate state rather than adding floating text labels. Both the weekend and working-hours indicators followed this — there is no "WEEKEND" or "working" floating label.
 - **Strip is `tick` style only** — variants `tiles`, `gradient`, `pills` from `markdowns/E/design_handoff_converter/variants.css` are not used.
-
-## Sandbox
-
-`app/sandbox/converter/page.tsx` is a temporary route at `/sandbox/converter` seeded with PT/ET/JST. It exists for dev iteration on the converter alone before the real `G/` page routes are built. Delete when those land.
