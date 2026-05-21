@@ -46,8 +46,8 @@ export default async function HomePage() {
         <section>
           <h2 className="text-xl font-semibold">About</h2>
           <p className="mt-3 text-sm leading-relaxed text-[color:var(--fg-muted)]">
-            A quick way to compare time across cities and zones. Add the rows you care about and
-            see day-and-night and working-hour bands at a glance.
+            A quick way to compare time across cities and zones. Add the rows you care about and see
+            day-and-night and working-hour bands at a glance.
           </p>
           <p className="mt-3 text-sm leading-relaxed text-[color:var(--fg-muted)]">
             DST transitions are handled automatically; offsets shift on the right date in each zone
