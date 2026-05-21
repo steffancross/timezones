@@ -1,5 +1,8 @@
 'use client';
 
+import { Moon, Sun } from 'lucide-react';
+import { DateTime } from 'luxon';
+import { useMemo } from 'react';
 import { useNow } from '@/lib/hooks/useNow';
 import type { ZoneRef } from '@/lib/store/converter';
 import { useConverterStore } from '@/lib/store/converter';
@@ -7,9 +10,6 @@ import { anchorToZones } from '@/lib/time/luxon';
 import { getNightHours } from '@/lib/time/sun';
 import { getWorkingHoursOnDay, type WorkingHours } from '@/lib/time/working-hours';
 import { getZoneByIana } from '@/lib/zones/resolve';
-import { Moon, Sun } from 'lucide-react';
-import { DateTime } from 'luxon';
-import { useMemo } from 'react';
 import { HourTile } from './HourTile';
 
 interface Props {
@@ -118,11 +118,10 @@ export function HourStrip({ zone, index }: Props) {
 
   return (
     <div className="relative w-full pt-[18px] pb-1 max-md:pt-[14px]">
-      <div
-        className="relative grid grid-cols-24 gap-0 h-10 max-md:h-7"
-        role="row"
-        aria-label={`Hour strip for ${zone.iana}`}
-      >
+      {/* No `role="row"` / aria-label: the strip is decorative. Screen readers
+          get the date/time info from the ZoneLabel, AnchorPill, and Now badge —
+          announcing 24 hour tiles per row would be noise. */}
+      <div className="relative grid grid-cols-24 gap-0 h-10 max-md:h-7">
         <BandOverlay
           columns={columns}
           zone={zone}
@@ -161,13 +160,13 @@ export function HourStrip({ zone, index }: Props) {
  * Exported for tests; the band overlay also uses it internally.
  */
 export function groupContiguous(cols: number[]): Array<[number, number]> {
-  if (cols.length === 0) return [];
   const sorted = [...cols].sort((a, b) => a - b);
+  const [first, ...rest] = sorted;
+  if (first === undefined) return [];
   const out: Array<[number, number]> = [];
-  let s = sorted[0]!;
-  let prev = s;
-  for (let i = 1; i < sorted.length; i++) {
-    const c = sorted[i]!;
+  let s = first;
+  let prev = first;
+  for (const c of rest) {
     if (c === prev + 1) {
       prev = c;
     } else {

@@ -122,7 +122,8 @@ function HourSelect({ value, onChange }: { value: number; onChange: (v: number) 
       className="h-7 rounded-[var(--radius)] border border-[color:var(--border)] bg-card px-2 font-mono text-[12px]"
     >
       {Array.from({ length: 24 }, (_, h) => (
-        <option key={h} value={h}>
+        // biome-ignore lint/suspicious/noArrayIndexKey: hours 0-23 are a fixed static list — index IS the value, never reorders.
+        <option key={`hour-${h}`} value={h}>
           {String(h).padStart(2, '0')}:00
         </option>
       ))}

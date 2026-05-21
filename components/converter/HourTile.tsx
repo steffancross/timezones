@@ -112,6 +112,7 @@ export function HourTile({
   );
 
   return (
+    // biome-ignore lint/a11y/noStaticElementInteractions: tile is intentionally non-interactive in the a11y sense. Pointer handlers provide sighted-user-only hover/touch preview; meaningful state (anchor, current hour) is announced via AnchorPill + Now badge. No keyboard affordance because click/Enter has no effect.
     <div
       onMouseEnter={handlePreviewOn}
       onMouseLeave={handlePreviewOff}
@@ -119,8 +120,6 @@ export function HourTile({
       className={sharedClasses}
       data-hour={column.localHour}
       data-home-hour={column.homeHour}
-      aria-label={`Hour ${column.localHour}`}
-      role="gridcell"
     >
       {content}
     </div>

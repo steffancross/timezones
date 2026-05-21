@@ -1,4 +1,5 @@
 import { beforeEach, describe, expect, it } from 'vitest';
+import { page } from 'vitest/browser';
 import { render } from 'vitest-browser-react';
 import type { ColumnData } from '@/components/converter/HourStrip';
 import { HourTile } from '@/components/converter/HourTile';
@@ -27,11 +28,24 @@ function column(homeHour: number, overrides: Partial<ColumnData> = {}): ColumnDa
  * its className — the tile encodes its full visual state there, and asserting
  * the class string catches both Tailwind class renames and conditional logic
  * regressions without falling back to screenshot diffs.
+ *
+ * The selector keys on `data-home-hour` (always present, stable across tile
+ * states) rather than aria-label (intentionally omitted from production tiles
+ * — 24 announcements per row would be screen-reader noise).
  */
 function tileEl(container: HTMLElement): HTMLElement {
-  const el = container.querySelector<HTMLElement>('[aria-label^="Hour"]');
+  const el = container.querySelector<HTMLElement>('[data-home-hour]');
   if (!el) throw new Error('HourTile root not found');
   return el;
+}
+
+/**
+ * Find the tile and return a Locator so we can fire real Playwright-driven
+ * hover/unhover events (React's synthetic mouseenter/mouseleave aren't
+ * reliably triggered by dispatching native events).
+ */
+function tileLocator(container: HTMLElement) {
+  return page.elementLocator(tileEl(container));
 }
 
 describe('HourTile className state matrix', () => {
@@ -281,7 +295,7 @@ describe('HourTile interaction', () => {
         isWeekend={false}
       />,
     );
-    await screen.getByLabelText('Hour 14').hover();
+    await tileLocator(screen.container).hover();
     expect(useConverterStore.getState().previewHour).toBe(14);
   });
 
@@ -296,9 +310,10 @@ describe('HourTile interaction', () => {
         isWeekend={false}
       />,
     );
-    await screen.getByLabelText('Hour 14').hover();
+    const tile = tileLocator(screen.container);
+    await tile.hover();
     expect(useConverterStore.getState().previewHour).toBe(14);
-    await screen.getByLabelText('Hour 14').unhover();
+    await tile.unhover();
     expect(useConverterStore.getState().previewHour).toBeNull();
   });
 
@@ -317,7 +332,7 @@ describe('HourTile interaction', () => {
         isWeekend={false}
       />,
     );
-    await screen.getByLabelText('Hour 17').hover();
+    await tileLocator(screen.container).hover();
     expect(useConverterStore.getState().previewHour).toBe(14);
   });
 });
