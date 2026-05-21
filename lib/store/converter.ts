@@ -107,6 +107,30 @@ function resolveHomeIana(zones: ZoneRef[], homeZoneIndex: number | null): string
   return zones[0]?.iana;
 }
 
+/**
+ * When the de-facto home zone (zones[0]) changes via reorder/remove, the
+ * existing `anchorDate` may be "today" in the OLD home zone but a different
+ * calendar day in the NEW home zone — which causes HourStrip's now-guide to
+ * disappear (it gates on `now-in-home.toISODate() === anchorDate`).
+ *
+ * If the user was on auto-today (anchorDate matches the snapshot), re-derive
+ * both anchorDate and defaultAnchorDate for the new home. If they'd manually
+ * picked a date via the DatePicker, leave it alone — they meant that date.
+ */
+function rederiveAnchorOnHomeChange(
+  state: ConverterState,
+  nextZones: ZoneRef[],
+  patch: Partial<ConverterState>,
+): void {
+  const oldHomeIana = state.zones[0]?.iana;
+  const newHomeIana = nextZones[0]?.iana;
+  if (!newHomeIana || newHomeIana === oldHomeIana) return;
+  if (state.anchorDate !== state.defaultAnchorDate) return;
+  const homeToday = todayInZone(newHomeIana);
+  patch.anchorDate = homeToday;
+  patch.defaultAnchorDate = homeToday;
+}
+
 const initialToday = todayInZone();
 
 const initialState: ConverterState = {
@@ -152,7 +176,9 @@ export const useConverterStore = create<ConverterState & ConverterActions>()(
           if (homeZoneIndex === index) homeZoneIndex = null;
           else if (homeZoneIndex > index) homeZoneIndex -= 1;
         }
-        return { zones, homeZoneIndex };
+        const patch: Partial<ConverterState> = { zones, homeZoneIndex };
+        rederiveAnchorOnHomeChange(state, zones, patch);
+        return patch;
       }),
 
     moveZone: (from, to) =>
@@ -171,7 +197,9 @@ export const useConverterStore = create<ConverterState & ConverterActions>()(
           else if (from < homeZoneIndex && to >= homeZoneIndex) homeZoneIndex -= 1;
           else if (from > homeZoneIndex && to <= homeZoneIndex) homeZoneIndex += 1;
         }
-        return { zones, homeZoneIndex };
+        const patch: Partial<ConverterState> = { zones, homeZoneIndex };
+        rederiveAnchorOnHomeChange(state, zones, patch);
+        return patch;
       }),
 
     setZones: (zones) =>

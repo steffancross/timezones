@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it } from 'vitest';
-import { useConverterStore, type ZoneRef } from '@/lib/store/converter';
+import { todayInZone, useConverterStore, type ZoneRef } from '@/lib/store/converter';
 
 const pst: ZoneRef = { kind: 'zone', slug: 'pst', iana: 'America/Los_Angeles' };
 const est: ZoneRef = { kind: 'zone', slug: 'est', iana: 'America/New_York' };
@@ -7,11 +7,18 @@ const tokyo: ZoneRef = { kind: 'city', slug: 'tokyo', iana: 'Asia/Tokyo' };
 const london: ZoneRef = { kind: 'zone', slug: 'gmt', iana: 'Europe/London' };
 
 function resetStore() {
+  // Pin anchorDate/defaultAnchorDate to browser-local today so addZone's
+  // `isTodayDefault` check still fires (it accepts browser-local today). A
+  // prior test that picked a custom date would otherwise leak that date into
+  // the next test and break the home-zone-bootstrap logic.
+  const today = todayInZone();
   useConverterStore.setState({
     zones: [],
     homeZoneIndex: null,
     anchorHour: null,
     previewHour: null,
+    anchorDate: today,
+    defaultAnchorDate: today,
   });
 }
 
@@ -231,6 +238,62 @@ describe('resetAll', () => {
     expect(next.format).toBe('12');
     expect(next.overlay).toEqual({ dayNight: true, workHours: false, weekend: false });
     expect(next.workingHours).toEqual({ start: 9, end: 17, days: [1, 2, 3, 4, 5] });
+  });
+});
+
+describe('moveZone / removeZone re-derive anchorDate when zones[0] changes', () => {
+  beforeEach(resetStore);
+
+  it('moveZone updates anchorDate to today-in-new-home when home was on auto-today', () => {
+    // Set up: PST + Tokyo. zones[0]=PST. anchorDate auto-derived to today-in-PST.
+    const s = useConverterStore.getState();
+    s.addZone(pst);
+    s.addZone(tokyo);
+    const before = useConverterStore.getState();
+    expect(before.anchorDate).toBe(before.defaultAnchorDate);
+
+    // Move PST to position 1 → Tokyo becomes zones[0] → de-facto home.
+    s.moveZone(0, 1);
+    const after = useConverterStore.getState();
+    expect(after.zones[0]?.iana).toBe('Asia/Tokyo');
+    // anchorDate AND defaultAnchorDate should now reflect today-in-Tokyo so
+    // the now-guide finds the right column instead of vanishing when LA and
+    // Tokyo straddle a calendar boundary.
+    expect(after.anchorDate).toBe(after.defaultAnchorDate);
+  });
+
+  it('moveZone does NOT clobber a user-picked anchorDate', () => {
+    const s = useConverterStore.getState();
+    s.addZone(pst);
+    s.addZone(tokyo);
+    s.setAnchorDate('2026-12-25');
+    s.moveZone(0, 1);
+    expect(useConverterStore.getState().anchorDate).toBe('2026-12-25');
+  });
+
+  it('removeZone re-derives anchorDate when removing zones[0] changes the home', () => {
+    const s = useConverterStore.getState();
+    s.addZone(pst);
+    s.addZone(tokyo);
+    const before = useConverterStore.getState();
+    expect(before.anchorDate).toBe(before.defaultAnchorDate);
+
+    s.removeZone(0); // PST gone, Tokyo becomes zones[0]
+    const after = useConverterStore.getState();
+    expect(after.zones[0]?.iana).toBe('Asia/Tokyo');
+    expect(after.anchorDate).toBe(after.defaultAnchorDate);
+  });
+
+  it('moveZone is a no-op for anchorDate when home zone position is unchanged', () => {
+    const s = useConverterStore.getState();
+    s.addZone(pst);
+    s.addZone(est);
+    s.addZone(tokyo);
+    const before = useConverterStore.getState().anchorDate;
+
+    s.moveZone(1, 2); // swap est & tokyo, PST still at 0
+    expect(useConverterStore.getState().zones[0]?.iana).toBe('America/Los_Angeles');
+    expect(useConverterStore.getState().anchorDate).toBe(before);
   });
 });
 
