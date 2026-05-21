@@ -1,7 +1,9 @@
 import { initOpenNextCloudflareForDev } from '@opennextjs/cloudflare';
 import type { NextConfig } from 'next';
 
-initOpenNextCloudflareForDev();
+if (process.env.CF_DEV === "1") {
+  initOpenNextCloudflareForDev();
+}
 
 const nextConfig: NextConfig = {
   reactStrictMode: true,

@@ -11,6 +11,9 @@ export default defineConfig({
       provider: playwright(),
       headless: true,
       instances: [{ browser: 'chromium' }],
+      // We don't do visual-regression testing; failure screenshots add disk
+      // noise and conflict with the test-as-functional-assertion philosophy.
+      screenshotFailures: false,
     },
     include: ['tests/unit/**/*.test.{ts,tsx}'],
     setupFiles: ['./tests/unit/setup.ts'],

@@ -4,6 +4,7 @@ import { usePathname, useSearchParams } from 'next/navigation';
 import posthog from 'posthog-js';
 import { PostHogProvider, usePostHog } from 'posthog-js/react';
 import { Suspense, useEffect } from 'react';
+import { TooltipProvider } from '@/components/ui/tooltip';
 import env from '@/lib/env';
 
 if (typeof window !== 'undefined') {
@@ -24,7 +25,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
       <Suspense fallback={null}>
         <PageviewTracker />
       </Suspense>
-      {children}
+      <TooltipProvider delayDuration={300}>{children}</TooltipProvider>
     </PostHogProvider>
   );
 }

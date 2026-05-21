@@ -16,11 +16,12 @@ export function UrlSync() {
   const pathname = usePathname();
 
   const anchorDate = useConverterStore((s) => s.anchorDate);
+  const defaultAnchorDate = useConverterStore((s) => s.defaultAnchorDate);
   const anchorHour = useConverterStore((s) => s.anchorHour);
   const format = useConverterStore((s) => s.format);
 
   useEffect(() => {
-    const qs = stateToQueryString({ anchorDate, anchorHour, format });
+    const qs = stateToQueryString({ anchorDate, defaultAnchorDate, anchorHour, format });
     const next = qs ? `${pathname}?${qs}` : pathname;
 
     // Normalize trailing slashes so Next's trailingSlash mode doesn't cause a
@@ -35,7 +36,7 @@ export function UrlSync() {
     }, 100);
 
     return () => clearTimeout(t);
-  }, [pathname, anchorDate, anchorHour, format, router]);
+  }, [pathname, anchorDate, defaultAnchorDate, anchorHour, format, router]);
 
   return null;
 }

@@ -1,4 +1,6 @@
 import type { Metadata } from 'next';
+import { GeistSans } from 'geist/font/sans';
+import { GeistMono } from 'geist/font/mono';
 import { Footer } from '@/components/site/Footer';
 import { Header } from '@/components/site/Header';
 import env from '@/lib/env';
@@ -33,7 +35,11 @@ const themeScript = `
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html
+      lang="en"
+      suppressHydrationWarning
+      className={`${GeistSans.variable} ${GeistMono.variable}`}
+    >
       <head>
         {/* biome-ignore lint/security/noDangerouslySetInnerHtml: themeScript is a static constant, no user input */}
         <script dangerouslySetInnerHTML={{ __html: themeScript }} />
