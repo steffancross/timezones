@@ -9,7 +9,10 @@ export function Header() {
         <Link href="/" className="font-semibold">
           {env.NEXT_PUBLIC_SITE_NAME}
         </Link>
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-4">
+          <Link href="/articles" className="text-sm text-muted-foreground hover:text-foreground">
+            Articles
+          </Link>
           <ThemeToggle />
         </div>
       </div>

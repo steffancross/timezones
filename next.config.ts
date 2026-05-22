@@ -1,3 +1,4 @@
+import createMDX from '@next/mdx';
 import { initOpenNextCloudflareForDev } from '@opennextjs/cloudflare';
 import type { NextConfig } from 'next';
 
@@ -5,10 +6,18 @@ if (process.env.CF_DEV === '1') {
   initOpenNextCloudflareForDev();
 }
 
+const withMDX = createMDX({
+  options: {
+    remarkPlugins: [['remark-frontmatter', ['yaml']]],
+    rehypePlugins: [],
+  },
+});
+
 const nextConfig: NextConfig = {
   reactStrictMode: true,
   poweredByHeader: false,
   trailingSlash: false,
+  pageExtensions: ['ts', 'tsx', 'md', 'mdx'],
   async rewrites() {
     return [
       {
@@ -21,4 +30,4 @@ const nextConfig: NextConfig = {
   },
 };
 
-export default nextConfig;
+export default withMDX(nextConfig);
