@@ -1,13 +1,10 @@
 'use client';
 
 import { Settings } from 'lucide-react';
-import { useState } from 'react';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { useConverterStore } from '@/lib/store/converter';
 import { cn } from '@/lib/utils';
 import { WorkingHoursEditor } from './WorkingHoursEditor';
-
-const DAY_NAMES = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
 
 type OverlayKind = 'dayNight' | 'workHours' | 'weekend';
 
@@ -18,15 +15,12 @@ const OVERLAY_OPTIONS: Array<{ key: OverlayKind; label: string }> = [
 ];
 
 export function SettingsMenu() {
-  const [editingHours, setEditingHours] = useState(false);
-
   const dayNight = useConverterStore((s) => s.overlay.dayNight);
   const workHours = useConverterStore((s) => s.overlay.workHours);
   const weekend = useConverterStore((s) => s.overlay.weekend);
   const toggleDayNight = useConverterStore((s) => s.toggleDayNightOverlay);
   const toggleWorkHours = useConverterStore((s) => s.toggleWorkHoursOverlay);
   const toggleWeekend = useConverterStore((s) => s.toggleWeekendOverlay);
-  const wh = useConverterStore((s) => s.workingHours);
 
   const checkedFor = (k: OverlayKind) =>
     k === 'dayNight' ? dayNight : k === 'workHours' ? workHours : weekend;
@@ -34,31 +28,28 @@ export function SettingsMenu() {
     k === 'dayNight' ? toggleDayNight : k === 'workHours' ? toggleWorkHours : toggleWeekend;
 
   return (
-    <>
-      <Popover>
-        <PopoverTrigger
-          className={cn(
-            'inline-flex size-8 items-center justify-center rounded-[var(--radius)]',
-            'border border-[color:var(--border)] bg-card',
-            'text-[color:var(--fg-muted)] transition-colors',
-            'hover:bg-[var(--hover)] hover:text-[color:var(--fg)]',
-          )}
-          aria-label="Settings"
-        >
-          <Settings className="size-4" />
-        </PopoverTrigger>
+    <Popover>
+      <PopoverTrigger
+        className={cn(
+          'inline-flex size-8 items-center justify-center rounded-[var(--radius)]',
+          'border border-[color:var(--border)] bg-card',
+          'text-[color:var(--fg-muted)] transition-colors',
+          'hover:bg-[var(--hover)] hover:text-[color:var(--fg)]',
+        )}
+        aria-label="Settings"
+      >
+        <Settings className="size-4" />
+      </PopoverTrigger>
 
-        <PopoverContent align="end" className="w-[300px] p-3.5">
-          <section>
-            <h4 className="mb-2 font-mono text-[11px] font-semibold uppercase tracking-[0.06em] text-[color:var(--fg-subtle)]">
-              Overlays
-            </h4>
-            <div className="space-y-1.5">
-              {OVERLAY_OPTIONS.map((opt) => (
-                <label
-                  key={opt.key}
-                  className="flex cursor-pointer items-center gap-2.5 text-[13px]"
-                >
+      <PopoverContent align="end" className="w-[300px] p-3.5">
+        <section>
+          <h4 className="mb-2 font-mono text-[11px] font-semibold uppercase tracking-[0.06em] text-[color:var(--fg-subtle)]">
+            Overlays
+          </h4>
+          <div className="space-y-1.5">
+            {OVERLAY_OPTIONS.map((opt) => (
+              <div key={opt.key}>
+                <label className="flex cursor-pointer items-center gap-2.5 text-[13px]">
                   <CheckSquare checked={checkedFor(opt.key)} />
                   <input
                     type="checkbox"
@@ -69,30 +60,13 @@ export function SettingsMenu() {
                   <span className="flex-1">{opt.label}</span>
                   <Swatch kind={opt.key} />
                 </label>
-              ))}
-            </div>
-
-            {workHours && (
-              <div className="mt-2.5 flex items-center justify-between text-[12px]">
-                <span className="text-[color:var(--fg-muted)]">
-                  {String(wh.start).padStart(2, '0')}:00 – {String(wh.end).padStart(2, '0')}:00,{' '}
-                  {wh.days.map((d) => DAY_NAMES[d - 1]).join(', ')}
-                </span>
-                <button
-                  type="button"
-                  onClick={() => setEditingHours(true)}
-                  className="font-medium text-[color:var(--brand)] hover:underline"
-                >
-                  Edit
-                </button>
+                {opt.key === 'workHours' && workHours && <WorkingHoursEditor />}
               </div>
-            )}
-          </section>
-        </PopoverContent>
-      </Popover>
-
-      {editingHours && <WorkingHoursEditor onClose={() => setEditingHours(false)} />}
-    </>
+            ))}
+          </div>
+        </section>
+      </PopoverContent>
+    </Popover>
   );
 }
 
