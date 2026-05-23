@@ -39,7 +39,7 @@ export default async function HomePage() {
       </header>
 
       <ConverterStateProvider initialState={{ zones, homeZoneIndex: 0 }}>
-        <Converter />
+        <Converter visitorIana={detectedTz ?? undefined} />
       </ConverterStateProvider>
 
       <article className="mt-12 grid gap-10 md:grid-cols-2">
