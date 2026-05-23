@@ -41,6 +41,19 @@ export function isInDST(iana: string): boolean {
 }
 
 /**
+ * Whether a zone observes DST at all (i.e., its offset changes between
+ * January and July). Works for any valid IANA — useful for cities where we
+ * don't have a curated `observes_dst` flag in our zones data.
+ */
+export function zoneObservesDst(iana: string): boolean {
+  const year = DateTime.now().year;
+  const jan = DateTime.fromObject({ year, month: 1, day: 15 }, { zone: iana });
+  const jul = DateTime.fromObject({ year, month: 7, day: 15 }, { zone: iana });
+  if (!jan.isValid || !jul.isValid) return false;
+  return jan.offset !== jul.offset;
+}
+
+/**
  * Resolve an "anchor hour" in the home zone to absolute UTC instant,
  * then return the local hour in each target zone.
  *
