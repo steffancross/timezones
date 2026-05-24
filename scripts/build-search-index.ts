@@ -158,6 +158,7 @@ function buildDocs(): SearchDoc[] {
     slug: c.id,
     iana: c.iana,
     popularity: c.popularity,
+    tier: c.tier,
     name: c.name,
     alt_names: [...c.alt_names, c.ascii_name].filter((s) => s !== c.name).join(' '),
     abbreviations: '',
