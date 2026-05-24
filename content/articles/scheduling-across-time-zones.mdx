@@ -1,0 +1,103 @@
+---
+title: "How to Schedule Across Time Zones Without Losing Your Mind"
+description: "Practical strategies for coordinating meetings, deadlines, and async work across multiple time zones without missed calls or DST surprises."
+published: "2026-05-21"
+order: 7
+---
+Remote and distributed work has made time zone management a daily challenge for millions of people. Whether you're coordinating a three-continent team standup, trying to book a client call with someone in Singapore, or just figuring out when to send a Slack message so it doesn't wake someone up, the math gets tedious fast and the mistakes can be costly.
+
+Here's a practical guide to doing it better.
+
+---
+
+## The Core Problem: Everyone's "Morning" Is Someone Else's Night
+
+The fundamental tension of global scheduling is that working hours don't overlap as much as people assume. A team spread across New York, London, and Singapore has a comfortable shared window of roughly zero hours in any given workday. New York and London overlap for a few hours in the early afternoon (London) / morning (New York). London and Singapore overlap in the early morning (Singapore) / late afternoon (London). New York and Singapore barely overlap at all, when it's 9 AM in New York, it's 10 PM in Singapore.
+
+This isn't a scheduling problem that cleverness can fully solve. It's a geometry problem. The question is how to work around it gracefully.
+
+---
+
+## Know Your Overlap Windows
+
+Before scheduling anything, map out the actual overlap between your time zones. A few common combinations:
+
+**New York and London:** About 5 hours of overlap on standard working hours (roughly 9 AM–2 PM New York / 2 PM–7 PM London). This window shrinks temporarily in March when the U.S. switches to DST before Europe does, and again in November when Europe reverts first.
+
+**London and Dubai:** A reasonable 4–5 hour overlap, since Dubai runs UTC+4 year-round and doesn't observe DST.
+
+**London and Singapore:** About 2–3 hours of early-morning overlap (Singapore) / end-of-day overlap (London). Uncomfortable for both sides but workable.
+
+**New York and Singapore:** Essentially no overlap during standard hours. Any live meeting requires one side to take a very early morning or late evening slot.
+
+**New York and Sydney:** Similar to Singapore, the overlap is there but ugly. A 9 AM New York call is 11 PM or midnight in Sydney depending on the time of year.
+
+Knowing your actual overlap window prevents the common mistake of proposing meeting times that seem reasonable on your own clock but lands at 7 AM or 10 PM for the other party.
+
+---
+
+## The DST Trap: The Weeks When Everything Shifts
+
+One of the most reliable sources of scheduling errors is the gap between when the U.S. and Europe switch in and out of Daylight Saving Time.
+
+The U.S. springs forward on the second Sunday in March. Europe doesn't follow until the last Sunday in March. In the fall, Europe falls back on the last Sunday in October; the U.S. doesn't revert until the first Sunday in November.
+
+During those gap weeks, the usual offset between U.S. and European time zones shifts by an hour. A New York–London call that's normally scheduled at 9 AM Eastern / 2 PM London will suddenly land at 9 AM Eastern / 1 PM London or 10 AM Eastern / 2 PM London, depending on which side has switched. Recurring calendar invites set up without time zone awareness silently shift to the wrong time.
+
+The same trap exists in the Southern Hemisphere, where Australia and New Zealand switch on different dates again. If your team spans multiple continents, there are potentially four or five "drift weeks" per year where standing meeting times are unreliable.
+
+**The fix:** Always schedule meetings using explicit time zones, not just clock times. Most calendar apps let you specify the time zone when creating an invite — use that feature. Recipients' calendars will display the correct local time automatically, regardless of DST transitions.
+
+---
+
+## Use UTC as a Neutral Reference
+
+When coordinating across many time zones, UTC is a clean neutral ground. Instead of saying "let's meet at 3 PM London time," saying "let's meet at 15:00 UTC" removes ambiguity entirely.
+
+UTC never observes DST and never changes. 15:00 UTC means the same thing in January and July, and the same thing to someone in Tokyo as to someone in Toronto.
+
+This is standard practice in aviation, finance, and software engineering. It's increasingly common in distributed tech teams, where engineers default to UTC for everything from log timestamps to meeting invites.
+
+---
+
+## Asynchronous First: The Real Solution
+
+For teams with genuinely incompatible time zones, the most sustainable approach isn't finding a meeting time that works, it's reducing the number of meetings that require everyone live.
+
+Async-first culture means defaulting to written communication, recorded video updates, and collaborative documents over real-time meetings. When a decision needs to be made, it happens in a shared document with a clear deadline, not a call that someone has to dial into at midnight.
+
+This doesn't mean eliminating meetings, it means being deliberate about which conversations actually require everyone in the same virtual room at the same time, and which ones just feel that way out of habit. A good rule of thumb: if the meeting's primary output is information transfer (a status update, a demo, a briefing), it probably doesn't need to be live. If it's decision-making or relationship-building, live is often worth the scheduling pain.
+
+When live meetings are necessary across distant time zones, rotating the burden matters. If Singapore is always the team that takes the 7 AM call, resentment accumulates. Alternating the inconvenient slot between time zones signals that everyone's schedule is equally valued.
+
+---
+
+## Calendar Hygiene That Actually Helps
+
+A few practical habits that prevent time zone confusion:
+
+**Show multiple time zones in your calendar.** Most calendar apps let you display two or three time zones simultaneously in the day view. If you work regularly with people in London and Tokyo, having all three visible at once makes it immediately obvious where a proposed time lands for everyone.
+
+**Be explicit in invites.** When you write "let's chat Tuesday at 2" in an email or Slack message, specify the time zone. "Tuesday at 2 PM Eastern" leaves no room for misinterpretation. Without it, international colleagues have to guess.
+
+**Check before you book.** Before proposing a time to someone in a different country, check a world clock or time zone converter. Takes ten seconds and prevents the embarrassing back-and-forth of proposing a time that turns out to be 11 PM for the other person.
+
+**Watch the "next day" trap.** Some time zone combinations cross midnight. A 9 AM Tuesday call in New York is a 10 PM Tuesday call in London, but it's a 10 PM Wednesday call in... wait, no. This is where people slip up. When scheduling across the international date line, the date itself can shift. Always confirm the date, not just the time.
+
+---
+
+## Whose Burden Is It?
+
+There's an unspoken politics to time zone scheduling that's worth naming directly. In global organizations with a clear headquarters, the burden of inconvenient meeting times tends to fall disproportionately on remote or international offices. The New York HQ books 9 AM calls without a second thought; the Singapore office quietly sets their alarms for 10 PM.
+
+This isn't just an inconvenience. it's a structural disadvantage that affects whose voices get heard, who has energy to contribute in meetings, and who ends up feeling like a second-class participant in the organization.
+
+The most functional distributed teams are explicit about this. They acknowledge that someone will always bear the cost of cross-timezone overlap, and they distribute that cost deliberately rather than letting it accumulate on whoever is geographically furthest from the power center.
+
+---
+
+## The Bottom Line
+
+Scheduling across time zones is never going to be frictionless. But most of the pain comes from a handful of avoidable mistakes: not knowing your actual overlap windows, getting caught by DST transition gaps, setting recurring meetings without explicit time zone anchoring, and defaulting to live meetings when async would serve just as well.
+
+Get those basics right, and the remaining friction is just the honest cost of working across a round planet, manageable, predictable, and no longer a source of surprise.
