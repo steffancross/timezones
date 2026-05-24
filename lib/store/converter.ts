@@ -34,6 +34,17 @@ export interface ConverterState {
    */
   defaultAnchorDate: string;
   anchorHour: number | null;
+  /**
+   * End column (homeHour, inclusive) of the anchor block. The anchor is
+   * conceptually a range `[anchorHour, anchorEndHour]` painted across every
+   * row at the same columns. A single click sets anchorHour === anchorEndHour
+   * (a 1-tile block). A drag widens it.
+   *
+   * When null, the block is treated as 1 tile wide at `anchorHour` — this
+   * keeps callers that only set `anchorHour` (URL sync, tests) working
+   * without a separate width field.
+   */
+  anchorEndHour: number | null;
   previewHour: number | null;
 
   format: TimeFormat;
@@ -62,6 +73,12 @@ export interface ConverterActions {
 
   setAnchorDate: (date: string) => void;
   setAnchorHour: (hour: number | null) => void;
+  /**
+   * Set both anchor start and end in one update. `start` and `end` may be
+   * passed in any order; the action normalizes so `anchorHour` is the
+   * leftmost column.
+   */
+  setAnchorRange: (start: number, end: number) => void;
   setPreviewHour: (hour: number | null) => void;
   /** Reset just the anchor (hour, date, preview) — used by the anchor pill's ×. */
   resetAnchor: () => void;
@@ -139,6 +156,7 @@ const initialState: ConverterState = {
   anchorDate: initialToday,
   defaultAnchorDate: initialToday,
   anchorHour: null,
+  anchorEndHour: null,
   previewHour: null,
   format: '12',
   overlay: {
@@ -224,7 +242,14 @@ export const useConverterStore = create<ConverterState & ConverterActions>()(
     setHomeZoneIndex: (index) => set({ homeZoneIndex: index }),
 
     setAnchorDate: (date) => set({ anchorDate: date }),
-    setAnchorHour: (hour) => set({ anchorHour: hour }),
+    // A bare setAnchorHour collapses the block to a single tile — callers that
+    // care about a range use setAnchorRange instead.
+    setAnchorHour: (hour) => set({ anchorHour: hour, anchorEndHour: hour }),
+    setAnchorRange: (start, end) => {
+      const lo = Math.min(start, end);
+      const hi = Math.max(start, end);
+      set({ anchorHour: lo, anchorEndHour: hi });
+    },
     setPreviewHour: (hour) => set({ previewHour: hour }),
 
     resetAnchor: () =>
@@ -232,6 +257,7 @@ export const useConverterStore = create<ConverterState & ConverterActions>()(
         const homeToday = todayInZone(resolveHomeIana(state.zones, state.homeZoneIndex));
         return {
           anchorHour: null,
+          anchorEndHour: null,
           previewHour: null,
           anchorDate: homeToday,
           defaultAnchorDate: homeToday,
@@ -243,6 +269,7 @@ export const useConverterStore = create<ConverterState & ConverterActions>()(
         const homeToday = todayInZone(resolveHomeIana(state.zones, state.homeZoneIndex));
         return {
           anchorHour: null,
+          anchorEndHour: null,
           previewHour: null,
           anchorDate: homeToday,
           defaultAnchorDate: homeToday,
