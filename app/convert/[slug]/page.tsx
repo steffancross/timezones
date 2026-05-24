@@ -1,3 +1,6 @@
+import { ArrowLeftRight } from 'lucide-react';
+import Link from 'next/link';
+import { notFound } from 'next/navigation';
 import { Converter } from '@/components/converter/Converter';
 import { ConverterStateProvider } from '@/components/converter/ConverterStateProvider';
 import { Breadcrumbs } from '@/components/site/Breadcrumbs';
@@ -6,7 +9,6 @@ import { buildMetadata } from '@/lib/seo/metadata';
 import { getCuratedPairSlugs } from '@/lib/sitemap/pair-slugs';
 import { type ParsedPair, parsePairSlug } from '@/lib/slugs/parse';
 import { parseSearchParams, urlToState } from '@/lib/store/from-url';
-import { notFound } from 'next/navigation';
 
 export const revalidate = 86400;
 export const dynamicParams = true;
@@ -50,6 +52,7 @@ export default async function PairPage({
 
   const fromLabel = shortLabel(pair.from);
   const toLabel = shortLabel(pair.to);
+  const reverseSlug = `${slugOf(pair.to)}-to-${slugOf(pair.from)}`;
 
   return (
     <div className="mx-auto max-w-6xl px-4 py-6">
@@ -57,11 +60,19 @@ export default async function PairPage({
         items={[{ label: 'Home', href: '/' }, { label: `${fromLabel} to ${toLabel}` }]}
       />
 
-      <header className="mt-3 mb-6">
+      <header className="mt-3 mb-2">
         <h1 className="text-3xl font-semibold">
           {fromLabel} to {toLabel} Converter
         </h1>
       </header>
+
+      <Link
+        href={`/convert/${reverseSlug}`}
+        className="mb-6 inline-flex items-center gap-1.5 text-sm text-[color:var(--fg-muted)] transition-colors hover:text-[color:var(--fg)]"
+      >
+        <ArrowLeftRight className="size-3.5" aria-hidden="true" />
+        Compare {toLabel} to {fromLabel} instead
+      </Link>
 
       <ConverterStateProvider initialState={initialState}>
         <Converter />
@@ -78,4 +89,8 @@ function displayName(zoc: ParsedPair['from']): string {
 
 function shortLabel(zoc: ParsedPair['from']): string {
   return zoc.kind === 'zone' ? zoc.zone.id.toUpperCase() : zoc.city.name;
+}
+
+function slugOf(zoc: ParsedPair['from']): string {
+  return zoc.kind === 'zone' ? zoc.zone.id : zoc.city.id;
 }
