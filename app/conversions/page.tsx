@@ -1,58 +1,90 @@
-import Link from 'next/link';
+import { Suspense } from 'react';
 import { Breadcrumbs } from '@/components/site/Breadcrumbs';
+import { BrowseMatrix } from '@/components/conversions/BrowseMatrix';
+import { PairBuilder } from '@/components/conversions/PairBuilder';
+import { PopularPairsGrid } from '@/components/conversions/PopularPairsGrid';
+import { getMatrixSources } from '@/lib/conversions/matrix-data';
+import { getPopularCards } from '@/lib/conversions/popular-cards';
+import {
+  DEFAULT_FROM_ID,
+  DEFAULT_TO_ID,
+  getCuratedSelections,
+  selectionFromId,
+} from '@/lib/conversions/selection';
 import { buildMetadata } from '@/lib/seo/metadata';
-import { getPopularPairs, type PopularPair } from '@/lib/sitemap/pair-slugs';
 
 export const metadata = buildMetadata({
   title: 'Time zone conversions',
   description:
-    'Popular time zone conversion pages. Convert between PST, EST, GMT, JST, and major cities worldwide.',
+    'Build any time zone pair, browse popular conversions, or filter the full matrix. Convert between PST, EST, GMT, JST, and major cities worldwide.',
   path: '/conversions',
 });
 
-function groupBySource(pairs: PopularPair[]): Record<string, PopularPair[]> {
-  const groups: Record<string, PopularPair[]> = {};
-  for (const p of pairs) {
-    const sourceName = p.label.split(' to ')[0] ?? p.from;
-    if (!groups[sourceName]) groups[sourceName] = [];
-    groups[sourceName].push(p);
-  }
-  return groups;
-}
-
 export default function ConversionsIndex() {
-  const popular = getPopularPairs(150);
-  const groups = groupBySource(popular);
+  const curated = getCuratedSelections();
+  const initialFrom = selectionFromId(DEFAULT_FROM_ID);
+  const initialTo = selectionFromId(DEFAULT_TO_ID);
+  const cards = getPopularCards();
+  const sources = getMatrixSources();
+
+  if (!initialFrom || !initialTo) {
+    throw new Error(
+      `Default conversion ids did not resolve: ${DEFAULT_FROM_ID} / ${DEFAULT_TO_ID}`,
+    );
+  }
 
   return (
-    <div className="mx-auto max-w-6xl px-4 py-6">
+    <div className="mx-auto w-full max-w-[1280px] px-4 py-7 md:px-8">
       <Breadcrumbs items={[{ label: 'Home', href: '/' }, { label: 'Conversions' }]} />
 
-      <header className="mt-3 mb-8">
-        <h1 className="text-3xl font-semibold">Time zone conversions</h1>
-        <p className="mt-2 text-muted-foreground">
-          Popular conversion pairs. Click any to see live conversion, DST behavior, and a 24-hour
-          reference table.
+      <header className="mt-3 mb-12 max-w-[640px]">
+        <h1 className="text-[34px] font-semibold leading-[1.05] tracking-[-0.025em] text-[color:var(--fg)]">
+          Time zone conversions
+        </h1>
+        <p className="mt-2 text-[15px] text-[color:var(--fg-muted)]">
+          Pick any two zones or cities and jump straight to a live converter. Below, browse the most
+          popular pairs at a glance — or filter the full matrix.
         </p>
       </header>
 
-      {Object.entries(groups).map(([source, pairs]) => (
-        <section key={source} className="mb-8">
-          <h2 className="mb-3 text-lg font-semibold">From {source}</h2>
-          <ul className="grid grid-cols-2 gap-1 text-sm sm:grid-cols-3 md:grid-cols-4">
-            {pairs.map((p) => (
-              <li key={p.slug}>
-                <Link
-                  href={`/convert/${p.slug}`}
-                  className="text-muted-foreground hover:text-foreground"
-                >
-                  → {p.label.split(' to ')[1] ?? p.to}
-                </Link>
-              </li>
-            ))}
-          </ul>
-        </section>
-      ))}
+      <section className="mb-16" aria-labelledby="builder-heading">
+        <h2
+          id="builder-heading"
+          className="mb-3 font-mono text-[11px] font-semibold uppercase tracking-[0.12em] text-[color:var(--fg-muted)]"
+        >
+          Build a pair
+        </h2>
+        <PairBuilder initialFrom={initialFrom} initialTo={initialTo} curated={curated} />
+        <p className="mt-2.5 text-[12px] text-[color:var(--fg-subtle)]">
+          Tip: press{' '}
+          <kbd className="rounded border border-[color:var(--border)] bg-[var(--card)] px-1.5 py-0.5 font-mono text-[10.5px]">
+            Enter
+          </kbd>{' '}
+          to convert.
+        </p>
+      </section>
+
+      <section className="mb-16" aria-labelledby="popular-heading">
+        <h2
+          id="popular-heading"
+          className="mb-3 font-mono text-[11px] font-semibold uppercase tracking-[0.12em] text-[color:var(--fg-muted)]"
+        >
+          Popular pairs
+        </h2>
+        <PopularPairsGrid cards={cards} />
+      </section>
+
+      <section aria-labelledby="browse-heading">
+        <h2
+          id="browse-heading"
+          className="mb-3 font-mono text-[11px] font-semibold uppercase tracking-[0.12em] text-[color:var(--fg-muted)]"
+        >
+          Browse all
+        </h2>
+        <Suspense fallback={null}>
+          <BrowseMatrix sources={sources} initialSelectedId={initialFrom.id} />
+        </Suspense>
+      </section>
     </div>
   );
 }

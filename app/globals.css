@@ -108,6 +108,9 @@
     --weekend-tick: oklch(0.62 0.1 35);
     --weekend-base: oklch(0.78 0.08 35);
 
+    --delta-ahead: oklch(0.55 0.12 145);
+    --delta-behind: oklch(0.55 0.12 35);
+
     --radius-tile: 3px;
     --radius-pill: 999px;
   }
@@ -164,6 +167,9 @@
     --weekend-fg: oklch(0.78 0.13 35);
     --weekend-tick: oklch(0.7 0.11 35);
     --weekend-base: oklch(0.5 0.1 35);
+
+    --delta-ahead: oklch(0.7 0.13 145);
+    --delta-behind: oklch(0.7 0.13 35);
   }
 }
 
