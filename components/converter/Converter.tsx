@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import { getZoneByIana, getZoneById } from '@/data/zones';
 import { getCityById } from '@/lib/cities/resolve';
+import { useDragSelectionGlobalListener } from '@/lib/converter/drag-selection';
 import { useNow } from '@/lib/hooks/useNow';
 import type { SearchResult } from '@/lib/search/types';
 import type { ZoneRef } from '@/lib/store/converter';
@@ -41,6 +42,8 @@ export function Converter({ visitorIana }: ConverterProps = {}) {
   const addZone = useConverterStore((s) => s.addZone);
   const format = useConverterStore((s) => s.format);
   const now = useNow('minute');
+
+  useDragSelectionGlobalListener();
 
   const [resolvedVisitorIana, setResolvedVisitorIana] = useState<string | undefined>(visitorIana);
   useEffect(() => {

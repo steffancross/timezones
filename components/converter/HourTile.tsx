@@ -1,15 +1,22 @@
 'use client';
 
 import { useCallback } from 'react';
+import {
+  extendDrag,
+  isDragging,
+  startNewDrag,
+  startResizeDrag,
+} from '@/lib/converter/drag-selection';
 import { useConverterStore } from '@/lib/store/converter';
 import { formatHourTile, type TimeFormat } from '@/lib/time/format';
 import { cn } from '@/lib/utils';
 import type { ColumnData } from './HourStrip';
 
-// Tiles are non-interactive — no click to set anchor. Hover from ANY row
-// fires a preview keyed on `column.homeHour`, which lights up the matching
-// column on every other row (e.g., hover PST 3pm → EST 6pm tile highlights
-// too, because both sit at homeHour=15 in centered mode).
+// Tiles are interactive. Pointer-down on the tile body starts a fresh range
+// (single click = 1-wide block, drag = wider block). The leftmost and rightmost
+// tiles of the active range carry small edge handles; grabbing one resizes
+// that edge while the opposite edge stays pinned. Hover still fires a
+// cross-row preview keyed on `column.homeHour`.
 
 interface Props {
   column: ColumnData;
@@ -38,26 +45,59 @@ export function HourTile({
   isWeekend,
 }: Props) {
   const anchorHour = useConverterStore((s) => s.anchorHour);
+  const anchorEndHour = useConverterStore((s) => s.anchorEndHour);
   const previewHour = useConverterStore((s) => s.previewHour);
   const setPreviewHour = useConverterStore((s) => s.setPreviewHour);
 
-  const isAnchorAligned = anchorHour !== null && anchorHour === column.homeHour;
-  const isPreviewAligned =
-    previewHour !== null && previewHour !== anchorHour && previewHour === column.homeHour;
+  // Normalize the anchor range: when anchorEndHour is null, the block is
+  // 1 tile wide at anchorHour. Callers (URL, tests) that only set anchorHour
+  // get the legacy single-tile behavior for free.
+  const rangeStart = anchorHour;
+  const rangeEnd = anchorHour === null ? null : (anchorEndHour ?? anchorHour);
+  const isInRange =
+    rangeStart !== null &&
+    rangeEnd !== null &&
+    column.homeHour >= rangeStart &&
+    column.homeHour <= rangeEnd;
+  const isRangeStart = isInRange && column.homeHour === rangeStart;
+  const isRangeEnd = isInRange && column.homeHour === rangeEnd;
+  const isPreviewAligned = previewHour !== null && !isInRange && previewHour === column.homeHour;
   const isMajorTick = columnIndex % 6 === 0;
 
-  const handlePreviewOn = useCallback(() => {
+  const handlePointerEnter = useCallback(() => {
     setPreviewHour(column.homeHour);
+    if (isDragging()) extendDrag(column.homeHour);
   }, [column.homeHour, setPreviewHour]);
 
-  const handlePreviewOff = useCallback(() => {
-    setPreviewHour(null);
+  const handlePointerLeave = useCallback(() => {
+    if (!isDragging()) setPreviewHour(null);
   }, [setPreviewHour]);
+
+  const handlePointerDown = useCallback(
+    (e: React.PointerEvent<HTMLDivElement>) => {
+      // Only react to the primary button for mouse; touch/pen always pass.
+      if (e.pointerType === 'mouse' && e.button !== 0) return;
+      setPreviewHour(column.homeHour);
+      startNewDrag(column.homeHour);
+    },
+    [column.homeHour, setPreviewHour],
+  );
+
+  const handleResizeHandlePointerDown = useCallback(
+    (side: 'start' | 'end') => (e: React.PointerEvent<HTMLDivElement>) => {
+      if (e.pointerType === 'mouse' && e.button !== 0) return;
+      // Stop the tile body's pointer-down (which would start a fresh range
+      // and discard the existing block).
+      e.stopPropagation();
+      startResizeDrag(side);
+    },
+    [],
+  );
 
   // Tick style per design handoff: transparent tile, bottom-left mono label,
   // vertical tick at the left edge (taller on every 6th column), accent fill
-  // only on the anchor tile, accent-soft band on preview. Weekend rows
-  // recolor tick + label to a warm amber palette (no tint band).
+  // across every tile in the active range, accent-soft band on preview.
+  // Weekend rows recolor tick + label to a warm amber palette (no tint band).
   const sharedClasses = cn(
     'relative flex h-full items-end justify-start pb-[5px] max-md:pb-[3px] pl-1 font-mono text-[10px] max-md:text-[9px] tracking-[-0.01em] tabular-nums select-none transition-colors',
     // Per-tile baseline composes the strip's bottom rule. Weekend tiles use
@@ -79,18 +119,18 @@ export function HourTile({
     'hover:text-[color:var(--fg)]',
     // Now: accent-colored tick (overrides minor/major), accent label.
     isCurrentHour &&
-      !isAnchorAligned &&
+      !isInRange &&
       'text-[color:var(--brand)] font-semibold before:!bg-[var(--brand)] before:!h-3.5 max-md:before:!h-[11px] before:!w-0.5',
-    // Preview: soft accent band behind tile.
-    isPreviewAligned && !isAnchorAligned && 'bg-[var(--brand-soft)] text-[color:var(--fg)]',
-    // Anchor: solid accent fill, tick hidden.
-    isAnchorAligned && 'bg-[var(--brand)] text-[color:var(--brand-fg)] font-semibold before:hidden',
+    // Preview: soft accent band behind tile (suppressed inside the range).
+    isPreviewAligned && 'bg-[var(--brand-soft)] text-[color:var(--fg)]',
+    // Range fill: solid accent across every tile in [rangeStart, rangeEnd].
+    isInRange && 'bg-[var(--brand)] text-[color:var(--brand-fg)] font-semibold before:hidden',
   );
 
   const content = (
     <>
-      {/* +1d / -1d badge above the anchor tile when projection crosses a day */}
-      {isAnchorAligned && column.dayDelta !== 0 && (
+      {/* +1d / -1d badge above the range-start tile when projection crosses a day */}
+      {isRangeStart && column.dayDelta !== 0 && (
         <span
           aria-hidden="true"
           className="absolute -top-3.5 left-1/2 -translate-x-1/2 whitespace-nowrap font-mono text-[9px] font-semibold tracking-[0.04em] text-[color:var(--brand)]"
@@ -100,23 +140,44 @@ export function HourTile({
       )}
       <span
         className={cn(
-          isOffDay && !isAnchorAligned && 'opacity-[0.55]',
+          isOffDay && !isInRange && 'opacity-[0.55]',
           // Mobile-compact: sparse labels — only every 3rd column shows a
-          // label (cols 0,3,6,…). Anchor tile keeps its label regardless.
-          columnIndex % 3 !== 0 && !isAnchorAligned && 'max-md:invisible',
+          // label (cols 0,3,6,…). Range tiles keep their label regardless.
+          columnIndex % 3 !== 0 && !isInRange && 'max-md:invisible',
         )}
       >
         {formatHourTile(column.localHour, format)}
       </span>
+
+      {/* Edge resize handles. Rendered on the leftmost / rightmost tile of the
+          range (both on the same tile when the range is 1 wide). The handle
+          straddles the tile boundary so it's easier to grab. */}
+      {isRangeStart && (
+        <div
+          onPointerDown={handleResizeHandlePointerDown('start')}
+          className="absolute left-0 top-0 z-10 h-full w-1.5 -translate-x-1/2 cursor-ew-resize"
+          aria-hidden="true"
+        >
+          <div className="absolute left-1/2 top-1/2 h-3 w-[3px] -translate-x-1/2 -translate-y-1/2 rounded-[1px] bg-[var(--brand-fg)] opacity-90" />
+        </div>
+      )}
+      {isRangeEnd && (
+        <div
+          onPointerDown={handleResizeHandlePointerDown('end')}
+          className="absolute right-0 top-0 z-10 h-full w-1.5 translate-x-1/2 cursor-ew-resize"
+          aria-hidden="true"
+        >
+          <div className="absolute left-1/2 top-1/2 h-3 w-[3px] -translate-x-1/2 -translate-y-1/2 rounded-[1px] bg-[var(--brand-fg)] opacity-90" />
+        </div>
+      )}
     </>
   );
 
   return (
-    // biome-ignore lint/a11y/noStaticElementInteractions: tile is intentionally non-interactive in the a11y sense. Pointer handlers provide sighted-user-only hover/touch preview; meaningful state (anchor, current hour) is announced via AnchorPill + Now badge. No keyboard affordance because click/Enter has no effect.
     <div
-      onMouseEnter={handlePreviewOn}
-      onMouseLeave={handlePreviewOff}
-      onPointerDown={handlePreviewOn}
+      onPointerEnter={handlePointerEnter}
+      onPointerLeave={handlePointerLeave}
+      onPointerDown={handlePointerDown}
       className={sharedClasses}
       data-hour={column.localHour}
       data-home-hour={column.homeHour}

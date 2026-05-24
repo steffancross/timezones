@@ -33,6 +33,7 @@ export interface ColumnData {
 export function HourStrip({ zone, index }: Props) {
   const anchorDate = useConverterStore((s) => s.anchorDate);
   const anchorHour = useConverterStore((s) => s.anchorHour);
+  const anchorEndHour = useConverterStore((s) => s.anchorEndHour);
   const format = useConverterStore((s) => s.format);
   const zones = useConverterStore((s) => s.zones);
   const dayNightOn = useConverterStore((s) => s.overlay.dayNight);
@@ -143,7 +144,9 @@ export function HourStrip({ zone, index }: Props) {
           />
         ))}
 
-        {anchorHour !== null && <AnchorGuide columnIndex={anchorHour} />}
+        {anchorHour !== null && (
+          <AnchorGuide start={anchorHour} end={anchorEndHour ?? anchorHour} />
+        )}
 
         {nowColumnIndex !== null && <NowGuide columnIndex={nowColumnIndex} showBadge={isHomeRow} />}
 
@@ -310,15 +313,17 @@ function BandSegment({
   );
 }
 
-function AnchorGuide({ columnIndex }: { columnIndex: number }) {
-  // Subtle vertical accent line at the anchor column center. Drawn beneath
-  // the tile content (z-1), so the anchor tile fill still reads as solid.
-  const leftPercent = ((columnIndex + 0.5) / 24) * 100;
+function AnchorGuide({ start, end }: { start: number; end: number }) {
+  // Subtle accent band behind the anchor range, drawn beneath the tile fill
+  // (z-1) so the range's solid fill still reads on top. Single-tile blocks
+  // collapse to a vertical guide that hugs the column.
+  const leftPercent = (start / 24) * 100;
+  const widthPercent = ((end - start + 1) / 24) * 100;
   return (
     <div
       aria-hidden="true"
-      className="pointer-events-none absolute z-[1] -top-2 -bottom-2 w-0.5 -translate-x-1/2 rounded-[2px] bg-[var(--brand)] opacity-25"
-      style={{ left: `${leftPercent}%` }}
+      className="pointer-events-none absolute z-[1] -top-2 -bottom-2 rounded-[2px] bg-[var(--brand)] opacity-25"
+      style={{ left: `${leftPercent}%`, width: `${widthPercent}%` }}
     />
   );
 }
