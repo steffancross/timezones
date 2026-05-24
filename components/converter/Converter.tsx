@@ -1,7 +1,7 @@
 'use client';
 
-import { useCallback } from 'react';
-import { getZoneById } from '@/data/zones';
+import { useCallback, useEffect, useState } from 'react';
+import { getZoneByIana, getZoneById } from '@/data/zones';
 import { getCityById } from '@/lib/cities/resolve';
 import { useNow } from '@/lib/hooks/useNow';
 import type { SearchResult } from '@/lib/search/types';
@@ -24,11 +24,34 @@ function getHomeName(zone: ZoneRef | undefined): string | null {
   return getCityById(zone.slug)?.name ?? zone.slug;
 }
 
-export function Converter() {
+interface ConverterProps {
+  /**
+   * Visitor's IANA timezone from the cf-timezone header, when available
+   * (dynamic routes only). The heading row locks to this zone rather than
+   * `zones[0]` so it doesn't switch around as the user reorders the converter.
+   * Pair pages are statically generated and won't pass this prop — on those,
+   * the visitor zone is resolved client-side from `Intl`.
+   * Falls back to `zones[0]` if the IANA isn't a known zone in our dataset.
+   */
+  visitorIana?: string;
+}
+
+export function Converter({ visitorIana }: ConverterProps = {}) {
   const zones = useConverterStore((s) => s.zones);
   const addZone = useConverterStore((s) => s.addZone);
   const format = useConverterStore((s) => s.format);
   const now = useNow('minute');
+
+  const [resolvedVisitorIana, setResolvedVisitorIana] = useState<string | undefined>(visitorIana);
+  useEffect(() => {
+    if (visitorIana) return;
+    try {
+      setResolvedVisitorIana(Intl.DateTimeFormat().resolvedOptions().timeZone);
+    } catch {
+      // Browser doesn't expose Intl timezone — leave undefined, heading
+      // falls back to zones[0].
+    }
+  }, [visitorIana]);
 
   const handleSearchSelect = useCallback(
     (result: SearchResult) => {
@@ -42,14 +65,14 @@ export function Converter() {
     [addZone],
   );
 
-  const homeZone = zones[0];
-  const homeIana = homeZone?.iana;
-  const homeName = getHomeName(homeZone);
-  const homeNow = homeIana ? now.setZone(homeIana) : null;
-  const liveStamp = homeNow
-    ? homeNow.toFormat(format === '24' ? 'HH:mm' : 'h:mm a').toLowerCase()
+  const visitorZone = resolvedVisitorIana ? getZoneByIana(resolvedVisitorIana) : null;
+  const headingIana = visitorZone?.iana ?? zones[0]?.iana;
+  const headingName = visitorZone?.display_name ?? getHomeName(zones[0]);
+  const headingNow = headingIana ? now.setZone(headingIana) : null;
+  const liveStamp = headingNow
+    ? headingNow.toFormat(format === '24' ? 'HH:mm' : 'h:mm a').toLowerCase()
     : null;
-  const dateStamp = homeNow ? formatDate(homeNow) : null;
+  const dateStamp = headingNow ? formatDate(headingNow) : null;
 
   return (
     <div className="space-y-4">
@@ -60,11 +83,11 @@ export function Converter() {
         section heading, so it deliberately reads as a status line rather than
         echoing the H1.
       */}
-      {homeName && (
+      {headingName && (
         <div className="flex min-h-8 items-center justify-between gap-4">
           <div className="flex min-w-0 flex-wrap items-baseline gap-x-2.5 gap-y-0.5">
             <span className="text-[22px] font-semibold tracking-[-0.015em] text-[color:var(--fg)]">
-              {homeName}
+              {headingName}
             </span>
             {liveStamp && (
               <span className="font-mono text-[12px] font-medium tabular-nums text-[color:var(--fg-subtle)]">
