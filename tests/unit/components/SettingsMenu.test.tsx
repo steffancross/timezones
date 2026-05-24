@@ -73,18 +73,20 @@ describe('SettingsMenu overlay toggles', () => {
     expect(state.overlay.workHours).toBe(false); // unchanged
   });
 
-  it('the working-hours summary + Edit affordance only shows when workHours is on', async () => {
+  it('inline working-hours editor only reveals when workHours is on', async () => {
     const screen = await render(<SettingsMenu />);
     await openMenu(screen.container);
 
-    // workHours starts false → no Edit button visible
-    expect(document.body.textContent ?? '').not.toContain('Edit');
+    // workHours starts false → editor not present (no hour selects).
+    expect(document.body.querySelectorAll('select')).toHaveLength(0);
 
     // Flip workHours on
     await clickRow('Working hours');
 
-    // Now the summary "09:00 – 17:00, Mon, ..." + Edit button should appear
-    expect(document.body.textContent ?? '').toContain('09:00');
-    expect(document.body.textContent ?? '').toContain('Edit');
+    // Editor reveals: two hour selects pre-populated from the store.
+    const selects = document.body.querySelectorAll('select');
+    expect(selects).toHaveLength(2);
+    expect((selects[0] as HTMLSelectElement | undefined)?.value).toBe('9');
+    expect((selects[1] as HTMLSelectElement | undefined)?.value).toBe('17');
   });
 });

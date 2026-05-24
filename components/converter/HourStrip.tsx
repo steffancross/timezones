@@ -298,7 +298,14 @@ function BandSegment({
           className="absolute left-1 top-[3px] size-3 max-md:size-[9px] opacity-70 text-[oklch(0.55_0.16_70)] dark:text-[oklch(0.80_0.14_75)] dark:opacity-85"
         />
       )}
-      {/* No "working" label — the amber band recolor is the signal. */}
+      {variant === 'work' && (
+        <span
+          aria-hidden="true"
+          className="absolute left-[5px] top-[13px] hidden whitespace-nowrap font-mono text-[8.5px] font-semibold uppercase leading-none tracking-[0.06em] text-[oklch(0.45_0.13_75)] opacity-95 md:inline dark:text-[oklch(0.80_0.14_75)]"
+        >
+          working
+        </span>
+      )}
     </div>
   );
 }
