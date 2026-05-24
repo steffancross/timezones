@@ -195,24 +195,9 @@ describe('computeBusinessOverlap', () => {
       { year: 2024, month: 1, day: 21, hour: 12 },
       { zone: 'UTC' },
     );
-    const fromSaturday = computeBusinessOverlap(
-      'Asia/Tokyo',
-      'Asia/Shanghai',
-      undefined,
-      saturday,
-    );
-    const fromSunday = computeBusinessOverlap(
-      'Asia/Tokyo',
-      'Asia/Shanghai',
-      undefined,
-      sunday,
-    );
-    const fromMonday = computeBusinessOverlap(
-      'Asia/Tokyo',
-      'Asia/Shanghai',
-      undefined,
-      JAN_MONDAY,
-    );
+    const fromSaturday = computeBusinessOverlap('Asia/Tokyo', 'Asia/Shanghai', undefined, saturday);
+    const fromSunday = computeBusinessOverlap('Asia/Tokyo', 'Asia/Shanghai', undefined, sunday);
+    const fromMonday = computeBusinessOverlap('Asia/Tokyo', 'Asia/Shanghai', undefined, JAN_MONDAY);
     expect(fromSaturday).toEqual(fromMonday);
     expect(fromSunday).toEqual(fromMonday);
   });
