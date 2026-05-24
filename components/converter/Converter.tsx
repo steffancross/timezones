@@ -17,6 +17,7 @@ import { FormatToggle } from './FormatToggle';
 import { ResetButton } from './ResetButton';
 import { SearchInput } from './SearchInput';
 import { SettingsMenu } from './SettingsMenu';
+import { ShareButton } from './ShareButton';
 import { ZoneRow } from './ZoneRow';
 
 function getHomeName(zone: ZoneRef | undefined): string | null {
@@ -119,6 +120,7 @@ export function Converter({ visitorIana }: ConverterProps = {}) {
             <FormatToggle />
             <DatePicker />
             <ResetButton />
+            <ShareButton />
             <SettingsMenu />
           </div>
         </div>
