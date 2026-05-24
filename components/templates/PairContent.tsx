@@ -6,11 +6,11 @@ import { PairCities } from './PairCities';
 import { PairDaylight } from './PairDaylight';
 import { PairZoneFacts } from './PairZoneFacts';
 import { QuickReferenceTable } from './QuickReferenceTable';
+import { RelatedPairs } from './RelatedPairs';
 import { WhenToSchedule } from './WhenToSchedule';
 
 interface Props {
   pair: ParsedPair;
-  /** Slug is passed through for I1's RelatedPairs (added later). */
   slug: string;
 }
 
@@ -23,7 +23,7 @@ interface Props {
  * sections (cities + airports). The original FAQ items were padded — the city
  * lists are stronger content AND each link feeds traffic to PR-3 city pages.
  */
-export function PairContent({ pair, slug: _slug }: Props) {
+export function PairContent({ pair, slug }: Props) {
   return (
     <article className="mt-10 space-y-12">
       <OffsetSummary pair={pair} />
@@ -34,7 +34,7 @@ export function PairContent({ pair, slug: _slug }: Props) {
       <PairDaylight pair={pair} />
       <PairCities pair={pair} />
       <PairAirports pair={pair} />
-      {/* RelatedPairs (I1) slots in here once curated link blocks are built. */}
+      <RelatedPairs slug={slug} />
     </article>
   );
 }

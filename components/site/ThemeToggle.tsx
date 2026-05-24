@@ -1,8 +1,8 @@
 'use client';
 
+import { cn } from '@/lib/utils';
 import { Moon, Sun } from 'lucide-react';
 import { useEffect, useState } from 'react';
-import { cn } from '@/lib/utils';
 
 type Theme = 'light' | 'dark';
 
@@ -42,10 +42,10 @@ export function ThemeToggle() {
       className="inline-flex h-8 items-center gap-0.5 rounded-[var(--radius)] border border-[color:var(--border)] bg-card p-0.5 "
     >
       <SegmentButton active={theme === 'light'} onClick={() => apply('light')} label="Light">
-        <Sun className="h-5 w-3.5" aria-hidden />
+        <Sun className="h-5.5 w-3.5" aria-hidden />
       </SegmentButton>
       <SegmentButton active={theme === 'dark'} onClick={() => apply('dark')} label="Dark">
-        <Moon className="h-5 w-3.5" aria-hidden />
+        <Moon className="h-5.5 w-3.5" aria-hidden />
       </SegmentButton>
     </div>
   );
