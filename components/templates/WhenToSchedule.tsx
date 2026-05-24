@@ -46,8 +46,7 @@ export function WhenToSchedule({ pair }: Props) {
   const fromName = displayName(pair.from);
   const toName = displayName(pair.to);
   const windows = computeBusinessOverlap(pair.fromIana, pair.toIana, DEFAULT_WORKING_HOURS);
-  const eitherObservesDst =
-    zoneObservesDst(pair.fromIana) || zoneObservesDst(pair.toIana);
+  const eitherObservesDst = zoneObservesDst(pair.fromIana) || zoneObservesDst(pair.toIana);
 
   return (
     <section>

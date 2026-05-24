@@ -48,5 +48,9 @@ export async function getAllArticles(): Promise<ArticleListing[]> {
   );
   return articles
     .filter((a): a is ArticleListing => a !== null)
-    .sort((a, b) => (a.frontmatter.order ?? Number.POSITIVE_INFINITY) - (b.frontmatter.order ?? Number.POSITIVE_INFINITY));
+    .sort(
+      (a, b) =>
+        (a.frontmatter.order ?? Number.POSITIVE_INFINITY) -
+        (b.frontmatter.order ?? Number.POSITIVE_INFINITY),
+    );
 }
