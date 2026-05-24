@@ -10,9 +10,16 @@ import type { ConverterState } from './converter';
  * for a given store snapshot (and avoids SSR/client clock divergence).
  */
 export function stateToQueryString(
-  state: Pick<ConverterState, 'anchorDate' | 'defaultAnchorDate' | 'anchorHour' | 'format'>,
+  state: Pick<ConverterState, 'anchorDate' | 'defaultAnchorDate' | 'anchorHour' | 'format'> & {
+    zones?: ConverterState['zones'];
+    includeZones?: boolean;
+  },
 ): string {
   const params = new URLSearchParams();
+
+  if (state.includeZones && state.zones && state.zones.length > 0) {
+    params.set('z', state.zones.map((z) => z.slug).join(','));
+  }
 
   if (state.anchorDate !== state.defaultAnchorDate) {
     params.set('d', state.anchorDate);

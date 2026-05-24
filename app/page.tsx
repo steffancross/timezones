@@ -5,6 +5,7 @@ import { PairLinks } from '@/components/converter/PairLinks';
 import { getZoneByIana } from '@/data/zones';
 import { buildMetadata } from '@/lib/seo/metadata';
 import type { ZoneRef } from '@/lib/store/converter';
+import { parseSearchParams } from '@/lib/store/from-url';
 import { pickContextualZones } from '@/lib/zones/contextual';
 
 // Force per-request render so the cf-timezone / cf-ipcountry headers actually
@@ -18,19 +19,27 @@ export const metadata = buildMetadata({
   path: '/',
 });
 
-export default async function HomePage() {
-  const h = await headers();
+export default async function HomePage({
+  searchParams,
+}: {
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
+}) {
+  const [h, sp] = await Promise.all([headers(), searchParams]);
   const detectedTz = h.get('cf-timezone');
   const country = h.get('cf-ipcountry');
 
-  const ianas = pickContextualZones(detectedTz, country);
-
-  const zones: ZoneRef[] = ianas.map((iana) => {
-    const z = getZoneByIana(iana);
-    return z
-      ? { kind: 'zone', slug: z.id, iana: z.iana }
-      : { kind: 'zone', slug: iana.toLowerCase().replace(/\//g, '-'), iana };
-  });
+  // Shared links carry `?z=<slug>,<slug>` — when present and at least one slug
+  // resolves, those zones win over the cf-header contextual picks.
+  const sharedZones = parseSearchParams(sp).zones;
+  const zones: ZoneRef[] =
+    sharedZones && sharedZones.length > 0
+      ? sharedZones
+      : pickContextualZones(detectedTz, country).map((iana) => {
+          const z = getZoneByIana(iana);
+          return z
+            ? { kind: 'zone', slug: z.id, iana: z.iana }
+            : { kind: 'zone', slug: iana.toLowerCase().replace(/\//g, '-'), iana };
+        });
 
   return (
     <div className="mx-auto max-w-6xl px-4 py-8">
