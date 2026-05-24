@@ -1,7 +1,11 @@
 import { DateTime } from 'luxon';
 import type { ParsedPair, ZoneOrCity } from '@/lib/slugs/parse';
-import { formatTime } from '@/lib/time/format';
-import { DEFAULT_WORKING_HOURS } from '@/lib/time/working-hours';
+import { zoneObservesDst } from '@/lib/time/luxon';
+import {
+  type BusinessOverlapWindow,
+  computeBusinessOverlap,
+  DEFAULT_WORKING_HOURS,
+} from '@/lib/time/working-hours';
 
 interface Props {
   pair: ParsedPair;
@@ -9,25 +13,6 @@ interface Props {
 
 function displayName(zoc: ZoneOrCity): string {
   return zoc.kind === 'zone' ? zoc.zone.display_name : zoc.city.name;
-}
-
-/**
- * Compute the overlap window where 9-5 in both zones coincides on the same
- * calendar day. Expressed as a list of "from"-zone hours.
- */
-function computeOverlap(pair: ParsedPair) {
-  const date = DateTime.now().setZone(pair.fromIana).startOf('day');
-  const wh = DEFAULT_WORKING_HOURS;
-
-  const fromHours: number[] = [];
-  for (let hour = wh.start; hour < wh.end; hour++) {
-    const fromLocal = date.set({ hour });
-    const toLocal = fromLocal.setZone(pair.toIana);
-    const inWorkingDay = wh.days.includes(toLocal.weekday);
-    const inWorkingHour = toLocal.hour >= wh.start && toLocal.hour < wh.end;
-    if (inWorkingDay && inWorkingHour) fromHours.push(hour);
-  }
-  return fromHours;
 }
 
 function formatHourRange(startHour: number, endHourExclusive: number): string {
@@ -39,65 +24,122 @@ function formatHourRange(startHour: number, endHourExclusive: number): string {
   return `${fmt(startHour)}–${fmt(endHourExclusive)}`;
 }
 
+function dayDeltaLabel(delta: -1 | 0 | 1): string {
+  if (delta === 1) return ' the next day';
+  if (delta === -1) return ' the previous day';
+  return '';
+}
+
+/**
+ * Approximate hours-difference between two zones using each zone's offset
+ * "right now". Used only for an informational sentence in the empty-overlap
+ * case — not for math. Sign convention: positive = `to` is ahead of `from`.
+ */
+function hoursAhead(fromIana: string, toIana: string): number {
+  const now = DateTime.now();
+  const fromOffset = now.setZone(fromIana).offset;
+  const toOffset = now.setZone(toIana).offset;
+  return Math.round((toOffset - fromOffset) / 60);
+}
+
 export function WhenToSchedule({ pair }: Props) {
   const fromName = displayName(pair.from);
   const toName = displayName(pair.to);
-  const overlap = computeOverlap(pair);
+  const windows = computeBusinessOverlap(pair.fromIana, pair.toIana, DEFAULT_WORKING_HOURS);
+  const eitherObservesDst =
+    zoneObservesDst(pair.fromIana) || zoneObservesDst(pair.toIana);
 
   return (
     <section>
       <h2 className="text-2xl font-semibold">When to schedule</h2>
 
-      {overlap.length === 0 ? (
-        <p className="mt-3 text-sm text-[color:var(--fg-muted)]">
-          Standard business hours (9 AM–5 PM) in {fromName} and {toName} don't overlap on the same
-          calendar day. Plan early-morning or evening meetings, or coordinate around one team's
-          off-hours.
-        </p>
+      {windows.length === 0 ? (
+        <NoOverlap pair={pair} fromName={fromName} toName={toName} />
       ) : (
-        <OverlapDetail pair={pair} fromHours={overlap} fromName={fromName} toName={toName} />
+        <OverlapDetail
+          windows={windows}
+          fromName={fromName}
+          toName={toName}
+          fromIana={pair.fromIana}
+          toIana={pair.toIana}
+        />
+      )}
+
+      {eitherObservesDst && (
+        <p className="mt-3 text-xs text-[color:var(--fg-subtle)]">
+          This window may shift by an hour during daylight saving time.
+        </p>
       )}
     </section>
   );
 }
 
 function OverlapDetail({
-  pair,
-  fromHours,
+  windows,
   fromName,
   toName,
+  fromIana,
+  toIana,
 }: {
-  pair: ParsedPair;
-  fromHours: number[];
+  windows: BusinessOverlapWindow[];
   fromName: string;
   toName: string;
+  fromIana: string;
+  toIana: string;
 }) {
-  const [first] = fromHours;
-  const last = fromHours[fromHours.length - 1];
-  if (first === undefined || last === undefined) return null;
+  const primary = windows[0];
+  if (!primary) return null;
 
-  const date = DateTime.now().setZone(pair.fromIana).startOf('day');
-  const toFirst = date.set({ hour: first }).setZone(pair.toIana).hour;
-  const toLast = date.set({ hour: last }).setZone(pair.toIana).hour;
+  const fromRange = formatHourRange(primary.fromStartHour, primary.fromEndHour);
+  const toRange = formatHourRange(primary.toStartHour, primary.toEndHour);
+  const toDayNote = dayDeltaLabel(primary.toDayDelta);
 
-  // Suggested time: middle of the overlap, expressed in both zones.
-  const mid = fromHours[Math.floor(fromHours.length / 2)];
-  if (mid === undefined) return null;
-  const fromMid = date.set({ hour: mid, minute: 0 });
-  const toMid = fromMid.setZone(pair.toIana);
+  // Suggested meeting: middle of the window, expressed in both zones.
+  const midFromHour =
+    primary.fromStartHour + Math.floor((primary.fromEndHour - primary.fromStartHour) / 2);
+  const monday = DateTime.now().setZone(fromIana).startOf('week');
+  const midFrom = monday.set({ hour: midFromHour });
+  const midTo = midFrom.setZone(toIana);
 
   return (
     <div className="mt-3 space-y-3 text-sm">
       <p>
-        <strong>Business-hours overlap:</strong> {formatHourRange(first, last + 1)} in {fromName} (
-        {formatHourRange(toFirst, toLast + 1)} in {toName}).
+        <strong>Business-hours overlap:</strong> {fromRange} in {fromName} ({toRange}
+        {toDayNote} in {toName}).
       </p>
       <p className="text-[color:var(--fg-muted)]">
         Both teams are in working hours during this window on weekdays.
       </p>
       <p>
-        <strong>Suggested time:</strong> {formatTime(fromMid, '12')} {fromName} (
-        {formatTime(toMid, '12')} {toName}).
+        <strong>Suggested time:</strong> {midFrom.toFormat('h:mm a')} {fromName} (
+        {midTo.toFormat('h:mm a')} {toName}).
+      </p>
+    </div>
+  );
+}
+
+function NoOverlap({
+  pair,
+  fromName,
+  toName,
+}: {
+  pair: ParsedPair;
+  fromName: string;
+  toName: string;
+}) {
+  const delta = hoursAhead(pair.fromIana, pair.toIana);
+  const absDelta = Math.abs(delta);
+  const direction = delta > 0 ? 'ahead of' : 'behind';
+
+  return (
+    <div className="mt-3 space-y-3 text-sm">
+      <p>
+        Standard business hours (9 AM–5 PM, Mon–Fri) in {fromName} and {toName} don't overlap on the
+        same weekday. {toName} is {absDelta} hour{absDelta === 1 ? '' : 's'} {direction} {fromName}.
+      </p>
+      <p className="text-[color:var(--fg-muted)]">
+        Realistic options: hand off asynchronously, or stretch one side by an hour to catch the
+        other team at the start or end of their day.
       </p>
     </div>
   );
