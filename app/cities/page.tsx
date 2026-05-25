@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import { CitiesSearch, type PopularCity } from '@/components/cities/CitiesSearch';
 import { Breadcrumbs } from '@/components/site/Breadcrumbs';
 import { getAllCities } from '@/lib/cities/resolve';
 import type { City } from '@/lib/cities/types';
@@ -81,6 +82,12 @@ export default function CitiesIndex() {
   const cities = getAllCities();
   const groups = groupByRegion(cities);
 
+  const popularCities: PopularCity[] = cities
+    .filter((c) => c.tier === 1)
+    .sort((a, b) => b.popularity - a.popularity)
+    .slice(0, 12)
+    .map((c) => ({ id: c.id, name: c.name, country: c.country }));
+
   return (
     <div className="mx-auto max-w-6xl px-4 py-6">
       <Breadcrumbs items={[{ label: 'Home', href: '/' }, { label: 'Cities' }]} />
@@ -90,6 +97,9 @@ export default function CitiesIndex() {
         <p className="mt-2 text-muted-foreground">
           Current local time for {cities.length} cities worldwide.
         </p>
+        <div className="mt-5 max-w-[480px]">
+          <CitiesSearch popularCities={popularCities} totalCount={cities.length} />
+        </div>
       </header>
 
       <section className="mb-10">
