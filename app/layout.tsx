@@ -14,7 +14,8 @@ export const metadata: Metadata = {
     default: env.NEXT_PUBLIC_SITE_NAME,
     template: `%s | ${env.NEXT_PUBLIC_SITE_NAME}`,
   },
-  description: 'Replace per site.',
+  description:
+    'Compare time across cities and zones with day/night and working-hour overlays. Fast, shareable, no signup.',
   openGraph: {
     siteName: env.NEXT_PUBLIC_SITE_NAME,
     type: 'website',
