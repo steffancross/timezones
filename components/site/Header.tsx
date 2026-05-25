@@ -2,6 +2,13 @@ import Link from 'next/link';
 import env from '@/lib/env';
 import { ThemeToggle } from './ThemeToggle';
 
+const navLinks = [
+  { href: '/conversions', label: 'Conversions' },
+  { href: '/cities', label: 'Cities' },
+  { href: '/dst', label: 'DST' },
+  { href: '/articles', label: 'Articles' },
+];
+
 export function Header() {
   return (
     <header className="border-b border-border">
@@ -9,10 +16,18 @@ export function Header() {
         <Link href="/" className="font-semibold">
           {env.NEXT_PUBLIC_SITE_NAME}
         </Link>
-        <div className="flex items-center gap-4">
-          <Link href="/articles" className="text-sm text-muted-foreground hover:text-foreground">
-            Articles
-          </Link>
+        <div className="flex items-center gap-6">
+          <nav className="hidden items-center gap-6 md:flex">
+            {navLinks.map((link) => (
+              <Link
+                key={link.href}
+                href={link.href}
+                className="text-sm text-muted-foreground hover:text-foreground"
+              >
+                {link.label}
+              </Link>
+            ))}
+          </nav>
           <ThemeToggle />
         </div>
       </div>
