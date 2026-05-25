@@ -11,6 +11,7 @@ import { getNightHours } from '@/lib/time/sun';
 import { getWorkingHoursOnDay, type WorkingHours } from '@/lib/time/working-hours';
 import { getZoneByIana } from '@/lib/zones/resolve';
 import { HourTile } from './HourTile';
+import { RangeBand } from './RangeBand';
 
 interface Props {
   zone: ZoneRef;
@@ -32,8 +33,6 @@ export interface ColumnData {
 
 export function HourStrip({ zone, index }: Props) {
   const anchorDate = useConverterStore((s) => s.anchorDate);
-  const anchorHour = useConverterStore((s) => s.anchorHour);
-  const anchorEndHour = useConverterStore((s) => s.anchorEndHour);
   const format = useConverterStore((s) => s.format);
   const zones = useConverterStore((s) => s.zones);
   const dayNightOn = useConverterStore((s) => s.overlay.dayNight);
@@ -120,7 +119,7 @@ export function HourStrip({ zone, index }: Props) {
   return (
     <div className="relative w-full pt-[18px] pb-1 max-md:pt-[14px]">
       {/* No `role="row"` / aria-label: the strip is decorative. Screen readers
-          get the date/time info from the ZoneLabel, AnchorPill, and Now badge —
+          get the date/time info from the ZoneLabel, RangePill, and Now badge —
           announcing 24 hour tiles per row would be noise. */}
       <div className="relative grid grid-cols-24 gap-0 h-10 max-md:h-7">
         <BandOverlay
@@ -144,9 +143,9 @@ export function HourStrip({ zone, index }: Props) {
           />
         ))}
 
-        {anchorHour !== null && (
-          <AnchorGuide start={anchorHour} end={anchorEndHour ?? anchorHour} />
-        )}
+        {/* Mobile only — desktop renders a single unified band hoisted to the
+            zones card. See RangeBand in Converter.tsx. */}
+        <RangeBand className="inset-y-0 md:hidden" />
 
         {nowColumnIndex !== null && <NowGuide columnIndex={nowColumnIndex} showBadge={isHomeRow} />}
 
@@ -310,21 +309,6 @@ function BandSegment({
         </span>
       )}
     </div>
-  );
-}
-
-function AnchorGuide({ start, end }: { start: number; end: number }) {
-  // Subtle accent band behind the anchor range, drawn beneath the tile fill
-  // (z-1) so the range's solid fill still reads on top. Single-tile blocks
-  // collapse to a vertical guide that hugs the column.
-  const leftPercent = (start / 24) * 100;
-  const widthPercent = ((end - start + 1) / 24) * 100;
-  return (
-    <div
-      aria-hidden="true"
-      className="pointer-events-none absolute z-[1] -top-2 -bottom-2 rounded-[2px] bg-[var(--brand)] opacity-25"
-      style={{ left: `${leftPercent}%`, width: `${widthPercent}%` }}
-    />
   );
 }
 

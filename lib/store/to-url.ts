@@ -10,7 +10,10 @@ import type { ConverterState } from './converter';
  * for a given store snapshot (and avoids SSR/client clock divergence).
  */
 export function stateToQueryString(
-  state: Pick<ConverterState, 'anchorDate' | 'defaultAnchorDate' | 'anchorHour' | 'format'> & {
+  state: Pick<
+    ConverterState,
+    'anchorDate' | 'defaultAnchorDate' | 'rangeStart' | 'rangeEnd' | 'format'
+  > & {
     zones?: ConverterState['zones'];
     includeZones?: boolean;
   },
@@ -25,8 +28,14 @@ export function stateToQueryString(
     params.set('d', state.anchorDate);
   }
 
-  if (state.anchorHour !== null) {
-    params.set('h', String(state.anchorHour));
+  if (state.rangeStart !== null) {
+    // Compact form: `r=14` when the block is 1-tile, `r=14-15` when wider.
+    // rangeEnd is left null by URL-only callers, so we fall back to rangeStart.
+    const end = state.rangeEnd ?? state.rangeStart;
+    params.set(
+      'r',
+      end === state.rangeStart ? String(state.rangeStart) : `${state.rangeStart}-${end}`,
+    );
   }
 
   if (state.format !== '12') {

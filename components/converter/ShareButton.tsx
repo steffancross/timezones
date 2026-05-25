@@ -16,7 +16,8 @@ export function ShareButton() {
   const zones = useConverterStore((s) => s.zones);
   const anchorDate = useConverterStore((s) => s.anchorDate);
   const defaultAnchorDate = useConverterStore((s) => s.defaultAnchorDate);
-  const anchorHour = useConverterStore((s) => s.anchorHour);
+  const rangeStart = useConverterStore((s) => s.rangeStart);
+  const rangeEnd = useConverterStore((s) => s.rangeEnd);
   const format = useConverterStore((s) => s.format);
 
   const disabled = zones.length === 0;
@@ -26,7 +27,8 @@ export function ShareButton() {
       zones,
       anchorDate,
       defaultAnchorDate,
-      anchorHour,
+      rangeStart,
+      rangeEnd,
       format,
       includeZones: true,
     });

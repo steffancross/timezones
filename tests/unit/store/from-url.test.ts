@@ -27,16 +27,30 @@ describe('urlToState', () => {
     expect(r.anchorDate).toBeUndefined();
   });
 
-  it('accepts valid hour', () => {
-    expect(urlToState({ pair: pstToEst, hour: 15 }).anchorHour).toBe(15);
-    expect(urlToState({ pair: pstToEst, hour: 0 }).anchorHour).toBe(0);
-    expect(urlToState({ pair: pstToEst, hour: 23 }).anchorHour).toBe(23);
+  it('accepts valid rangeStart and mirrors it as rangeEnd when not provided', () => {
+    const r = urlToState({ pair: pstToEst, rangeStart: 15 });
+    expect(r.rangeStart).toBe(15);
+    expect(r.rangeEnd).toBe(15);
   });
 
-  it('rejects out-of-range hour', () => {
-    expect(urlToState({ pair: pstToEst, hour: 99 }).anchorHour).toBeUndefined();
-    expect(urlToState({ pair: pstToEst, hour: -1 }).anchorHour).toBeUndefined();
-    expect(urlToState({ pair: pstToEst, hour: 24 }).anchorHour).toBeUndefined();
+  it('accepts a multi-tile rangeStart..rangeEnd', () => {
+    const r = urlToState({ pair: pstToEst, rangeStart: 9, rangeEnd: 11 });
+    expect(r.rangeStart).toBe(9);
+    expect(r.rangeEnd).toBe(11);
+  });
+
+  it('clamps a rangeEnd less than rangeStart back to rangeStart', () => {
+    // Defensive: keeps a malformed URL from producing a swapped/inverted range
+    // — the parser already normalizes start <= end via min/max in the store.
+    const r = urlToState({ pair: pstToEst, rangeStart: 10, rangeEnd: 5 });
+    expect(r.rangeStart).toBe(10);
+    expect(r.rangeEnd).toBe(10);
+  });
+
+  it('rejects out-of-range rangeStart', () => {
+    expect(urlToState({ pair: pstToEst, rangeStart: 99 }).rangeStart).toBeUndefined();
+    expect(urlToState({ pair: pstToEst, rangeStart: -1 }).rangeStart).toBeUndefined();
+    expect(urlToState({ pair: pstToEst, rangeStart: 24 }).rangeStart).toBeUndefined();
   });
 
   it('accepts valid format', () => {
@@ -48,26 +62,41 @@ describe('urlToState', () => {
     const r = urlToState({});
     expect(r.zones).toBeUndefined();
     expect(r.anchorDate).toBeUndefined();
-    expect(r.anchorHour).toBeUndefined();
+    expect(r.rangeStart).toBeUndefined();
+    expect(r.rangeEnd).toBeUndefined();
     expect(r.format).toBeUndefined();
   });
 });
 
 describe('parseSearchParams', () => {
-  it('parses d/h/f', () => {
-    expect(parseSearchParams({ d: '2026-05-14', h: '15', f: '24' })).toEqual({
+  it('parses d/r/f with a single-tile range', () => {
+    expect(parseSearchParams({ d: '2026-05-14', r: '15', f: '24' })).toEqual({
       date: '2026-05-14',
-      hour: 15,
+      rangeStart: 15,
+      rangeEnd: 15,
       format: '24',
+      zones: undefined,
     });
   });
 
-  it('takes the first value when a param is an array', () => {
-    expect(parseSearchParams({ h: ['15', '16'] }).hour).toBe(15);
+  it('parses r=N-M as an inclusive range', () => {
+    const r = parseSearchParams({ r: '9-11' });
+    expect(r.rangeStart).toBe(9);
+    expect(r.rangeEnd).toBe(11);
   });
 
-  it('returns undefined for unparseable hour', () => {
-    expect(parseSearchParams({ h: 'abc' }).hour).toBeUndefined();
+  it('takes the first value when a param is an array', () => {
+    expect(parseSearchParams({ r: ['15', '16'] }).rangeStart).toBe(15);
+  });
+
+  it('returns undefined for unparseable range', () => {
+    expect(parseSearchParams({ r: 'abc' }).rangeStart).toBeUndefined();
+  });
+
+  it('falls back to single-tile when only the start side parses', () => {
+    const r = parseSearchParams({ r: '9-xyz' });
+    expect(r.rangeStart).toBe(9);
+    expect(r.rangeEnd).toBe(9);
   });
 
   it('returns undefined for unknown format', () => {
@@ -77,8 +106,10 @@ describe('parseSearchParams', () => {
   it('returns all-undefined for empty input', () => {
     expect(parseSearchParams({})).toEqual({
       date: undefined,
-      hour: undefined,
+      rangeStart: undefined,
+      rangeEnd: undefined,
       format: undefined,
+      zones: undefined,
     });
   });
 });

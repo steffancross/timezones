@@ -19,14 +19,14 @@ interface Props {
 export function ZoneLabel({ zone, isHome }: Props) {
   const now = useNow('minute');
   const format = useConverterStore((s) => s.format);
-  const anchorHour = useConverterStore((s) => s.anchorHour);
+  const rangeStart = useConverterStore((s) => s.rangeStart);
   const anchorDate = useConverterStore((s) => s.anchorDate);
   const zones = useConverterStore((s) => s.zones);
 
   const displayTime = computeDisplayTime({
     now,
     zoneIana: zone.iana,
-    anchorHour,
+    rangeStart,
     anchorDate,
     homeIana: zones[0]?.iana,
   });
@@ -35,10 +35,10 @@ export function ZoneLabel({ zone, isHome }: Props) {
   const abbreviation = displayTime.toFormat('ZZZZ');
   const offsetText = formatOffset(displayTime.offset);
 
-  // "Next day" indicator: when an anchor is set and the projected date in this
+  // "Next day" indicator: when a range is set and the projected date in this
   // zone differs from the anchor date in the home zone, the date reads in brand
   // color to draw the eye.
-  const isNextDay = anchorHour !== null && displayTime.toISODate() !== anchorDate;
+  const isNextDay = rangeStart !== null && displayTime.toISODate() !== anchorDate;
 
   return (
     <div className="min-w-0">
@@ -81,21 +81,21 @@ export function ZoneLabel({ zone, isHome }: Props) {
 function computeDisplayTime(args: {
   now: DateTime;
   zoneIana: string;
-  anchorHour: number | null;
+  rangeStart: number | null;
   anchorDate: string;
   homeIana: string | undefined;
 }): DateTime {
-  const { now, zoneIana, anchorHour, anchorDate, homeIana } = args;
-  if (anchorHour === null || !homeIana) {
+  const { now, zoneIana, rangeStart, anchorDate, homeIana } = args;
+  if (rangeStart === null || !homeIana) {
     return now.setZone(zoneIana);
   }
-  const anchor = DateTime.fromISO(anchorDate, { zone: homeIana }).set({
-    hour: anchorHour,
+  const anchored = DateTime.fromISO(anchorDate, { zone: homeIana }).set({
+    hour: rangeStart,
     minute: 0,
     second: 0,
     millisecond: 0,
   });
-  return anchor.setZone(zoneIana);
+  return anchored.setZone(zoneIana);
 }
 
 function getLabelMeta(zone: ZoneRef): { primary: string; secondary: string } {

@@ -9,37 +9,63 @@ describe('stateToQueryString', () => {
       stateToQueryString({
         anchorDate: TODAY,
         defaultAnchorDate: TODAY,
-        anchorHour: null,
+        rangeStart: null,
+        rangeEnd: null,
         format: '12',
       }),
     ).toBe('');
   });
 
-  it('includes hour when set', () => {
+  it('serializes a single-tile range as r=N', () => {
     const qs = stateToQueryString({
       anchorDate: TODAY,
       defaultAnchorDate: TODAY,
-      anchorHour: 15,
+      rangeStart: 15,
+      rangeEnd: 15,
       format: '12',
     });
-    expect(qs).toBe('h=15');
+    expect(qs).toBe('r=15');
   });
 
-  it('includes hour=0 (not treated as falsy default)', () => {
+  it('serializes a multi-tile range as r=N-M', () => {
     const qs = stateToQueryString({
       anchorDate: TODAY,
       defaultAnchorDate: TODAY,
-      anchorHour: 0,
+      rangeStart: 9,
+      rangeEnd: 11,
       format: '12',
     });
-    expect(qs).toBe('h=0');
+    expect(qs).toBe('r=9-11');
+  });
+
+  it('includes rangeStart=0 (not treated as falsy default)', () => {
+    const qs = stateToQueryString({
+      anchorDate: TODAY,
+      defaultAnchorDate: TODAY,
+      rangeStart: 0,
+      rangeEnd: 0,
+      format: '12',
+    });
+    expect(qs).toBe('r=0');
+  });
+
+  it('treats a null rangeEnd as a single-tile range at rangeStart', () => {
+    const qs = stateToQueryString({
+      anchorDate: TODAY,
+      defaultAnchorDate: TODAY,
+      rangeStart: 15,
+      rangeEnd: null,
+      format: '12',
+    });
+    expect(qs).toBe('r=15');
   });
 
   it('omits date when it equals the snapshot default', () => {
     const qs = stateToQueryString({
       anchorDate: TODAY,
       defaultAnchorDate: TODAY,
-      anchorHour: 15,
+      rangeStart: 15,
+      rangeEnd: 15,
       format: '12',
     });
     expect(qs).not.toContain('d=');
@@ -49,7 +75,8 @@ describe('stateToQueryString', () => {
     const qs = stateToQueryString({
       anchorDate: '2026-12-25',
       defaultAnchorDate: TODAY,
-      anchorHour: null,
+      rangeStart: null,
+      rangeEnd: null,
       format: '12',
     });
     expect(qs).toBe('d=2026-12-25');
@@ -59,7 +86,8 @@ describe('stateToQueryString', () => {
     const qs = stateToQueryString({
       anchorDate: TODAY,
       defaultAnchorDate: TODAY,
-      anchorHour: null,
+      rangeStart: null,
+      rangeEnd: null,
       format: '12',
     });
     expect(qs).not.toContain('f=');
@@ -69,7 +97,8 @@ describe('stateToQueryString', () => {
     const qs = stateToQueryString({
       anchorDate: TODAY,
       defaultAnchorDate: TODAY,
-      anchorHour: null,
+      rangeStart: null,
+      rangeEnd: null,
       format: '24',
     });
     expect(qs).toBe('f=24');
@@ -82,7 +111,8 @@ describe('stateToQueryString', () => {
     const qs = stateToQueryString({
       anchorDate: '2026-05-21',
       defaultAnchorDate: '2026-05-21',
-      anchorHour: null,
+      rangeStart: null,
+      rangeEnd: null,
       format: '12',
     });
     expect(qs).not.toContain('d=');
@@ -92,12 +122,13 @@ describe('stateToQueryString', () => {
     const qs = stateToQueryString({
       anchorDate: '2026-12-25',
       defaultAnchorDate: TODAY,
-      anchorHour: 15,
+      rangeStart: 9,
+      rangeEnd: 11,
       format: '24',
     });
     const params = new URLSearchParams(qs);
     expect(params.get('d')).toBe('2026-12-25');
-    expect(params.get('h')).toBe('15');
+    expect(params.get('r')).toBe('9-11');
     expect(params.get('f')).toBe('24');
   });
 });

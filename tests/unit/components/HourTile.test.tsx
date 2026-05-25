@@ -7,7 +7,7 @@ import { useConverterStore } from '@/lib/store/converter';
 
 function resetStore() {
   useConverterStore.setState({
-    anchorHour: null,
+    rangeStart: null,
     previewHour: null,
   });
 }
@@ -110,8 +110,11 @@ describe('HourTile className state matrix', () => {
     expect(tileEl(screen.container).className).not.toMatch(/(^|\s)before:h-3(\s|$)/);
   });
 
-  it('applies the anchor fill class when anchorHour matches column.homeHour', async () => {
-    useConverterStore.setState({ anchorHour: 14 });
+  it('does not paint a brand fill on in-range tiles — the RangeBand overlay carries the range visual', async () => {
+    // The range used to fill each tile with bg-[var(--brand)]; now the tile
+    // stays transparent and the overlay band sits on top. Asserting the absence
+    // is what guards against accidentally re-introducing the per-tile fill.
+    useConverterStore.setState({ rangeStart: 14 });
     const screen = await render(
       <HourTile
         column={column(14)}
@@ -122,7 +125,7 @@ describe('HourTile className state matrix', () => {
         isWeekend={false}
       />,
     );
-    expect(tileEl(screen.container).className).toContain('bg-[var(--brand)]');
+    expect(tileEl(screen.container).className).not.toContain('bg-[var(--brand)]');
   });
 
   it('applies the preview-band class when previewHour matches but anchor is unset', async () => {
@@ -141,7 +144,9 @@ describe('HourTile className state matrix', () => {
   });
 
   it('does not show preview band when anchor is set to the same column (avoid double-emphasis)', async () => {
-    useConverterStore.setState({ anchorHour: 14, previewHour: 14 });
+    // The brand-soft preview tint would compound with the RangeBand overlay
+    // already covering the column. Keep them mutually exclusive.
+    useConverterStore.setState({ rangeStart: 14, previewHour: 14 });
     const screen = await render(
       <HourTile
         column={column(14)}
@@ -152,9 +157,7 @@ describe('HourTile className state matrix', () => {
         isWeekend={false}
       />,
     );
-    const cls = tileEl(screen.container).className;
-    expect(cls).toContain('bg-[var(--brand)]');
-    expect(cls).not.toContain('bg-[var(--brand-soft)]');
+    expect(tileEl(screen.container).className).not.toContain('bg-[var(--brand-soft)]');
   });
 
   it('applies the now class (brand tick + label) when isCurrentHour and not anchor-aligned', async () => {
@@ -188,7 +191,7 @@ describe('HourTile className state matrix', () => {
   });
 
   it('renders the +Nd day-delta badge when anchor-aligned and column.dayDelta > 0', async () => {
-    useConverterStore.setState({ anchorHour: 23 });
+    useConverterStore.setState({ rangeStart: 23 });
     const screen = await render(
       <HourTile
         column={{ homeHour: 23, localHour: 1, localDate: '2026-05-21', dayDelta: 1 }}
@@ -203,7 +206,7 @@ describe('HourTile className state matrix', () => {
   });
 
   it('renders the -Nd day-delta badge when column.dayDelta < 0', async () => {
-    useConverterStore.setState({ anchorHour: 0 });
+    useConverterStore.setState({ rangeStart: 0 });
     const screen = await render(
       <HourTile
         column={{ homeHour: 0, localHour: 22, localDate: '2026-05-19', dayDelta: -1 }}
@@ -265,7 +268,7 @@ describe('HourTile className state matrix', () => {
   });
 
   it('keeps the label visible on mobile when the column is anchor-aligned', async () => {
-    useConverterStore.setState({ anchorHour: 7 });
+    useConverterStore.setState({ rangeStart: 7 });
     const screen = await render(
       <HourTile
         column={column(7)}

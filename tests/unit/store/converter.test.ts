@@ -15,7 +15,7 @@ function resetStore() {
   useConverterStore.setState({
     zones: [],
     homeZoneIndex: null,
-    anchorHour: null,
+    rangeStart: null,
     previewHour: null,
     anchorDate: today,
     defaultAnchorDate: today,
@@ -187,18 +187,18 @@ describe('initialize', () => {
   });
 });
 
-describe('resetAnchor', () => {
+describe('clearRange', () => {
   beforeEach(resetStore);
 
   it('clears anchor hour, preview hour, and resets anchor date', () => {
     const s = useConverterStore.getState();
     s.addZone(pst);
-    s.setAnchorHour(15);
+    s.setRange(15, 15);
     s.setPreviewHour(10);
     s.setAnchorDate('2026-01-01');
-    s.resetAnchor();
+    s.clearRange();
     const next = useConverterStore.getState();
-    expect(next.anchorHour).toBeNull();
+    expect(next.rangeStart).toBeNull();
     expect(next.previewHour).toBeNull();
     expect(next.anchorDate).not.toBe('2026-01-01');
   });
@@ -208,7 +208,7 @@ describe('resetAnchor', () => {
     s.addZone(pst);
     s.setFormat('24');
     s.toggleWeekendOverlay();
-    s.resetAnchor();
+    s.clearRange();
     const next = useConverterStore.getState();
     expect(next.zones).toHaveLength(1);
     expect(next.format).toBe('24');
@@ -223,7 +223,7 @@ describe('resetAll', () => {
     const s = useConverterStore.getState();
     s.addZone(pst);
     s.addZone(est);
-    s.setAnchorHour(15);
+    s.setRange(15, 15);
     s.setAnchorDate('2026-01-01');
     s.setFormat('24');
     s.toggleWorkHoursOverlay();
@@ -232,7 +232,7 @@ describe('resetAll', () => {
     s.resetAll();
     const next = useConverterStore.getState();
     expect(next.zones).toHaveLength(2);
-    expect(next.anchorHour).toBeNull();
+    expect(next.rangeStart).toBeNull();
     expect(next.previewHour).toBeNull();
     expect(next.anchorDate).not.toBe('2026-01-01');
     expect(next.format).toBe('12');
@@ -325,11 +325,11 @@ describe('defaultAnchorDate snapshot', () => {
     expect(next.anchorDate).toBe(next.defaultAnchorDate);
   });
 
-  it('resyncs to anchorDate on resetAnchor', () => {
+  it('resyncs to anchorDate on clearRange', () => {
     const s = useConverterStore.getState();
     s.addZone(pst);
     s.setAnchorDate('2026-12-25');
-    s.resetAnchor();
+    s.clearRange();
     const next = useConverterStore.getState();
     expect(next.anchorDate).toBe(next.defaultAnchorDate);
   });
