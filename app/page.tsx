@@ -2,6 +2,7 @@ import { headers } from 'next/headers';
 import { Converter } from '@/components/converter/Converter';
 import { ConverterStateProvider } from '@/components/converter/ConverterStateProvider';
 import { PairLinks } from '@/components/converter/PairLinks';
+import { WebsiteSchema } from '@/components/site/WebsiteSchema';
 import { getZoneByIana } from '@/data/zones';
 import { buildMetadata } from '@/lib/seo/metadata';
 import type { ZoneRef } from '@/lib/store/converter';
@@ -50,6 +51,7 @@ export default async function HomePage({
 
   return (
     <div className="mx-auto max-w-6xl px-4 py-8">
+      <WebsiteSchema />
       <header className="mb-6">
         <h1 className="text-3xl font-semibold">Time Zone Converter</h1>
         <p className="mt-2 text-[color:var(--fg-muted)]">Compare time across cities and zones.</p>
