@@ -6,23 +6,23 @@ import { DEFAULT_WORKING_HOURS } from '@/lib/time/working-hours';
 import { cn } from '@/lib/utils';
 
 /**
- * Toolbar reset: returns everything user-tweakable (date, anchor, overlays,
+ * Toolbar reset: returns everything user-tweakable (date, range, overlays,
  * working hours, format) to defaults. Leaves the zone list alone.
  *
- * The anchor pill's × handles "just clear the anchor" — this button is for
+ * The range pill's × handles "just clear the range" — this button is for
  * everything else: a changed date, weekend toggled on, working hours edited,
  * format flipped to 24h, etc.
  */
 export function ResetButton() {
   const resetAll = useConverterStore((s) => s.resetAll);
-  const anchorHour = useConverterStore((s) => s.anchorHour);
+  const rangeStart = useConverterStore((s) => s.rangeStart);
   const anchorDate = useConverterStore((s) => s.anchorDate);
   const defaultAnchorDate = useConverterStore((s) => s.defaultAnchorDate);
   const format = useConverterStore((s) => s.format);
   const overlay = useConverterStore((s) => s.overlay);
   const workingHours = useConverterStore((s) => s.workingHours);
 
-  const isAnchorSet = anchorHour !== null;
+  const isRangeSet = rangeStart !== null;
   const isDateChanged = anchorDate !== defaultAnchorDate;
   const isFormatChanged = format !== '12';
   const isOverlayChanged =
@@ -34,7 +34,7 @@ export function ResetButton() {
     workingHours.days.some((d, i) => d !== DEFAULT_WORKING_HOURS.days[i]);
 
   const disabled =
-    !isAnchorSet &&
+    !isRangeSet &&
     !isDateChanged &&
     !isFormatChanged &&
     !isOverlayChanged &&

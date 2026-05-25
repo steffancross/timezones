@@ -1,12 +1,12 @@
+import { Footer } from '@/components/site/Footer';
+import { Header } from '@/components/site/Header';
+import env from '@/lib/env';
 import { GeistMono } from 'geist/font/mono';
 import { GeistSans } from 'geist/font/sans';
 import type { Metadata } from 'next';
 import { Toaster } from 'sonner';
-import { Footer } from '@/components/site/Footer';
-import { Header } from '@/components/site/Header';
-import env from '@/lib/env';
-import { Providers } from './providers';
 import './globals.css';
+import { Providers } from './providers';
 
 export const metadata: Metadata = {
   metadataBase: new URL(env.NEXT_PUBLIC_BASE_URL),
@@ -43,7 +43,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <Header />
           <main className="flex-1">{children}</main>
           <Footer />
-          <Toaster position="bottom-center" />
+          <Toaster position="top-center" />
         </Providers>
       </body>
     </html>

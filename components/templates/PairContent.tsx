@@ -23,8 +23,8 @@ export function PairContent({ pair, slug }: Props) {
   return (
     <article className="mt-10 space-y-12">
       <OffsetSummary pair={pair} />
-      <PairZoneFacts pair={pair} />
       <WhenToSchedule pair={pair} />
+      <PairZoneFacts pair={pair} />
       <QuickReferenceTable pair={pair} />
       <DSTNotes pair={pair} />
       <PairDaylight pair={pair} />

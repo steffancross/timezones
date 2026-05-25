@@ -4,7 +4,7 @@ import { useEffect } from 'react';
 import { useConverterStore } from '@/lib/store/converter';
 
 /**
- * Anchor / range drag controller.
+ * Range drag controller.
  *
  * Two drag modes:
  * - 'new'    — pointer-down on a tile starts a fresh range whose pivot is
@@ -15,7 +15,7 @@ import { useConverterStore } from '@/lib/store/converter';
  *              fixed edge becomes the pivot.
  *
  * Either way, the live block is always `[min(pivot, cursor), max(pivot, cursor)]`,
- * written into the store via `setAnchorRange`.
+ * written into the store via `setRange`.
  */
 
 type DragMode = 'new' | 'resize';
@@ -26,21 +26,21 @@ let pivotHour: number | null = null;
 export function startNewDrag(hour: number): void {
   dragMode = 'new';
   pivotHour = hour;
-  useConverterStore.getState().setAnchorRange(hour, hour);
+  useConverterStore.getState().setRange(hour, hour);
 }
 
 export function startResizeDrag(side: 'start' | 'end'): void {
-  const { anchorHour, anchorEndHour } = useConverterStore.getState();
-  if (anchorHour === null) return;
-  const end = anchorEndHour ?? anchorHour;
+  const { rangeStart, rangeEnd } = useConverterStore.getState();
+  if (rangeStart === null) return;
+  const end = rangeEnd ?? rangeStart;
   // Pivot is the edge we're NOT grabbing.
-  pivotHour = side === 'start' ? end : anchorHour;
+  pivotHour = side === 'start' ? end : rangeStart;
   dragMode = 'resize';
 }
 
 export function extendDrag(hour: number): void {
   if (dragMode === null || pivotHour === null) return;
-  useConverterStore.getState().setAnchorRange(pivotHour, hour);
+  useConverterStore.getState().setRange(pivotHour, hour);
 }
 
 function endDrag(): void {

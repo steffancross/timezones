@@ -1,22 +1,17 @@
 'use client';
 
 import { useCallback } from 'react';
-import {
-  extendDrag,
-  isDragging,
-  startNewDrag,
-  startResizeDrag,
-} from '@/lib/converter/drag-selection';
+import { extendDrag, isDragging, startNewDrag } from '@/lib/converter/drag-selection';
 import { useConverterStore } from '@/lib/store/converter';
 import { formatHourTile, type TimeFormat } from '@/lib/time/format';
 import { cn } from '@/lib/utils';
 import type { ColumnData } from './HourStrip';
 
 // Tiles are interactive. Pointer-down on the tile body starts a fresh range
-// (single click = 1-wide block, drag = wider block). The leftmost and rightmost
-// tiles of the active range carry small edge handles; grabbing one resizes
-// that edge while the opposite edge stays pinned. Hover still fires a
-// cross-row preview keyed on `column.homeHour`.
+// (single click = 1-wide block, drag = wider block). Hover fires a cross-row
+// preview keyed on `column.homeHour`. The range itself is painted by the
+// RangeBand overlay in HourStrip — tiles only contribute the +1d badge above
+// the range-start column and an always-visible mobile label inside the range.
 
 interface Props {
   column: ColumnData;
@@ -31,7 +26,7 @@ interface Props {
 /**
  * One column of the hour strip.
  *
- * Anchor/preview alignment is keyed on `column.homeHour` (the home zone's
+ * Range/preview alignment is keyed on `column.homeHour` (the home zone's
  * local hour for this column), not on the row's local hour. That way the same
  * home-hour preview reads as "aligned" on every row — hovering any tile
  * highlights the same column index across all rows.
@@ -44,23 +39,19 @@ export function HourTile({
   isCurrentHour,
   isWeekend,
 }: Props) {
-  const anchorHour = useConverterStore((s) => s.anchorHour);
-  const anchorEndHour = useConverterStore((s) => s.anchorEndHour);
+  const storeRangeStart = useConverterStore((s) => s.rangeStart);
+  const storeRangeEnd = useConverterStore((s) => s.rangeEnd);
   const previewHour = useConverterStore((s) => s.previewHour);
   const setPreviewHour = useConverterStore((s) => s.setPreviewHour);
 
-  // Normalize the anchor range: when anchorEndHour is null, the block is
-  // 1 tile wide at anchorHour. Callers (URL, tests) that only set anchorHour
-  // get the legacy single-tile behavior for free.
-  const rangeStart = anchorHour;
-  const rangeEnd = anchorHour === null ? null : (anchorEndHour ?? anchorHour);
+  // Normalize the range: when rangeEnd is null, the block is 1 tile wide at
+  // rangeStart. URL/tests that only know the start get the single-tile
+  // behavior for free.
+  const start = storeRangeStart;
+  const end = storeRangeStart === null ? null : (storeRangeEnd ?? storeRangeStart);
   const isInRange =
-    rangeStart !== null &&
-    rangeEnd !== null &&
-    column.homeHour >= rangeStart &&
-    column.homeHour <= rangeEnd;
-  const isRangeStart = isInRange && column.homeHour === rangeStart;
-  const isRangeEnd = isInRange && column.homeHour === rangeEnd;
+    start !== null && end !== null && column.homeHour >= start && column.homeHour <= end;
+  const isRangeStart = isInRange && column.homeHour === start;
   const isPreviewAligned = previewHour !== null && !isInRange && previewHour === column.homeHour;
   const isMajorTick = columnIndex % 6 === 0;
 
@@ -83,20 +74,10 @@ export function HourTile({
     [column.homeHour, setPreviewHour],
   );
 
-  const handleResizeHandlePointerDown = useCallback(
-    (side: 'start' | 'end') => (e: React.PointerEvent<HTMLDivElement>) => {
-      if (e.pointerType === 'mouse' && e.button !== 0) return;
-      // Stop the tile body's pointer-down (which would start a fresh range
-      // and discard the existing block).
-      e.stopPropagation();
-      startResizeDrag(side);
-    },
-    [],
-  );
-
   // Tick style per design handoff: transparent tile, bottom-left mono label,
-  // vertical tick at the left edge (taller on every 6th column), accent fill
-  // across every tile in the active range, accent-soft band on preview.
+  // vertical tick at the left edge (taller on every 6th column), accent-soft
+  // band on preview. The active range paints as a translucent band overlay
+  // (see RangeBand in HourStrip) above the tiles rather than recoloring them.
   // Weekend rows recolor tick + label to a warm amber palette (no tint band).
   const sharedClasses = cn(
     'relative flex h-full items-end justify-start pb-[5px] max-md:pb-[3px] pl-1 font-mono text-[10px] max-md:text-[9px] tracking-[-0.01em] tabular-nums select-none transition-colors',
@@ -123,8 +104,6 @@ export function HourTile({
       'text-[color:var(--brand)] font-semibold before:!bg-[var(--brand)] before:!h-3.5 max-md:before:!h-[11px] before:!w-0.5',
     // Preview: soft accent band behind tile (suppressed inside the range).
     isPreviewAligned && 'bg-[var(--brand-soft)] text-[color:var(--fg)]',
-    // Range fill: solid accent across every tile in [rangeStart, rangeEnd].
-    isInRange && 'bg-[var(--brand)] text-[color:var(--brand-fg)] font-semibold before:hidden',
   );
 
   const content = (
@@ -148,28 +127,6 @@ export function HourTile({
       >
         {formatHourTile(column.localHour, format)}
       </span>
-
-      {/* Edge resize handles. Rendered on the leftmost / rightmost tile of the
-          range (both on the same tile when the range is 1 wide). The handle
-          straddles the tile boundary so it's easier to grab. */}
-      {isRangeStart && (
-        <div
-          onPointerDown={handleResizeHandlePointerDown('start')}
-          className="absolute left-0 top-0 z-10 h-full w-1.5 -translate-x-1/2 cursor-ew-resize"
-          aria-hidden="true"
-        >
-          <div className="absolute left-1/2 top-1/2 h-3 w-[3px] -translate-x-1/2 -translate-y-1/2 rounded-[1px] bg-[var(--brand-fg)] opacity-90" />
-        </div>
-      )}
-      {isRangeEnd && (
-        <div
-          onPointerDown={handleResizeHandlePointerDown('end')}
-          className="absolute right-0 top-0 z-10 h-full w-1.5 translate-x-1/2 cursor-ew-resize"
-          aria-hidden="true"
-        >
-          <div className="absolute left-1/2 top-1/2 h-3 w-[3px] -translate-x-1/2 -translate-y-1/2 rounded-[1px] bg-[var(--brand-fg)] opacity-90" />
-        </div>
-      )}
     </>
   );
 

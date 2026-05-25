@@ -27,24 +27,23 @@ export interface ConverterState {
   /**
    * Snapshot of what `anchorDate` would be if auto-derived right now — updated
    * any time we set `anchorDate` from `todayInZone(home)` (init, addZone first,
-   * setZones, resetAnchor, resetAll). Components compare against this instead
+   * setZones, clearRange, resetAll). Components compare against this instead
    * of calling `todayInZone()` at render time, which avoids hydration
    * mismatches when SSR (UTC) and client (local) disagree on "today" near
    * midnight.
    */
   defaultAnchorDate: string;
-  anchorHour: number | null;
   /**
-   * End column (homeHour, inclusive) of the anchor block. The anchor is
-   * conceptually a range `[anchorHour, anchorEndHour]` painted across every
-   * row at the same columns. A single click sets anchorHour === anchorEndHour
-   * (a 1-tile block). A drag widens it.
+   * Range selected on the strip, expressed as the home zone's local-hour
+   * column indices (both inclusive). `rangeStart` and `rangeEnd` define the
+   * leftmost and rightmost columns covered; a 1-tile click sets them equal.
    *
-   * When null, the block is treated as 1 tile wide at `anchorHour` — this
-   * keeps callers that only set `anchorHour` (URL sync, tests) working
+   * When `rangeEnd` is null, the block is treated as 1 tile wide at
+   * `rangeStart` — keeps URL-sync paths that only know the start working
    * without a separate width field.
    */
-  anchorEndHour: number | null;
+  rangeStart: number | null;
+  rangeEnd: number | null;
   previewHour: number | null;
 
   format: TimeFormat;
@@ -72,19 +71,18 @@ export interface ConverterActions {
   setHomeZoneIndex: (index: number | null) => void;
 
   setAnchorDate: (date: string) => void;
-  setAnchorHour: (hour: number | null) => void;
   /**
-   * Set both anchor start and end in one update. `start` and `end` may be
-   * passed in any order; the action normalizes so `anchorHour` is the
-   * leftmost column.
+   * Set both range endpoints in one update. `start` and `end` may be passed
+   * in any order; the action normalizes so `rangeStart` is the leftmost
+   * column.
    */
-  setAnchorRange: (start: number, end: number) => void;
+  setRange: (start: number, end: number) => void;
   setPreviewHour: (hour: number | null) => void;
-  /** Reset just the anchor (hour, date, preview) — used by the anchor pill's ×. */
-  resetAnchor: () => void;
+  /** Clear the range and resync the date to today — used by the range pill's ×. */
+  clearRange: () => void;
   /**
-   * Reset everything user-tweakable EXCEPT the zone list itself: anchor,
-   * date, overlays, working hours, format. Used by the toolbar reset button.
+   * Reset everything user-tweakable EXCEPT the zone list itself: range, date,
+   * overlays, working hours, format. Used by the toolbar reset button.
    */
   resetAll: () => void;
 
@@ -155,8 +153,8 @@ const initialState: ConverterState = {
   homeZoneIndex: null,
   anchorDate: initialToday,
   defaultAnchorDate: initialToday,
-  anchorHour: null,
-  anchorEndHour: null,
+  rangeStart: null,
+  rangeEnd: null,
   previewHour: null,
   format: '12',
   overlay: {
@@ -242,22 +240,19 @@ export const useConverterStore = create<ConverterState & ConverterActions>()(
     setHomeZoneIndex: (index) => set({ homeZoneIndex: index }),
 
     setAnchorDate: (date) => set({ anchorDate: date }),
-    // A bare setAnchorHour collapses the block to a single tile — callers that
-    // care about a range use setAnchorRange instead.
-    setAnchorHour: (hour) => set({ anchorHour: hour, anchorEndHour: hour }),
-    setAnchorRange: (start, end) => {
+    setRange: (start, end) => {
       const lo = Math.min(start, end);
       const hi = Math.max(start, end);
-      set({ anchorHour: lo, anchorEndHour: hi });
+      set({ rangeStart: lo, rangeEnd: hi });
     },
     setPreviewHour: (hour) => set({ previewHour: hour }),
 
-    resetAnchor: () =>
+    clearRange: () =>
       set((state) => {
         const homeToday = todayInZone(resolveHomeIana(state.zones, state.homeZoneIndex));
         return {
-          anchorHour: null,
-          anchorEndHour: null,
+          rangeStart: null,
+          rangeEnd: null,
           previewHour: null,
           anchorDate: homeToday,
           defaultAnchorDate: homeToday,
@@ -268,8 +263,8 @@ export const useConverterStore = create<ConverterState & ConverterActions>()(
       set((state) => {
         const homeToday = todayInZone(resolveHomeIana(state.zones, state.homeZoneIndex));
         return {
-          anchorHour: null,
-          anchorEndHour: null,
+          rangeStart: null,
+          rangeEnd: null,
           previewHour: null,
           anchorDate: homeToday,
           defaultAnchorDate: homeToday,

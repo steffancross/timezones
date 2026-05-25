@@ -13,6 +13,15 @@ interface ZoneRowProps {
 }
 
 /**
+ * Desktop grid template shared with the unified RangeBand overlay in
+ * Converter.tsx — both have to use identical column widths/gap/padding so the
+ * overlay's strip column lines up with this row's strip column on every row.
+ * Mobile classes stay inline in the row since the overlay doesn't render on
+ * mobile (per-row bands inside each HourStrip handle that case).
+ */
+export const ZONE_ROW_DESKTOP_GRID = 'md:grid-cols-[32px_240px_1fr] md:gap-x-3 md:pl-2 md:pr-3';
+
+/**
  * One zone row. Home is always row index 0 per the v1 home-selection rule
  * (user reorders rows to change which zone is home).
  *
@@ -30,8 +39,10 @@ export function ZoneRow({ zone, index }: ZoneRowProps) {
         'border-b last:border-b-0',
         // Mobile: 2 cols (label 1fr, controls auto), 2 rows (label+controls / strip)
         'grid-cols-[1fr_auto] grid-rows-[auto_auto]',
-        // Desktop: 3 cols (32px / 240px / 1fr), 1 row
-        'md:grid-cols-[32px_240px_1fr] md:grid-rows-1 md:gap-x-3 md:py-3.5 md:pr-3 md:pl-2',
+        // Desktop: 3 cols (32px / 240px / 1fr), 1 row. Grid template lives in
+        // ZONE_ROW_DESKTOP_GRID so the unified RangeBand overlay can reuse it.
+        ZONE_ROW_DESKTOP_GRID,
+        'md:grid-rows-1 md:py-3.5',
       )}
     >
       <div

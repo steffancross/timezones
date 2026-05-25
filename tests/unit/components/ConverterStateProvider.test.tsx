@@ -23,7 +23,7 @@ function clearStore() {
     homeZoneIndex: null,
     anchorDate: TODAY,
     defaultAnchorDate: TODAY,
-    anchorHour: null,
+    rangeStart: null,
     previewHour: null,
     format: '12',
     overlay: { dayNight: true, workHours: false, weekend: false },
@@ -163,7 +163,7 @@ describe('ConverterStateProvider bootstrap', () => {
           ],
           homeZoneIndex: 0,
           anchorDate: '2026-12-25',
-          anchorHour: 15,
+          rangeStart: 15,
           format: '24',
         }}
       >
@@ -175,7 +175,7 @@ describe('ConverterStateProvider bootstrap', () => {
     expect(s.zones).toHaveLength(2);
     expect(s.zones[0]?.iana).toBe('America/Los_Angeles');
     expect(s.anchorDate).toBe('2026-12-25');
-    expect(s.anchorHour).toBe(15);
+    expect(s.rangeStart).toBe(15);
     expect(s.format).toBe('24');
   });
 
