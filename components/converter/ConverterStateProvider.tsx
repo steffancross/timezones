@@ -36,12 +36,11 @@ interface Props {
  *      workingHours), which must wait for `window`. `initialState` is
  *      re-applied last so URL state still wins on overlap.
  *
- * Known limitation: the Zustand store is module-singleton. On Cloudflare
- * Workers each request runs in (potentially) the same isolate, so state from
- * a prior request can survive. Today's `initialize` does a partial merge — if
- * a future request omits a field, the prior value leaks. Address when it
- * causes a visible bug; for now G3's URL always supplies the load-bearing
- * fields (zones, homeZoneIndex).
+ * Cross-request isolation: the Zustand store is a module singleton, so on
+ * Cloudflare Workers and Node dev servers it survives across requests in the
+ * same isolate. `initialize` resets to module defaults before applying the
+ * caller's partial — fields omitted by a later request can't inherit values
+ * from a prior one.
  */
 
 // Module-level: has any provider instance already initialized on this client?
