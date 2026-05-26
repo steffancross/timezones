@@ -77,8 +77,8 @@ export default function AboutPage() {
           <p className="text-muted-foreground">
             Bug reports, missing or wrong data (cities, zones, DST rules), privacy questions, or
             anything else:{' '}
-            <a href="mailto:hello@example.com" className="underline hover:text-foreground">
-              hello@example.com
+            <a href="support@worldtimezones.net" className="underline hover:text-foreground">
+              support@worldtimezones.net
             </a>
             . Time zone data changes — countries adopt or drop DST, redraw boundaries, or rename
             zones — so corrections are always welcome.

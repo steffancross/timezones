@@ -174,12 +174,17 @@ export const useConverterStore = create<ConverterState & ConverterActions>()(
         if (state.zones.some((z) => z.iana === ref.iana)) return state;
         if (state.zones.length >= MAX_ZONES) return state;
         const next: Partial<ConverterState> = { zones: [...state.zones, ref] };
-        // First zone becomes the de-facto home; align anchorDate to its local
-        // today so the NOW indicator renders on the right day.
-        if (state.zones.length === 0 && isTodayDefault(state.anchorDate)) {
-          const homeToday = todayInZone(ref.iana);
-          next.anchorDate = homeToday;
-          next.defaultAnchorDate = homeToday;
+        // First zone becomes the home: pin homeZoneIndex to 0 so the field
+        // stays consistent with the other bootstrap paths (initialize,
+        // setZones), and align anchorDate to its local today so the NOW
+        // indicator renders on the right day.
+        if (state.zones.length === 0) {
+          next.homeZoneIndex = 0;
+          if (isTodayDefault(state.anchorDate)) {
+            const homeToday = todayInZone(ref.iana);
+            next.anchorDate = homeToday;
+            next.defaultAnchorDate = homeToday;
+          }
         }
         return next;
       }),

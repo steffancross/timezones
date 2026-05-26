@@ -86,6 +86,8 @@ MiniSearch index built at `scripts/build-search-index.ts` → `public/search-ind
 
 Next.js App Router. OpenNext adapts to a Cloudflare Worker (`open-next.config.ts`, `wrangler.jsonc` is generated). PostHog ingestion is routed through `/ingest/*` rewrites in `next.config.ts` to avoid ad-blocker false positives — 400/401s from these in dev are environmental and harmless.
 
+The home page (`app/page.tsx`) is `force-dynamic` so it can read `cf-timezone` / `cf-ipcountry` headers and SSR contextual default zones per visitor. Every `/` request is a Worker invocation — fine at launch traffic, worth revisiting if scale becomes a cost concern. Path forward if it does: move contextual picking to a client effect (the Intl-based fallback in `Converter.tsx:51-60` already covers the static case) and let `/` go static.
+
 Env vars are validated via Zod in `lib/env.ts`. Missing `NEXT_PUBLIC_*` values throw at startup. See `.env.example` for the required set.
 
 ### Path alias
@@ -97,6 +99,6 @@ Env vars are validated via Zod in `lib/env.ts`. Missing `NEXT_PUBLIC_*` values t
 - **Anchor is intentionally not settable from the UI** — neither tile clicks nor the (now removed) mobile slider set an anchor. The AnchorPill still exists for the URL-driven anchor case (`?h=N`), but tiles only fire hover preview (`previewHour`).
 - **Hover preview is cross-row vertical highlighting**: hovering any tile sets `previewHour = column.homeHour`, which causes every row's tile at that same `homeHour` index to light up. On mobile, `onPointerDown` triggers the same effect for tap.
 - **Per-column visual state, not per-row**: weekend recolor applies per column based on each column's `localDate`, so a Fri→Sat boundary mid-row recolors only the Sat tiles + the Sat portion of the baseline. Apply the same instinct for any state that can straddle a date boundary.
-- **`zones[0]` is the home zone in practice**, even though `homeZoneIndex` exists. `Converter.tsx` reads `zones[0]?.iana` directly. `addZone` does not bootstrap `homeZoneIndex` to 0 on the first add — this is a known wart.
+- **`zones[0]` is the home zone in practice**, even though `homeZoneIndex` exists. `Converter.tsx` reads `zones[0]?.iana` directly. All store bootstrap paths (`initialize`, `setZones`, first-zone `addZone`) keep `homeZoneIndex` in sync at `0` when zones are non-empty, so the invariant "non-empty zones ⇒ `homeZoneIndex !== null`" holds — rely on either field but pick one consistently if you ever extend reordering.
 - **Recolor over text labels**: prefer recoloring existing elements (ticks, baselines, labels) to indicate state rather than adding floating text labels. Both the weekend and working-hours indicators followed this — there is no "WEEKEND" or "working" floating label.
 - **Strip is `tick` style only** — variants `tiles`, `gradient`, `pills` from `markdowns/E/design_handoff_converter/variants.css` are not used.

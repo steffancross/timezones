@@ -11,6 +11,6 @@ export default function robots(): MetadataRoute.Robots {
       },
     ],
     sitemap: `${env.NEXT_PUBLIC_BASE_URL}/sitemap-index.xml`,
-    host: env.NEXT_PUBLIC_BASE_URL,
+    host: new URL(env.NEXT_PUBLIC_BASE_URL).host,
   };
 }
