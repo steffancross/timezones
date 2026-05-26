@@ -51,7 +51,6 @@ let clientInitialized = false;
 
 export function ConverterStateProvider({ initialState, children }: Props) {
   const initMode = useRef<'pending' | 'sync' | 'deferred'>('pending');
-  const effectRan = useRef(false);
 
   if (initMode.current === 'pending') {
     const isServer = typeof window === 'undefined';
@@ -70,13 +69,28 @@ export function ConverterStateProvider({ initialState, children }: Props) {
   useLayoutEffect(() => {
     // Skip if init already happened synchronously in the render body.
     if (initMode.current === 'sync') return;
-    useConverterStore.getState().initialize(initialState ?? {});
+    // Load persisted prefs synchronously here (not just in useEffect) so the
+    // new route's initialize() preserves overlay/workingHours instead of
+    // resetting them to module defaults. Without this, the previous route's
+    // persistence subscriber — still attached during this layout effect, since
+    // its useEffect cleanup runs *after* the new tree's layout effects —
+    // observes the reset-to-defaults and overwrites localStorage with
+    // defaults before the new tree's useEffect can restore from it.
+    const persisted = loadPersistedPrefs();
+    useConverterStore.getState().initialize({
+      ...(persisted ?? {}),
+      ...(initialState ?? {}),
+    });
   }, []);
 
+  // Mount-only by design. Don't add a guard ref (`effectRan`-style) to skip
+  // re-runs — StrictMode's dev double-invoke runs cleanup-then-remount with
+  // refs preserved, so the second invocation would early-return without
+  // re-attaching the subscriber, leaving persistence silently broken in dev.
+  // Empty deps + a real cleanup let StrictMode unsubscribe and resubscribe
+  // cleanly; production has only one mount either way.
+  // biome-ignore lint/correctness/useExhaustiveDependencies: mount-only by design
   useEffect(() => {
-    if (effectRan.current) return;
-    effectRan.current = true;
-
     const persisted = loadPersistedPrefs();
     if (persisted) {
       useConverterStore.getState().initialize({
@@ -89,7 +103,7 @@ export function ConverterStateProvider({ initialState, children }: Props) {
     return () => {
       unsubscribe?.();
     };
-  }, [initialState]);
+  }, []);
 
   return (
     <>
