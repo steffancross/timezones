@@ -288,8 +288,15 @@ export const useConverterStore = create<ConverterState & ConverterActions>()(
     setWorkingHours: (wh) => set({ workingHours: wh }),
 
     initialize: (partial) =>
-      set((state) => {
-        const merged = { ...state, ...partial };
+      set(() => {
+        // Start from defaults, not from current state. The store is a module
+        // singleton — on the server (and across dev HMR reloads) it survives
+        // across requests in the same isolate, so a previous request's
+        // rangeStart/format/overlay/etc. would otherwise leak into this
+        // render's SSR output while a freshly-loaded client module renders
+        // pristine defaults → hydration mismatch on ResetButton/ShareButton
+        // and any other component that branches on "is anything non-default".
+        const merged: ConverterState = { ...initialState, ...partial };
         if (partial.zones !== undefined && partial.homeZoneIndex === undefined) {
           merged.homeZoneIndex = merged.zones.length > 0 ? 0 : null;
         }
