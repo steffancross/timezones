@@ -33,8 +33,12 @@ describe('isWorkingHour', () => {
     expect(isWorkingHour(8, 3)).toBe(false);
   });
 
-  it('returns false for 5pm (end is exclusive)', () => {
-    expect(isWorkingHour(17, 3)).toBe(false);
+  it('returns true for 5pm (end is inclusive)', () => {
+    expect(isWorkingHour(17, 3)).toBe(true);
+  });
+
+  it('returns false for 6pm (one past end)', () => {
+    expect(isWorkingHour(18, 3)).toBe(false);
   });
 
   it('returns false for Saturday', () => {
@@ -49,21 +53,22 @@ describe('isWorkingHour', () => {
     expect(isWorkingHour(9, 1)).toBe(true);
   });
 
-  it('returns true for end - 1 (last working hour)', () => {
-    expect(isWorkingHour(16, 5)).toBe(true);
+  it('returns true for end hour (last working hour)', () => {
+    expect(isWorkingHour(17, 5)).toBe(true);
   });
 
   it('respects custom WorkingHours config', () => {
     const wh: WorkingHours = { start: 8, end: 20, days: [6, 7] };
     expect(isWorkingHour(10, 6, wh)).toBe(true);
     expect(isWorkingHour(10, 1, wh)).toBe(false);
-    expect(isWorkingHour(20, 6, wh)).toBe(false);
+    expect(isWorkingHour(20, 6, wh)).toBe(true);
+    expect(isWorkingHour(21, 6, wh)).toBe(false);
   });
 });
 
 describe('getWorkingHoursOnDay', () => {
-  it('returns 9..16 for Monday with default config', () => {
-    expect(getWorkingHoursOnDay(1)).toEqual([9, 10, 11, 12, 13, 14, 15, 16]);
+  it('returns 9..17 for Monday with default config', () => {
+    expect(getWorkingHoursOnDay(1)).toEqual([9, 10, 11, 12, 13, 14, 15, 16, 17]);
   });
 
   it('returns empty array for Sunday by default', () => {
@@ -76,7 +81,7 @@ describe('getWorkingHoursOnDay', () => {
 
   it('respects custom WorkingHours config', () => {
     const wh: WorkingHours = { start: 14, end: 18, days: [6] };
-    expect(getWorkingHoursOnDay(6, wh)).toEqual([14, 15, 16, 17]);
+    expect(getWorkingHoursOnDay(6, wh)).toEqual([14, 15, 16, 17, 18]);
     expect(getWorkingHoursOnDay(1, wh)).toEqual([]);
   });
 });
@@ -96,26 +101,26 @@ describe('exports', () => {
 });
 
 describe('computeBusinessOverlap', () => {
-  it('1-hour delta (Osaka → Beijing) yields a 7-hour same-day window', () => {
-    // Asia/Tokyo (UTC+9) → Asia/Shanghai (UTC+8): from-hours 10-16 map to
-    // to-hours 9-15. From-9 maps to to-8 (out of range) so window starts at 10.
+  it('1-hour delta (Osaka → Beijing) yields an 8-hour same-day window', () => {
+    // Asia/Tokyo (UTC+9) → Asia/Shanghai (UTC+8): from-hours 10-17 map to
+    // to-hours 9-16. From-9 maps to to-8 (out of range) so window starts at 10.
     // This is the case that the original today-anchored implementation broke
     // on whenever today happened to be a weekend.
     const windows = computeBusinessOverlap('Asia/Tokyo', 'Asia/Shanghai', undefined, JAN_MONDAY);
     expect(windows).toEqual([
       {
         fromStartHour: 10,
-        fromEndHour: 17,
+        fromEndHour: 18,
         toStartHour: 9,
-        toEndHour: 16,
+        toEndHour: 17,
         toDayDelta: 0,
       },
     ]);
   });
 
-  it('3-hour delta (LA → NYC) yields a 5-hour same-day window', () => {
-    // America/Los_Angeles → America/New_York: from-9 = to-12, from-13 = to-16,
-    // from-14 = to-17 (out). Window: from 9-13 = to 12-16.
+  it('3-hour delta (LA → NYC) yields a 6-hour same-day window', () => {
+    // America/Los_Angeles → America/New_York: from-9 = to-12, from-14 = to-17,
+    // from-15 = to-18 (out). Window: from 9-14 = to 12-17 (inclusive end).
     const windows = computeBusinessOverlap(
       'America/Los_Angeles',
       'America/New_York',
@@ -125,9 +130,9 @@ describe('computeBusinessOverlap', () => {
     expect(windows).toEqual([
       {
         fromStartHour: 9,
-        fromEndHour: 14,
+        fromEndHour: 15,
         toStartHour: 12,
-        toEndHour: 17,
+        toEndHour: 18,
         toDayDelta: 0,
       },
     ]);
@@ -135,10 +140,10 @@ describe('computeBusinessOverlap', () => {
 
   it('wide gap (LA → Tokyo) yields only a tiny cross-day window', () => {
     // LA UTC-8 vs Tokyo UTC+9 = 17h delta. LA Mon 9-15 fall well outside
-    // Tokyo working hours, but LA Mon 16:00 = Tokyo Tue 09:00 — a single
-    // boundary hour where both happen to be in working hours, with
-    // `toDayDelta = +1`. This is the case the previous fallback message
-    // ("don't overlap") completely missed.
+    // Tokyo working hours, but LA Mon 16:00 = Tokyo Tue 09:00 and LA Mon 17:00
+    // = Tokyo Tue 10:00 — boundary hours where both happen to be in working
+    // hours, with `toDayDelta = +1`. This is the case the previous fallback
+    // message ("don't overlap") completely missed.
     const windows = computeBusinessOverlap(
       'America/Los_Angeles',
       'Asia/Tokyo',
@@ -148,9 +153,9 @@ describe('computeBusinessOverlap', () => {
     expect(windows).toEqual([
       {
         fromStartHour: 16,
-        fromEndHour: 17,
+        fromEndHour: 18,
         toStartHour: 9,
-        toEndHour: 10,
+        toEndHour: 11,
         toDayDelta: 1,
       },
     ]);
@@ -174,9 +179,9 @@ describe('computeBusinessOverlap', () => {
     expect(windows).toEqual([
       {
         fromStartHour: 9,
-        fromEndHour: 17,
+        fromEndHour: 18,
         toStartHour: 9,
-        toEndHour: 17,
+        toEndHour: 18,
         toDayDelta: 0,
       },
     ]);
@@ -202,10 +207,10 @@ describe('computeBusinessOverlap', () => {
     expect(fromSunday).toEqual(fromMonday);
   });
 
-  it('DST drift: Phoenix → NYC window shrinks from 6h (winter) to 5h (summer)', () => {
+  it('DST drift: Phoenix → NYC window shrinks from 7h (winter) to 6h (summer)', () => {
     // Phoenix doesn't observe DST; NYC does. So the offset between them is
-    // 2h in winter and 3h in summer. Winter overlap: Phoenix 9-14 = NYC 11-16.
-    // Summer overlap: Phoenix 9-13 = NYC 12-16.
+    // 2h in winter and 3h in summer. Winter overlap: Phoenix 9-15 = NYC 11-17.
+    // Summer overlap: Phoenix 9-14 = NYC 12-17.
     const winter = computeBusinessOverlap(
       'America/Phoenix',
       'America/New_York',
@@ -221,18 +226,18 @@ describe('computeBusinessOverlap', () => {
     expect(winter).toEqual([
       {
         fromStartHour: 9,
-        fromEndHour: 15,
+        fromEndHour: 16,
         toStartHour: 11,
-        toEndHour: 17,
+        toEndHour: 18,
         toDayDelta: 0,
       },
     ]);
     expect(summer).toEqual([
       {
         fromStartHour: 9,
-        fromEndHour: 14,
+        fromEndHour: 15,
         toStartHour: 12,
-        toEndHour: 17,
+        toEndHour: 18,
         toDayDelta: 0,
       },
     ]);
@@ -244,9 +249,9 @@ describe('computeBusinessOverlap', () => {
     expect(windows).toEqual([
       {
         fromStartHour: 9,
-        fromEndHour: 18,
+        fromEndHour: 19,
         toStartHour: 8,
-        toEndHour: 17,
+        toEndHour: 18,
         toDayDelta: 0,
       },
     ]);
