@@ -43,7 +43,7 @@ Visit <http://localhost:3000>.
 | Command | What it does |
 |---|---|
 | `pnpm dev` | Next dev server (no data rebuild) |
-| `pnpm build` | `data:build` + `next build` |
+| `pnpm build` | `next build` only — does **not** rebuild data files (see [Data refresh](#data-refresh)) |
 | `pnpm start` | Serve a production build with `next start` |
 | `pnpm preview` | OpenNext local Cloudflare Worker preview at `:8787` |
 | `pnpm deploy` | OpenNext build + `wrangler deploy` |
@@ -115,11 +115,12 @@ In production they live in `wrangler.jsonc` under `vars`. `NEXT_PUBLIC_POSTHOG_K
 
 ## Data refresh
 
-City data from GeoNames doesn't move quickly. Quarterly is fine:
+`data/cities.json`, `data/disambiguation.json`, and `public/search-index.json` are **checked into the repo**. `pnpm build` (and the deploy workflow) consume them as-is — they are not rebuilt on push, so CSS-only deploys don't pay the GeoNames fetch cost and the deploy doesn't depend on GeoNames being up.
+
+City data from GeoNames doesn't move quickly. Refresh manually when you want fresher data — quarterly is plenty:
 
 ```bash
-pnpm data:cities
-pnpm data:search
+pnpm data:build              # data:cities (slow, GeoNames fetch) + data:search
 git add data/ public/search-index.json
 git commit -m "data: refresh cities + search index"
 ```

@@ -18,8 +18,8 @@ A timezone converter web app (Next.js 16 / React 19) deployed to Cloudflare Work
 
 ```bash
 pnpm dev                # Next.js dev server (no data build — uses checked-in public/search-index.json)
-pnpm build              # Runs data:build then next build
-pnpm data:build         # pnpm data:cities && pnpm data:search — required before `next build` from scratch
+pnpm build              # next build only — does NOT rebuild data (see "Data files" below)
+pnpm data:build         # pnpm data:cities && pnpm data:search — run manually to refresh, then commit the diff
 pnpm data:cities        # Rebuild data/cities.json (calls GeoNames; slow)
 pnpm data:search        # Rebuild public/search-index.json (197KB MiniSearch index)
 pnpm typecheck          # tsc --noEmit
@@ -37,6 +37,10 @@ pnpm deploy             # OpenNext build + wrangler deploy
 Run a single Vitest file: `pnpm vitest run tests/unit/store/converter.test.ts`. Vitest 4 dropped string reporter aliases — don't pass `--reporter=basic`, it will fail to resolve. The default reporter is fine.
 
 ## Architecture
+
+### Data files are checked in, not built in CI
+
+`data/cities.json`, `data/disambiguation.json`, and `public/search-index.json` are committed. `pnpm build` runs `next build` only — it does **not** invoke `data:build`. This keeps deploys fast (CSS-only push doesn't pay the GeoNames fetch) and removes GeoNames as a deploy-time dependency. Refresh manually with `pnpm data:build`, then commit the diff. World cities don't churn — quarterly is fine.
 
 ### Build spec lives in `markdowns/`
 
