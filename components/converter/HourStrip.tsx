@@ -9,7 +9,7 @@ import { useConverterStore } from '@/lib/store/converter';
 import { anchorToZones } from '@/lib/time/luxon';
 import { getNightHours } from '@/lib/time/sun';
 import { getWorkingHoursOnDay, type WorkingHours } from '@/lib/time/working-hours';
-import { getZoneByIana } from '@/lib/zones/resolve';
+import { getCoordsForIana } from '@/lib/zones/resolve';
 import { HourTile } from './HourTile';
 import { RangeBand } from './RangeBand';
 
@@ -205,7 +205,7 @@ function BandOverlay({
   workHoursOn: boolean;
   workingHours: WorkingHours;
 }) {
-  const zoneMeta = getZoneByIana(zone.iana);
+  const coords = getCoordsForIana(zone.iana);
 
   const segments = useMemo(() => {
     const empty = {
@@ -213,12 +213,12 @@ function BandOverlay({
       day: [] as Array<[number, number]>,
       work: [] as Array<[number, number]>,
     };
-    if (!zoneMeta || columns.length === 0) return empty;
+    if (columns.length === 0) return empty;
 
     let night: Array<[number, number]> = [];
     let day: Array<[number, number]> = [];
-    if (dayNightOn) {
-      const nightSet = new Set(getNightHours(zone.iana, primaryDate, zoneMeta.lat, zoneMeta.lng));
+    if (dayNightOn && coords) {
+      const nightSet = new Set(getNightHours(zone.iana, primaryDate, coords.lat, coords.lng));
       const nightCols: number[] = [];
       const dayCols: number[] = [];
       columns.forEach((c, i) => {
@@ -243,9 +243,9 @@ function BandOverlay({
     }
 
     return { night, day, work };
-  }, [dayNightOn, workHoursOn, columns, primaryDate, workingHours, zone.iana, zoneMeta]);
+  }, [dayNightOn, workHoursOn, columns, primaryDate, workingHours, zone.iana, coords]);
 
-  if ((!dayNightOn && !workHoursOn) || !zoneMeta) return null;
+  if (!dayNightOn && !workHoursOn) return null;
 
   return (
     <div
