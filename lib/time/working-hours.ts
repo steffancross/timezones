@@ -3,7 +3,7 @@ import { DateTime } from 'luxon';
 export interface WorkingHours {
   /** Start hour, 0-23. Inclusive. */
   readonly start: number;
-  /** End hour, 0-23. Exclusive. So 9-17 means 9am-4:59pm. */
+  /** End hour, 0-23. Inclusive. So 9-17 means the 9am through 5pm hour columns are working hours. */
   readonly end: number;
   /** Weekdays this applies to. 1=Monday, 7=Sunday (Luxon convention). */
   readonly days: readonly number[];
@@ -39,7 +39,7 @@ export function isWorkingHour(
   wh: WorkingHours = DEFAULT_WORKING_HOURS,
 ): boolean {
   if (!wh.days.includes(weekday)) return false;
-  return hour >= wh.start && hour < wh.end;
+  return hour >= wh.start && hour <= wh.end;
 }
 
 /**
@@ -52,7 +52,7 @@ export function getWorkingHoursOnDay(
 ): number[] {
   if (!wh.days.includes(weekday)) return [];
   const result: number[] = [];
-  for (let h = wh.start; h < wh.end; h++) result.push(h);
+  for (let h = wh.start; h <= wh.end; h++) result.push(h);
   return result;
 }
 
@@ -111,12 +111,12 @@ export function computeBusinessOverlap(
   type Hit = { fromHour: number; toHour: number; toDayDelta: -1 | 0 | 1 };
   const hits: Hit[] = [];
 
-  for (let fromHour = wh.start; fromHour < wh.end; fromHour++) {
+  for (let fromHour = wh.start; fromHour <= wh.end; fromHour++) {
     const fromLocal = monday.set({ hour: fromHour, minute: 0, second: 0, millisecond: 0 });
     const toLocal = fromLocal.setZone(toIana);
 
     if (!wh.days.includes(toLocal.weekday)) continue;
-    if (toLocal.hour < wh.start || toLocal.hour >= wh.end) continue;
+    if (toLocal.hour < wh.start || toLocal.hour > wh.end) continue;
 
     const fromDay = fromLocal.toISODate();
     const toDay = toLocal.toISODate();

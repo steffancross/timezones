@@ -88,7 +88,9 @@ MiniSearch index built at `scripts/build-search-index.ts` → `public/search-ind
 
 ### Routing & deployment
 
-Next.js App Router. OpenNext adapts to a Cloudflare Worker (`open-next.config.ts`, `wrangler.jsonc` is generated). PostHog ingestion is routed through `/ingest/*` rewrites in `next.config.ts` to avoid ad-blocker false positives — 400/401s from these in dev are environmental and harmless.
+Next.js App Router. OpenNext adapts to a Cloudflare Worker (`open-next.config.ts`, `wrangler.jsonc` is generated).
+
+**PostHog is called directly at `https://us.i.posthog.com`** (see `app/providers.tsx`). The original `/ingest/*` rewrite trick (to dodge ad blockers) does **not** work on OpenNext/Cloudflare — external rewrites become `308` redirects, the browser follows them to the PostHog domain, and ad blockers kill the request anyway. Ad-blocker users (~20–30% of a tech audience) won't generate events under this setup. **Follow-up**: if the analytics gap matters, replace `api_host` with a same-origin path served by a Worker-side proxy at `app/ingest/[[...path]]/route.ts` that `fetch`-es PostHog server-side. That sidesteps the redirect since the outbound call is made by the Worker, not the browser.
 
 The home page (`app/page.tsx`) is `force-dynamic` so it can read `cf-timezone` / `cf-ipcountry` headers and SSR contextual default zones per visitor. Every `/` request is a Worker invocation — fine at launch traffic, worth revisiting if scale becomes a cost concern. Path forward if it does: move contextual picking to a client effect (the Intl-based fallback in `Converter.tsx:51-60` already covers the static case) and let `/` go static.
 
