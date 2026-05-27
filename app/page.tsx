@@ -1,4 +1,3 @@
-import { headers } from 'next/headers';
 import { Converter } from '@/components/converter/Converter';
 import { ConverterStateProvider } from '@/components/converter/ConverterStateProvider';
 import { PairLinks } from '@/components/converter/PairLinks';
@@ -8,6 +7,7 @@ import { buildMetadata } from '@/lib/seo/metadata';
 import type { ZoneRef } from '@/lib/store/converter';
 import { parseSearchParams, urlToState } from '@/lib/store/from-url';
 import { pickContextualZones } from '@/lib/zones/contextual';
+import { headers } from 'next/headers';
 
 // Force per-request render so the cf-timezone / cf-ipcountry headers actually
 // vary the response. SSG would cache one variant for all visitors.
@@ -71,8 +71,8 @@ export default async function HomePage({
                 zone in the toolbar and add it.
               </li>
               <li>
-                <span className="font-medium text-[color:var(--fg)]">2.</span> Hover any hour to
-                highlight that moment across every row.
+                <span className="font-medium text-[color:var(--fg)]">2.</span> Click and drag across
+                the strip to select a time range.
               </li>
               <li>
                 <span className="font-medium text-[color:var(--fg)]">3.</span> Use the date picker
