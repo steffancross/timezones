@@ -1,4 +1,5 @@
 import { getZoneByIana, getZoneById, zones } from '@/data/zones';
+import { getCitiesByIana } from '@/lib/cities/resolve';
 import type { Zone } from './types';
 
 export interface ResolveZoneResult {
@@ -81,3 +82,18 @@ export function resolveZone(input: string): ResolveZoneResult | null {
 }
 
 export { getZoneByIana, getZoneById };
+
+/**
+ * Lat/lng for any valid IANA. Many city IANAs (e.g. `Asia/Ho_Chi_Minh`) share
+ * an offset with a canonical zone entry (`Asia/Bangkok` ICT) and aren't listed
+ * directly in `data/zones.ts`. Fall back to the first city's coords for that
+ * IANA so sun/night calculations still work for those rows. Returns null if
+ * neither source has a match.
+ */
+export function getCoordsForIana(iana: string): { lat: number; lng: number } | null {
+  const z = getZoneByIana(iana);
+  if (z) return { lat: z.lat, lng: z.lng };
+  const city = getCitiesByIana(iana)[0];
+  if (city) return { lat: city.lat, lng: city.lng };
+  return null;
+}
