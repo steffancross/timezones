@@ -13,14 +13,5 @@
     "NEXT_PUBLIC_SITE_ID": "worldtimezones",
     "NEXT_PUBLIC_SITE_NAME": "World Timezones",
     "NEXT_PUBLIC_BASE_URL": "https://worldtimezones.net"
-  },
-  // KV namespace for OpenNext's incremental cache (powers pair page ISR).
-  // Create with: pnpm dlx wrangler kv namespace create NEXT_INC_CACHE_KV
-  // Then paste the returned `id` below.
-  "kv_namespaces": [
-    {
-      "binding": "NEXT_INC_CACHE_KV",
-      "id": "64ee64b10cc84224a72dcc338b04a2b7"
-    }
-  ]
+  }
 }
