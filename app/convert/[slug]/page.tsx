@@ -8,7 +8,7 @@ import { PairContent } from '@/components/templates/PairContent';
 import { buildMetadata } from '@/lib/seo/metadata';
 import { getCuratedPairSlugs } from '@/lib/sitemap/pair-slugs';
 import { type ParsedPair, parsePairSlug } from '@/lib/slugs/parse';
-import { parseSearchParams, urlToState } from '@/lib/store/from-url';
+import { urlToState } from '@/lib/store/from-url';
 
 export const revalidate = 86400;
 export const dynamicParams = true;
@@ -32,23 +32,19 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   });
 }
 
-export default async function PairPage({
-  params,
-  searchParams,
-}: {
-  params: Promise<{ slug: string }>;
-  searchParams: Promise<Record<string, string | string[] | undefined>>;
-}) {
+export default async function PairPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
-  const sp = await searchParams;
 
   const pair = parsePairSlug(slug);
   if (!pair) notFound();
 
-  // `urlToState` deliberately omits `defaultAnchorDate` — the store's
-  // `initialize` action derives it from the home zone (see
-  // lib/store/converter.ts initialize implementation).
-  const initialState = urlToState({ pair, ...parseSearchParams(sp) });
+  // Slug-only seed. Reading `searchParams` here would opt this route out of
+  // static rendering (Next App Router rule), which would force every
+  // `/convert/*` request through the Worker with `cache-control: no-store`.
+  // Optional `?d`, `?r`, `?f`, `?z` overrides are applied client-side by
+  // `SearchParamsHydrator` so the page can stay SSG and live in the edge
+  // cache for `revalidate` (24h).
+  const initialState = urlToState({ pair });
 
   const fromLabel = shortLabel(pair.from);
   const toLabel = shortLabel(pair.to);

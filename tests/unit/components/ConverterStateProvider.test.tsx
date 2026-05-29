@@ -4,14 +4,16 @@ import { ConverterStateProvider } from '@/components/converter/ConverterStatePro
 import { useConverterStoreApi } from '@/components/converter/store-context';
 import type { ConverterStoreApi } from '@/lib/store/converter';
 
-// UrlSync (rendered as a child) calls next/navigation hooks that require a
-// real App-Router context. Stub them with no-ops — these tests don't exercise
-// URL writing.
+// UrlSync + SearchParamsHydrator (rendered as children) call next/navigation
+// hooks that require a real App-Router context. Stub them with no-ops — these
+// tests don't exercise URL writing or search-param hydration (the latter is
+// covered by tests/unit/components/SearchParamsHydrator.test.tsx).
 vi.mock('next/navigation', () => ({
   __esModule: true,
   default: {},
   useRouter: () => ({ replace: () => {}, push: () => {}, prefetch: () => {} }),
   usePathname: () => '/',
+  useSearchParams: () => new URLSearchParams(),
 }));
 
 const STORAGE_KEY = 'converter_prefs';
