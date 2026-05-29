@@ -16,3 +16,4 @@ tsconfig.tsbuildinfo.gz
 .worktreeinclude
 .vitest-attachments/
 **/__screenshots__/
+next-env.d.ts
