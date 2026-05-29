@@ -10,7 +10,6 @@ import { getCuratedPairSlugs } from '@/lib/sitemap/pair-slugs';
 import { type ParsedPair, parsePairSlug } from '@/lib/slugs/parse';
 import { urlToState } from '@/lib/store/from-url';
 
-export const revalidate = 86400;
 export const dynamicParams = true;
 
 export function generateStaticParams() {
