@@ -4,7 +4,7 @@ import { Calendar, Copy, Link2, Mail, X } from 'lucide-react';
 import { DateTime } from 'luxon';
 import type { ReactNode } from 'react';
 import { toast } from 'sonner';
-import { useConverterStore } from '@/lib/store/converter';
+import { useConverterStore } from '@/components/converter/store-context';
 import { stateToQueryString } from '@/lib/store/to-url';
 import { formatDate, formatTime } from '@/lib/time/format';
 

@@ -1,5 +1,5 @@
 import { DateTime } from 'luxon';
-import { create } from 'zustand';
+import { createStore } from 'zustand/vanilla';
 import { subscribeWithSelector } from 'zustand/middleware';
 import type { TimeFormat } from '@/lib/time/format';
 import { DEFAULT_WORKING_HOURS, type WorkingHours } from '@/lib/time/working-hours';
@@ -146,182 +146,193 @@ function rederiveAnchorOnHomeChange(
   patch.defaultAnchorDate = homeToday;
 }
 
-const initialToday = todayInZone();
-
-const initialState: ConverterState = {
-  zones: [],
-  homeZoneIndex: null,
-  anchorDate: initialToday,
-  defaultAnchorDate: initialToday,
-  rangeStart: null,
-  rangeEnd: null,
-  previewHour: null,
-  format: '12',
-  overlay: {
-    dayNight: true,
-    workHours: false,
-    weekend: false,
-  },
-  workingHours: DEFAULT_WORKING_HOURS,
-};
-
-export const useConverterStore = create<ConverterState & ConverterActions>()(
-  subscribeWithSelector((set) => ({
-    ...initialState,
-
-    addZone: (ref) =>
-      set((state) => {
-        if (state.zones.some((z) => z.iana === ref.iana)) return state;
-        if (state.zones.length >= MAX_ZONES) return state;
-        const next: Partial<ConverterState> = { zones: [...state.zones, ref] };
-        // First zone becomes the home: pin homeZoneIndex to 0 so the field
-        // stays consistent with the other bootstrap paths (initialize,
-        // setZones), and align anchorDate to its local today so the NOW
-        // indicator renders on the right day.
-        if (state.zones.length === 0) {
-          next.homeZoneIndex = 0;
-          if (isTodayDefault(state.anchorDate)) {
-            const homeToday = todayInZone(ref.iana);
-            next.anchorDate = homeToday;
-            next.defaultAnchorDate = homeToday;
-          }
-        }
-        return next;
-      }),
-
-    removeZone: (index) =>
-      set((state) => {
-        const zones = state.zones.filter((_, i) => i !== index);
-        let homeZoneIndex = state.homeZoneIndex;
-        if (homeZoneIndex !== null) {
-          if (homeZoneIndex === index) homeZoneIndex = null;
-          else if (homeZoneIndex > index) homeZoneIndex -= 1;
-        }
-        const patch: Partial<ConverterState> = { zones, homeZoneIndex };
-        rederiveAnchorOnHomeChange(state, zones, patch);
-        return patch;
-      }),
-
-    moveZone: (from, to) =>
-      set((state) => {
-        if (from === to) return state;
-        if (from < 0 || from >= state.zones.length) return state;
-        if (to < 0 || to >= state.zones.length) return state;
-        const zones = [...state.zones];
-        const [moved] = zones.splice(from, 1);
-        if (!moved) return state;
-        zones.splice(to, 0, moved);
-
-        let homeZoneIndex = state.homeZoneIndex;
-        if (homeZoneIndex !== null) {
-          if (homeZoneIndex === from) homeZoneIndex = to;
-          else if (from < homeZoneIndex && to >= homeZoneIndex) homeZoneIndex -= 1;
-          else if (from > homeZoneIndex && to <= homeZoneIndex) homeZoneIndex += 1;
-        }
-        const patch: Partial<ConverterState> = { zones, homeZoneIndex };
-        rederiveAnchorOnHomeChange(state, zones, patch);
-        return patch;
-      }),
-
-    setZones: (zones) =>
-      set((state) => {
-        const next = zones.slice(0, MAX_ZONES);
-        const homeZoneIndex =
-          state.homeZoneIndex !== null && state.homeZoneIndex < next.length
-            ? state.homeZoneIndex
-            : next.length > 0
-              ? 0
-              : null;
-        const homeIana = resolveHomeIana(next, homeZoneIndex);
-        const patch: Partial<ConverterState> = { zones: next, homeZoneIndex };
-        if (homeIana && isTodayDefault(state.anchorDate)) {
-          const homeToday = todayInZone(homeIana);
-          patch.anchorDate = homeToday;
-          patch.defaultAnchorDate = homeToday;
-        }
-        return patch;
-      }),
-
-    setHomeZoneIndex: (index) => set({ homeZoneIndex: index }),
-
-    setAnchorDate: (date) => set({ anchorDate: date }),
-    setRange: (start, end) => {
-      const lo = Math.min(start, end);
-      const hi = Math.max(start, end);
-      set({ rangeStart: lo, rangeEnd: hi });
+function buildDefaults(): ConverterState {
+  const initialToday = todayInZone();
+  return {
+    zones: [],
+    homeZoneIndex: null,
+    anchorDate: initialToday,
+    defaultAnchorDate: initialToday,
+    rangeStart: null,
+    rangeEnd: null,
+    previewHour: null,
+    format: '12',
+    overlay: {
+      dayNight: true,
+      workHours: false,
+      weekend: false,
     },
-    setPreviewHour: (hour) => set({ previewHour: hour }),
+    workingHours: DEFAULT_WORKING_HOURS,
+  };
+}
 
-    clearRange: () =>
-      set((state) => {
-        const homeToday = todayInZone(resolveHomeIana(state.zones, state.homeZoneIndex));
-        return {
-          rangeStart: null,
-          rangeEnd: null,
-          previewHour: null,
-          anchorDate: homeToday,
-          defaultAnchorDate: homeToday,
-        };
-      }),
+/**
+ * Build the initial slice for a fresh store: defaults merged with the caller's
+ * partial, with the same derivations `initialize` applies (homeZoneIndex
+ * defaulted to 0 when zones supplied without an explicit index; anchorDate
+ * aligned to the home zone's local today when not explicitly pinned).
+ *
+ * Kept separate from `initialize` so a per-mount store can pre-populate state
+ * at `createStore` time — which makes `getInitialState()` (the SSR snapshot
+ * source for zustand@5's React adapter) return the *correct* populated state,
+ * not the empty defaults. This is what fixes the SSR EmptyState flash.
+ */
+function buildInitialSlice(partial: Partial<ConverterState>): ConverterState {
+  const defaults = buildDefaults();
+  const merged: ConverterState = { ...defaults, ...partial };
+  if (partial.zones !== undefined && partial.homeZoneIndex === undefined) {
+    merged.homeZoneIndex = merged.zones.length > 0 ? 0 : null;
+  }
+  if (partial.anchorDate === undefined) {
+    const homeIana = resolveHomeIana(merged.zones, merged.homeZoneIndex);
+    if (homeIana && isTodayDefault(merged.anchorDate)) {
+      const homeToday = todayInZone(homeIana);
+      merged.anchorDate = homeToday;
+      merged.defaultAnchorDate = homeToday;
+    }
+  } else {
+    const homeIana = resolveHomeIana(merged.zones, merged.homeZoneIndex);
+    merged.defaultAnchorDate = todayInZone(homeIana);
+  }
+  return merged;
+}
 
-    resetAll: () =>
-      set((state) => {
-        const homeToday = todayInZone(resolveHomeIana(state.zones, state.homeZoneIndex));
-        return {
-          rangeStart: null,
-          rangeEnd: null,
-          previewHour: null,
-          anchorDate: homeToday,
-          defaultAnchorDate: homeToday,
-          format: initialState.format,
-          overlay: { ...initialState.overlay },
-          workingHours: DEFAULT_WORKING_HOURS,
-        };
-      }),
+export function createConverterStore(initialPartial: Partial<ConverterState> = {}) {
+  const seed = buildInitialSlice(initialPartial);
+  return createStore<ConverterState & ConverterActions>()(
+    subscribeWithSelector((set) => ({
+      ...seed,
 
-    setFormat: (format) => set({ format }),
-
-    toggleDayNightOverlay: () =>
-      set((state) => ({ overlay: { ...state.overlay, dayNight: !state.overlay.dayNight } })),
-
-    toggleWorkHoursOverlay: () =>
-      set((state) => ({ overlay: { ...state.overlay, workHours: !state.overlay.workHours } })),
-
-    toggleWeekendOverlay: () =>
-      set((state) => ({ overlay: { ...state.overlay, weekend: !state.overlay.weekend } })),
-
-    setWorkingHours: (wh) => set({ workingHours: wh }),
-
-    initialize: (partial) =>
-      set(() => {
-        // Start from defaults, not from current state. The store is a module
-        // singleton — on the server (and across dev HMR reloads) it survives
-        // across requests in the same isolate, so a previous request's
-        // rangeStart/format/overlay/etc. would otherwise leak into this
-        // render's SSR output while a freshly-loaded client module renders
-        // pristine defaults → hydration mismatch on ResetButton/ShareButton
-        // and any other component that branches on "is anything non-default".
-        const merged: ConverterState = { ...initialState, ...partial };
-        if (partial.zones !== undefined && partial.homeZoneIndex === undefined) {
-          merged.homeZoneIndex = merged.zones.length > 0 ? 0 : null;
-        }
-        // If the caller didn't pin an explicit anchorDate and we now have a
-        // home zone, align the date to the home zone's local today.
-        if (partial.anchorDate === undefined) {
-          const homeIana = resolveHomeIana(merged.zones, merged.homeZoneIndex);
-          if (homeIana && isTodayDefault(merged.anchorDate)) {
-            const homeToday = todayInZone(homeIana);
-            merged.anchorDate = homeToday;
-            merged.defaultAnchorDate = homeToday;
+      addZone: (ref) =>
+        set((state) => {
+          if (state.zones.some((z) => z.iana === ref.iana)) return state;
+          if (state.zones.length >= MAX_ZONES) return state;
+          const next: Partial<ConverterState> = { zones: [...state.zones, ref] };
+          // First zone becomes the home: pin homeZoneIndex to 0 so the field
+          // stays consistent with the other bootstrap paths (initialize,
+          // setZones), and align anchorDate to its local today so the NOW
+          // indicator renders on the right day.
+          if (state.zones.length === 0) {
+            next.homeZoneIndex = 0;
+            if (isTodayDefault(state.anchorDate)) {
+              const homeToday = todayInZone(ref.iana);
+              next.anchorDate = homeToday;
+              next.defaultAnchorDate = homeToday;
+            }
           }
-        } else {
-          // Caller pinned an explicit anchorDate (e.g. URL ?d=…). The default
-          // snapshot still tracks "what today would be in the home zone" so
-          // ResetButton can tell whether the URL-supplied date is non-default.
-          const homeIana = resolveHomeIana(merged.zones, merged.homeZoneIndex);
-          merged.defaultAnchorDate = todayInZone(homeIana);
-        }
-        return merged;
-      }),
-  })),
-);
+          return next;
+        }),
+
+      removeZone: (index) =>
+        set((state) => {
+          const zones = state.zones.filter((_, i) => i !== index);
+          let homeZoneIndex = state.homeZoneIndex;
+          if (homeZoneIndex !== null) {
+            if (homeZoneIndex === index) homeZoneIndex = null;
+            else if (homeZoneIndex > index) homeZoneIndex -= 1;
+          }
+          const patch: Partial<ConverterState> = { zones, homeZoneIndex };
+          rederiveAnchorOnHomeChange(state, zones, patch);
+          return patch;
+        }),
+
+      moveZone: (from, to) =>
+        set((state) => {
+          if (from === to) return state;
+          if (from < 0 || from >= state.zones.length) return state;
+          if (to < 0 || to >= state.zones.length) return state;
+          const zones = [...state.zones];
+          const [moved] = zones.splice(from, 1);
+          if (!moved) return state;
+          zones.splice(to, 0, moved);
+
+          let homeZoneIndex = state.homeZoneIndex;
+          if (homeZoneIndex !== null) {
+            if (homeZoneIndex === from) homeZoneIndex = to;
+            else if (from < homeZoneIndex && to >= homeZoneIndex) homeZoneIndex -= 1;
+            else if (from > homeZoneIndex && to <= homeZoneIndex) homeZoneIndex += 1;
+          }
+          const patch: Partial<ConverterState> = { zones, homeZoneIndex };
+          rederiveAnchorOnHomeChange(state, zones, patch);
+          return patch;
+        }),
+
+      setZones: (zones) =>
+        set((state) => {
+          const next = zones.slice(0, MAX_ZONES);
+          const homeZoneIndex =
+            state.homeZoneIndex !== null && state.homeZoneIndex < next.length
+              ? state.homeZoneIndex
+              : next.length > 0
+                ? 0
+                : null;
+          const homeIana = resolveHomeIana(next, homeZoneIndex);
+          const patch: Partial<ConverterState> = { zones: next, homeZoneIndex };
+          if (homeIana && isTodayDefault(state.anchorDate)) {
+            const homeToday = todayInZone(homeIana);
+            patch.anchorDate = homeToday;
+            patch.defaultAnchorDate = homeToday;
+          }
+          return patch;
+        }),
+
+      setHomeZoneIndex: (index) => set({ homeZoneIndex: index }),
+
+      setAnchorDate: (date) => set({ anchorDate: date }),
+      setRange: (start, end) => {
+        const lo = Math.min(start, end);
+        const hi = Math.max(start, end);
+        set({ rangeStart: lo, rangeEnd: hi });
+      },
+      setPreviewHour: (hour) => set({ previewHour: hour }),
+
+      clearRange: () =>
+        set((state) => {
+          const homeToday = todayInZone(resolveHomeIana(state.zones, state.homeZoneIndex));
+          return {
+            rangeStart: null,
+            rangeEnd: null,
+            previewHour: null,
+            anchorDate: homeToday,
+            defaultAnchorDate: homeToday,
+          };
+        }),
+
+      resetAll: () =>
+        set((state) => {
+          const homeToday = todayInZone(resolveHomeIana(state.zones, state.homeZoneIndex));
+          const defaults = buildDefaults();
+          return {
+            rangeStart: null,
+            rangeEnd: null,
+            previewHour: null,
+            anchorDate: homeToday,
+            defaultAnchorDate: homeToday,
+            format: defaults.format,
+            overlay: { ...defaults.overlay },
+            workingHours: DEFAULT_WORKING_HOURS,
+          };
+        }),
+
+      setFormat: (format) => set({ format }),
+
+      toggleDayNightOverlay: () =>
+        set((state) => ({ overlay: { ...state.overlay, dayNight: !state.overlay.dayNight } })),
+
+      toggleWorkHoursOverlay: () =>
+        set((state) => ({ overlay: { ...state.overlay, workHours: !state.overlay.workHours } })),
+
+      toggleWeekendOverlay: () =>
+        set((state) => ({ overlay: { ...state.overlay, weekend: !state.overlay.weekend } })),
+
+      setWorkingHours: (wh) => set({ workingHours: wh }),
+
+      // Reset to defaults and re-apply `partial`. Used by ConverterStateProvider
+      // to layer localStorage prefs on top of a per-mount store after hydration,
+      // and (in tests) to reset a store between cases.
+      initialize: (partial) => set(() => buildInitialSlice(partial)),
+    })),
+  );
+}
+
+export type ConverterStoreApi = ReturnType<typeof createConverterStore>;

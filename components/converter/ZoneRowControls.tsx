@@ -1,7 +1,7 @@
 'use client';
 
 import { ChevronDown, ChevronUp, X } from 'lucide-react';
-import { useConverterStore } from '@/lib/store/converter';
+import { useConverterStore } from '@/components/converter/store-context';
 import { cn } from '@/lib/utils';
 
 interface Props {

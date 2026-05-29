@@ -18,6 +18,13 @@ export default defineConfig({
     include: ['tests/unit/**/*.test.{ts,tsx}'],
     setupFiles: ['./tests/unit/setup.ts'],
   },
+  optimizeDeps: {
+    // Pre-bundle zustand entry points so a first-encounter optimization mid-run
+    // doesn't force a reload (vitest warns: "Vite unexpectedly reloaded a
+    // test"). Without this, the per-mount store refactor caused
+    // tests/unit/store/persistence.test.ts to fail to import.
+    include: ['zustand', 'zustand/vanilla', 'zustand/middleware'],
+  },
   resolve: {
     alias: { '@': new URL('.', import.meta.url).pathname },
     // Dedupe React so Radix-based shadcn components (Dialog, Popover, etc.)

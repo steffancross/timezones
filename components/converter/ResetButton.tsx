@@ -1,7 +1,7 @@
 'use client';
 
 import { RotateCcw } from 'lucide-react';
-import { useConverterStore } from '@/lib/store/converter';
+import { useConverterStore } from '@/components/converter/store-context';
 import { DEFAULT_WORKING_HOURS } from '@/lib/time/working-hours';
 import { cn } from '@/lib/utils';
 

@@ -1,8 +1,8 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { render } from 'vitest-browser-react';
 import { ConverterStateProvider } from '@/components/converter/ConverterStateProvider';
-import { useConverterStore } from '@/lib/store/converter';
-import { DEFAULT_WORKING_HOURS } from '@/lib/time/working-hours';
+import { useConverterStoreApi } from '@/components/converter/store-context';
+import type { ConverterStoreApi } from '@/lib/store/converter';
 
 // UrlSync (rendered as a child) calls next/navigation hooks that require a
 // real App-Router context. Stub them with no-ops — these tests don't exercise
@@ -15,31 +15,36 @@ vi.mock('next/navigation', () => ({
 }));
 
 const STORAGE_KEY = 'converter_prefs';
-const TODAY = '2026-05-20';
 
-function clearStore() {
-  useConverterStore.setState({
-    zones: [],
-    homeZoneIndex: null,
-    anchorDate: TODAY,
-    defaultAnchorDate: TODAY,
-    rangeStart: null,
-    previewHour: null,
-    format: '12',
-    overlay: { dayNight: true, workHours: false, weekend: false },
-    workingHours: DEFAULT_WORKING_HOURS,
-  });
+/**
+ * The per-mount store is owned by the provider and not exposed via a module
+ * singleton anymore. To assert on the bootstrapped state, drop a child that
+ * grabs the store from context and stashes it where the test can reach it.
+ *
+ * This is the test analogue of the production read path: real components
+ * subscribe via `useConverterStore(selector)` from the same context.
+ */
+let capturedStore: ConverterStoreApi | null = null;
+function StoreCapture() {
+  capturedStore = useConverterStoreApi();
+  return null;
+}
+
+function getStore(): ConverterStoreApi {
+  if (!capturedStore) throw new Error('StoreCapture did not run — was it rendered?');
+  return capturedStore;
 }
 
 describe('ConverterStateProvider bootstrap', () => {
   beforeEach(() => {
     localStorage.removeItem(STORAGE_KEY);
-    clearStore();
+    capturedStore = null;
   });
 
   it('renders children', async () => {
     const screen = await render(
       <ConverterStateProvider>
+        <StoreCapture />
         <div>child content</div>
       </ConverterStateProvider>,
     );
@@ -53,11 +58,12 @@ describe('ConverterStateProvider bootstrap', () => {
           zones: [{ kind: 'zone', slug: 'pst', iana: 'America/Los_Angeles' }],
         }}
       >
+        <StoreCapture />
         <div>child</div>
       </ConverterStateProvider>,
     );
-    expect(useConverterStore.getState().zones).toHaveLength(1);
-    expect(useConverterStore.getState().zones[0]?.iana).toBe('America/Los_Angeles');
+    expect(getStore().getState().zones).toHaveLength(1);
+    expect(getStore().getState().zones[0]?.iana).toBe('America/Los_Angeles');
   });
 
   it('applies persisted prefs (overlay + workingHours) from localStorage when no initialState supplies them', async () => {
@@ -71,11 +77,12 @@ describe('ConverterStateProvider bootstrap', () => {
 
     await render(
       <ConverterStateProvider>
+        <StoreCapture />
         <div>child</div>
       </ConverterStateProvider>,
     );
 
-    const state = useConverterStore.getState();
+    const state = getStore().getState();
     expect(state.overlay).toEqual({ dayNight: false, workHours: true, weekend: true });
     expect(state.workingHours).toEqual({ start: 8, end: 18, days: [1, 2, 3, 4, 5] });
     // format is intentionally not persisted — should stay at the baseline 12.
@@ -89,7 +96,7 @@ describe('ConverterStateProvider bootstrap', () => {
       STORAGE_KEY,
       JSON.stringify({
         overlay: { dayNight: true, workHours: true, weekend: false },
-        workingHours: DEFAULT_WORKING_HOURS,
+        workingHours: { start: 9, end: 17, days: [1, 2, 3, 4, 5] },
       }),
     );
 
@@ -97,42 +104,51 @@ describe('ConverterStateProvider bootstrap', () => {
       <ConverterStateProvider
         initialState={{ overlay: { dayNight: true, workHours: false, weekend: false } }}
       >
+        <StoreCapture />
         <div>child</div>
       </ConverterStateProvider>,
     );
 
-    expect(useConverterStore.getState().overlay.workHours).toBe(false);
+    expect(getStore().getState().overlay.workHours).toBe(false);
   });
 
-  it('does not re-run initialize across re-renders (hydrated ref guard)', async () => {
+  it('does not re-create the store across re-renders (useRef-stable instance)', async () => {
     const initial = [{ kind: 'zone' as const, slug: 'pst', iana: 'America/Los_Angeles' }];
 
     const screen = await render(
       <ConverterStateProvider initialState={{ zones: initial }}>
+        <StoreCapture />
         <div>child</div>
       </ConverterStateProvider>,
     );
 
-    expect(useConverterStore.getState().zones).toHaveLength(1);
+    expect(getStore().getState().zones).toHaveLength(1);
+    const storeRefBefore = getStore();
 
-    // Simulate the user adding a zone after mount — initialize must NOT re-run
-    // and clobber it back to the single seed zone.
-    useConverterStore.getState().addZone({ kind: 'zone', slug: 'est', iana: 'America/New_York' });
-    expect(useConverterStore.getState().zones).toHaveLength(2);
+    // Simulate the user adding a zone after mount — the provider's per-mount
+    // store must not be recreated on rerender and clobber the addition.
+    getStore().getState().addZone({ kind: 'zone', slug: 'est', iana: 'America/New_York' });
+    expect(getStore().getState().zones).toHaveLength(2);
 
-    // Re-render with a new (irrelevant) wrapping element; initialize stays put.
+    // Re-render with a new (irrelevant) wrapping element; same store instance,
+    // same state. Re-passing the same `initial` reference here is intentional;
+    // changing initialState after mount is not a supported flow (production
+    // route changes remount the provider).
     await screen.rerender(
       <ConverterStateProvider initialState={{ zones: initial }}>
+        <StoreCapture />
         <div>updated child</div>
       </ConverterStateProvider>,
     );
 
-    expect(useConverterStore.getState().zones).toHaveLength(2);
+    expect(getStore()).toBe(storeRefBefore);
+    expect(getStore().getState().zones).toHaveLength(2);
   });
 
   it('persistence is wired after init: store changes write to localStorage', async () => {
     await render(
       <ConverterStateProvider>
+        <StoreCapture />
         <div>child</div>
       </ConverterStateProvider>,
     );
@@ -141,7 +157,7 @@ describe('ConverterStateProvider bootstrap', () => {
     // a persisted field (overlay/workingHours) should now show up in
     // localStorage. format is intentionally not persisted, so we don't use it
     // as the signal.
-    useConverterStore.getState().toggleWeekendOverlay();
+    getStore().getState().toggleWeekendOverlay();
 
     // The persistence subscribe writes synchronously on change.
     const raw = localStorage.getItem(STORAGE_KEY);
@@ -167,11 +183,12 @@ describe('ConverterStateProvider bootstrap', () => {
           format: '24',
         }}
       >
+        <StoreCapture />
         <div>child</div>
       </ConverterStateProvider>,
     );
 
-    const s = useConverterStore.getState();
+    const s = getStore().getState();
     expect(s.zones).toHaveLength(2);
     expect(s.zones[0]?.iana).toBe('America/Los_Angeles');
     expect(s.anchorDate).toBe('2026-12-25');
@@ -192,11 +209,12 @@ describe('ConverterStateProvider bootstrap', () => {
           anchorDate: '2026-12-25',
         }}
       >
+        <StoreCapture />
         <div>child</div>
       </ConverterStateProvider>,
     );
 
-    const s = useConverterStore.getState();
+    const s = getStore().getState();
     expect(s.anchorDate).toBe('2026-12-25');
     // defaultAnchorDate should be today-in-Tokyo, NOT the URL-supplied date.
     expect(s.defaultAnchorDate).not.toBe('2026-12-25');
@@ -208,11 +226,12 @@ describe('ConverterStateProvider bootstrap', () => {
     // do this if cf-timezone is missing and no zones are seeded).
     await render(
       <ConverterStateProvider initialState={{}}>
+        <StoreCapture />
         <div>child</div>
       </ConverterStateProvider>,
     );
 
-    const s = useConverterStore.getState();
+    const s = getStore().getState();
     expect(s.zones).toEqual([]);
     expect(s.format).toBe('12');
     expect(s.overlay).toEqual({ dayNight: true, workHours: false, weekend: false });

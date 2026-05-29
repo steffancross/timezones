@@ -6,7 +6,7 @@ import { useDragSelectionGlobalListener } from '@/lib/converter/drag-selection';
 import { useNow } from '@/lib/hooks/useNow';
 import type { SearchResult } from '@/lib/search/types';
 import type { ZoneRef } from '@/lib/store/converter';
-import { useConverterStore } from '@/lib/store/converter';
+import { useConverterStore } from '@/components/converter/store-context';
 import { formatDate } from '@/lib/time/format';
 import { useCallback, useEffect, useState } from 'react';
 import { DatePicker } from './DatePicker';

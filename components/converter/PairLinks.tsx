@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { getZoneById } from '@/data/zones';
 import { getCityById } from '@/lib/cities/resolve';
 import type { ZoneRef } from '@/lib/store/converter';
-import { useConverterStore } from '@/lib/store/converter';
+import { useConverterStore } from '@/components/converter/store-context';
 
 interface Endpoint {
   slug: string;

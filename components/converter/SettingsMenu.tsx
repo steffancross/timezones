@@ -2,7 +2,7 @@
 
 import { Settings } from 'lucide-react';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
-import { useConverterStore } from '@/lib/store/converter';
+import { useConverterStore } from '@/components/converter/store-context';
 import { cn } from '@/lib/utils';
 import { WorkingHoursEditor } from './WorkingHoursEditor';
 

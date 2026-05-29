@@ -2,7 +2,7 @@
 
 import { usePathname, useRouter } from 'next/navigation';
 import { useEffect } from 'react';
-import { useConverterStore } from '@/lib/store/converter';
+import { useConverterStore } from '@/components/converter/store-context';
 import { stateToQueryString } from '@/lib/store/to-url';
 
 /**

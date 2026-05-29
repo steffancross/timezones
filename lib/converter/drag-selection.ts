@@ -1,7 +1,7 @@
 'use client';
 
-import { useEffect } from 'react';
-import { useConverterStore } from '@/lib/store/converter';
+import { useEffect, useMemo } from 'react';
+import { useConverterStoreApi } from '@/components/converter/store-context';
 
 /**
  * Range drag controller.
@@ -16,6 +16,10 @@ import { useConverterStore } from '@/lib/store/converter';
  *
  * Either way, the live block is always `[min(pivot, cursor), max(pivot, cursor)]`,
  * written into the store via `setRange`.
+ *
+ * Drag state (mode + pivot) is module-level because at most one drag is ever
+ * active globally — there's only one converter on a page. The store reference
+ * is per-mount, bound via the `useDragSelection` hook below.
  */
 
 type DragMode = 'new' | 'resize';
@@ -23,33 +27,41 @@ type DragMode = 'new' | 'resize';
 let dragMode: DragMode | null = null;
 let pivotHour: number | null = null;
 
-export function startNewDrag(hour: number): void {
-  dragMode = 'new';
-  pivotHour = hour;
-  useConverterStore.getState().setRange(hour, hour);
-}
-
-export function startResizeDrag(side: 'start' | 'end'): void {
-  const { rangeStart, rangeEnd } = useConverterStore.getState();
-  if (rangeStart === null) return;
-  const end = rangeEnd ?? rangeStart;
-  // Pivot is the edge we're NOT grabbing.
-  pivotHour = side === 'start' ? end : rangeStart;
-  dragMode = 'resize';
-}
-
-export function extendDrag(hour: number): void {
-  if (dragMode === null || pivotHour === null) return;
-  useConverterStore.getState().setRange(pivotHour, hour);
-}
-
 function endDrag(): void {
   dragMode = null;
   pivotHour = null;
 }
 
-export function isDragging(): boolean {
-  return dragMode !== null;
+/**
+ * Returns drag actions bound to the per-mount converter store from context.
+ * Call inside HourTile / RangeBand to get `startNewDrag`, `extendDrag`, etc.
+ */
+export function useDragSelection() {
+  const store = useConverterStoreApi();
+  return useMemo(
+    () => ({
+      startNewDrag(hour: number) {
+        dragMode = 'new';
+        pivotHour = hour;
+        store.getState().setRange(hour, hour);
+      },
+      startResizeDrag(side: 'start' | 'end') {
+        const { rangeStart, rangeEnd } = store.getState();
+        if (rangeStart === null) return;
+        const end = rangeEnd ?? rangeStart;
+        pivotHour = side === 'start' ? end : rangeStart;
+        dragMode = 'resize';
+      },
+      extendDrag(hour: number) {
+        if (dragMode === null || pivotHour === null) return;
+        store.getState().setRange(pivotHour, hour);
+      },
+      isDragging(): boolean {
+        return dragMode !== null;
+      },
+    }),
+    [store],
+  );
 }
 
 /**

@@ -1,6 +1,5 @@
 import { DEFAULT_WORKING_HOURS, type WorkingHours } from '@/lib/time/working-hours';
-import type { ConverterState } from './converter';
-import { useConverterStore } from './converter';
+import type { ConverterState, ConverterStoreApi } from './converter';
 
 const STORAGE_KEY = 'converter_prefs';
 
@@ -54,12 +53,12 @@ function validateWorkingHours(value: unknown): WorkingHours | null {
 
 /**
  * Subscribe the store to write prefs to localStorage on change. Returns the
- * unsubscribe function. Call once on client mount.
+ * unsubscribe function. Call once on client mount with the per-mount store.
  */
-export function attachPersistence(): (() => void) | undefined {
+export function attachPersistence(store: ConverterStoreApi): (() => void) | undefined {
   if (typeof window === 'undefined') return;
 
-  return useConverterStore.subscribe(
+  return store.subscribe(
     (state) => ({
       overlay: state.overlay,
       workingHours: state.workingHours,

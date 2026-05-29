@@ -2,13 +2,24 @@ import { beforeEach, describe, expect, it } from 'vitest';
 import { page } from 'vitest/browser';
 import { render } from 'vitest-browser-react';
 import { WorkingHoursEditor } from '@/components/converter/WorkingHoursEditor';
-import { useConverterStore } from '@/lib/store/converter';
+import { ConverterStoreProvider } from '@/components/converter/store-context';
+import { createConverterStore } from '@/lib/store/converter';
 import { DEFAULT_WORKING_HOURS } from '@/lib/time/working-hours';
 
-function resetStore() {
-  useConverterStore.setState({
+let store: ReturnType<typeof createConverterStore>;
+function freshStore() {
+  store = createConverterStore();
+  store.setState({
     workingHours: DEFAULT_WORKING_HOURS,
   });
+}
+
+function renderWithStore() {
+  return render(
+    <ConverterStoreProvider value={store}>
+      <WorkingHoursEditor />
+    </ConverterStoreProvider>,
+  );
 }
 
 function findDayButton(idx: number): HTMLButtonElement | null {
@@ -22,10 +33,10 @@ async function clickDay(idx: number) {
 }
 
 describe('WorkingHoursEditor', () => {
-  beforeEach(resetStore);
+  beforeEach(freshStore);
 
   it('renders with the current store workingHours pre-populated', async () => {
-    await render(<WorkingHoursEditor />);
+    await renderWithStore();
 
     const selects = Array.from(document.body.querySelectorAll('select'));
     expect(selects).toHaveLength(2);
@@ -34,41 +45,41 @@ describe('WorkingHoursEditor', () => {
   });
 
   it('shows error when store has start >= end', async () => {
-    useConverterStore.setState({
+    store.setState({
       workingHours: { start: 18, end: 17, days: [1, 2, 3, 4, 5] },
     });
-    await render(<WorkingHoursEditor />);
+    await renderWithStore();
 
     expect(document.body.textContent ?? '').toContain('Start must be before end');
   });
 
   it('toggling a day off writes to the store immediately', async () => {
-    await render(<WorkingHoursEditor />);
+    await renderWithStore();
 
     await clickDay(1);
-    expect(useConverterStore.getState().workingHours.days).toEqual([2, 3, 4, 5]);
+    expect(store.getState().workingHours.days).toEqual([2, 3, 4, 5]);
   });
 
   it('toggling a non-working day on adds it sorted', async () => {
-    await render(<WorkingHoursEditor />);
+    await renderWithStore();
 
     await clickDay(6);
-    expect(useConverterStore.getState().workingHours.days).toEqual([1, 2, 3, 4, 5, 6]);
+    expect(store.getState().workingHours.days).toEqual([1, 2, 3, 4, 5, 6]);
   });
 
   it('changing the start select writes to the store', async () => {
-    await render(<WorkingHoursEditor />);
+    await renderWithStore();
 
     const startSelect = document.body.querySelectorAll('select')[0] as unknown as Element;
     await page.elementLocator(startSelect).selectOptions('8');
-    expect(useConverterStore.getState().workingHours.start).toBe(8);
+    expect(store.getState().workingHours.start).toBe(8);
   });
 
   it('changing the end select writes to the store', async () => {
-    await render(<WorkingHoursEditor />);
+    await renderWithStore();
 
     const endSelect = document.body.querySelectorAll('select')[1] as unknown as Element;
     await page.elementLocator(endSelect).selectOptions('18');
-    expect(useConverterStore.getState().workingHours.end).toBe(18);
+    expect(store.getState().workingHours.end).toBe(18);
   });
 });

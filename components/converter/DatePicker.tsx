@@ -1,6 +1,6 @@
 'use client';
 
-import { useConverterStore } from '@/lib/store/converter';
+import { useConverterStore } from '@/components/converter/store-context';
 
 /**
  * Date pill: a styled wrapper around the native `<input type="date">`. Uses

@@ -5,7 +5,7 @@ import { DateTime } from 'luxon';
 import { useMemo } from 'react';
 import { useNow } from '@/lib/hooks/useNow';
 import type { ZoneRef } from '@/lib/store/converter';
-import { useConverterStore } from '@/lib/store/converter';
+import { useConverterStore } from '@/components/converter/store-context';
 import { anchorToZones } from '@/lib/time/luxon';
 import { getNightHours } from '@/lib/time/sun';
 import { getWorkingHoursOnDay, type WorkingHours } from '@/lib/time/working-hours';
