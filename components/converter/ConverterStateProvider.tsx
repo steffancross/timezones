@@ -1,8 +1,9 @@
 'use client';
 
-import { useEffect, useRef } from 'react';
+import { Suspense, useEffect, useRef } from 'react';
 import { type ConverterState, createConverterStore } from '@/lib/store/converter';
 import { attachPersistence, loadPersistedPrefs } from '@/lib/store/persistence';
+import { SearchParamsHydrator } from './SearchParamsHydrator';
 import { ConverterStoreProvider } from './store-context';
 import { UrlSync } from './UrlSync';
 
@@ -64,6 +65,12 @@ export function ConverterStateProvider({ initialState, children }: Props) {
 
   return (
     <ConverterStoreProvider value={store}>
+      {/* useSearchParams() needs a Suspense boundary to keep the rest of the
+          tree statically prerenderable — without it, the entire `/convert/*`
+          route falls back to CSR and `revalidate` is silently dropped. */}
+      <Suspense fallback={null}>
+        <SearchParamsHydrator />
+      </Suspense>
       <UrlSync />
       {children}
     </ConverterStoreProvider>
