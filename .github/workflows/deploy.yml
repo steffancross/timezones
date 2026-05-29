@@ -4,6 +4,13 @@ on:
     branches: [main]
   workflow_dispatch:
 
+# Collapse a landed stack (back-to-back merges to main) into a single deploy of the final state.
+# Each new push cancels the in-flight/queued run; cancellation lands during the long build/e2e
+# phase, not the brief wrangler activation, so it's safe for deploys.
+concurrency:
+  group: deploy-production
+  cancel-in-progress: true
+
 jobs:
   deploy:
     runs-on: ubuntu-latest
