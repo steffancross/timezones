@@ -1,8 +1,8 @@
 'use client';
 
 import { useCallback } from 'react';
-import { extendDrag, isDragging, startNewDrag } from '@/lib/converter/drag-selection';
-import { useConverterStore } from '@/lib/store/converter';
+import { useDragSelection } from '@/lib/converter/drag-selection';
+import { useConverterStore } from '@/components/converter/store-context';
 import { formatHourTile, type TimeFormat } from '@/lib/time/format';
 import { cn } from '@/lib/utils';
 import type { ColumnData } from './HourStrip';
@@ -43,6 +43,7 @@ export function HourTile({
   const storeRangeEnd = useConverterStore((s) => s.rangeEnd);
   const previewHour = useConverterStore((s) => s.previewHour);
   const setPreviewHour = useConverterStore((s) => s.setPreviewHour);
+  const { startNewDrag, extendDrag, isDragging } = useDragSelection();
 
   // Normalize the range: when rangeEnd is null, the block is 1 tile wide at
   // rangeStart. URL/tests that only know the start get the single-tile
@@ -58,11 +59,11 @@ export function HourTile({
   const handlePointerEnter = useCallback(() => {
     setPreviewHour(column.homeHour);
     if (isDragging()) extendDrag(column.homeHour);
-  }, [column.homeHour, setPreviewHour]);
+  }, [column.homeHour, setPreviewHour, isDragging, extendDrag]);
 
   const handlePointerLeave = useCallback(() => {
     if (!isDragging()) setPreviewHour(null);
-  }, [setPreviewHour]);
+  }, [setPreviewHour, isDragging]);
 
   const handlePointerDown = useCallback(
     (e: React.PointerEvent<HTMLDivElement>) => {
@@ -71,7 +72,7 @@ export function HourTile({
       setPreviewHour(column.homeHour);
       startNewDrag(column.homeHour);
     },
-    [column.homeHour, setPreviewHour],
+    [column.homeHour, setPreviewHour, startNewDrag],
   );
 
   // Tick style per design handoff: transparent tile, bottom-left mono label,

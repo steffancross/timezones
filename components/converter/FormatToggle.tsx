@@ -1,6 +1,6 @@
 'use client';
 
-import { useConverterStore } from '@/lib/store/converter';
+import { useConverterStore } from '@/components/converter/store-context';
 import { cn } from '@/lib/utils';
 
 /**

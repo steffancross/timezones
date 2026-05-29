@@ -1,8 +1,8 @@
 'use client';
 
 import { useCallback, useRef } from 'react';
-import { extendDrag, startResizeDrag } from '@/lib/converter/drag-selection';
-import { useConverterStore } from '@/lib/store/converter';
+import { useDragSelection } from '@/lib/converter/drag-selection';
+import { useConverterStore } from '@/components/converter/store-context';
 import { cn } from '@/lib/utils';
 
 interface Props {
@@ -83,6 +83,7 @@ function ResizeEdge({
   side: 'start' | 'end';
   bandRef: React.RefObject<HTMLDivElement | null>;
 }) {
+  const { startResizeDrag, extendDrag } = useDragSelection();
   const onPointerDown = useCallback(
     (e: React.PointerEvent<HTMLDivElement>) => {
       if (e.pointerType === 'mouse' && e.button !== 0) return;
@@ -94,7 +95,7 @@ function ResizeEdge({
       e.currentTarget.setPointerCapture(e.pointerId);
       startResizeDrag(side);
     },
-    [side],
+    [side, startResizeDrag],
   );
   const onPointerMove = useCallback(
     (e: React.PointerEvent<HTMLDivElement>) => {
@@ -107,7 +108,7 @@ function ResizeEdge({
       const hour = Math.max(0, Math.min(23, Math.floor(ratio * 24)));
       extendDrag(hour);
     },
-    [bandRef],
+    [bandRef, extendDrag],
   );
   return (
     <div

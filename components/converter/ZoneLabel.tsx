@@ -6,7 +6,7 @@ import { getZoneById } from '@/data/zones';
 import { getCityById } from '@/lib/cities/resolve';
 import { useNow } from '@/lib/hooks/useNow';
 import type { ZoneRef } from '@/lib/store/converter';
-import { useConverterStore } from '@/lib/store/converter';
+import { useConverterStore } from '@/components/converter/store-context';
 import { formatDate, formatOffset, formatTime } from '@/lib/time/format';
 import { cn } from '@/lib/utils';
 

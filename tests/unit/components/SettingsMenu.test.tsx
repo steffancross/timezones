@@ -2,14 +2,25 @@ import { beforeEach, describe, expect, it } from 'vitest';
 import { page } from 'vitest/browser';
 import { render } from 'vitest-browser-react';
 import { SettingsMenu } from '@/components/converter/SettingsMenu';
-import { useConverterStore } from '@/lib/store/converter';
+import { ConverterStoreProvider } from '@/components/converter/store-context';
+import { createConverterStore } from '@/lib/store/converter';
 import { DEFAULT_WORKING_HOURS } from '@/lib/time/working-hours';
 
-function resetStore() {
-  useConverterStore.setState({
+let store: ReturnType<typeof createConverterStore>;
+function freshStore() {
+  store = createConverterStore();
+  store.setState({
     overlay: { dayNight: true, workHours: false, weekend: false },
     workingHours: DEFAULT_WORKING_HOURS,
   });
+}
+
+function renderWithStore() {
+  return render(
+    <ConverterStoreProvider value={store}>
+      <SettingsMenu />
+    </ConverterStoreProvider>,
+  );
 }
 
 /** Open the Popover (portaled into body) and yield to React. */
@@ -31,50 +42,50 @@ async function clickRow(text: string) {
 }
 
 describe('SettingsMenu overlay toggles', () => {
-  beforeEach(resetStore);
+  beforeEach(freshStore);
 
   it('clicking the Day / night row flips overlay.dayNight', async () => {
-    const screen = await render(<SettingsMenu />);
+    const screen = await renderWithStore();
     await openMenu(screen.container);
 
-    expect(useConverterStore.getState().overlay.dayNight).toBe(true);
+    expect(store.getState().overlay.dayNight).toBe(true);
     await clickRow('Day / night');
-    expect(useConverterStore.getState().overlay.dayNight).toBe(false);
+    expect(store.getState().overlay.dayNight).toBe(false);
   });
 
   it('clicking the Working hours row flips overlay.workHours', async () => {
-    const screen = await render(<SettingsMenu />);
+    const screen = await renderWithStore();
     await openMenu(screen.container);
 
-    expect(useConverterStore.getState().overlay.workHours).toBe(false);
+    expect(store.getState().overlay.workHours).toBe(false);
     await clickRow('Working hours');
-    expect(useConverterStore.getState().overlay.workHours).toBe(true);
+    expect(store.getState().overlay.workHours).toBe(true);
   });
 
   it('clicking the Weekend row flips overlay.weekend', async () => {
-    const screen = await render(<SettingsMenu />);
+    const screen = await renderWithStore();
     await openMenu(screen.container);
 
-    expect(useConverterStore.getState().overlay.weekend).toBe(false);
+    expect(store.getState().overlay.weekend).toBe(false);
     await clickRow('Weekend');
-    expect(useConverterStore.getState().overlay.weekend).toBe(true);
+    expect(store.getState().overlay.weekend).toBe(true);
   });
 
   it('toggles are independent — flipping one does not flip the others', async () => {
-    const screen = await render(<SettingsMenu />);
+    const screen = await renderWithStore();
     await openMenu(screen.container);
 
     // Default: dayNight=true, others=false. Flip weekend on.
     await clickRow('Weekend');
 
-    const state = useConverterStore.getState();
+    const state = store.getState();
     expect(state.overlay.weekend).toBe(true);
     expect(state.overlay.dayNight).toBe(true); // unchanged
     expect(state.overlay.workHours).toBe(false); // unchanged
   });
 
   it('inline working-hours editor only reveals when workHours is on', async () => {
-    const screen = await render(<SettingsMenu />);
+    const screen = await renderWithStore();
     await openMenu(screen.container);
 
     // workHours starts false → editor not present (no hour selects).

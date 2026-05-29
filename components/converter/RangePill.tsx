@@ -2,7 +2,7 @@
 
 import { X } from 'lucide-react';
 import { DateTime } from 'luxon';
-import { useConverterStore } from '@/lib/store/converter';
+import { useConverterStore } from '@/components/converter/store-context';
 import { formatTime } from '@/lib/time/format';
 
 /**
