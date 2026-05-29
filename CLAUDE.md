@@ -90,11 +90,125 @@ MiniSearch index built at `scripts/build-search-index.ts` → `public/search-ind
 
 Next.js App Router. OpenNext adapts to a Cloudflare Worker (`open-next.config.ts`, `wrangler.jsonc` is generated).
 
+**Incremental cache = Workers Static Assets, no KV/R2.** `open-next.config.ts` uses
+`staticAssetsIncrementalCache` + `enableCacheInterception: true` (no `kv_namespaces`/R2 binding
+in `wrangler.jsonc`). This is a *read-only* cache: the prerendered output ships inside the
+static-assets bundle and is read at runtime, so it writes **zero KV/R2 entries** at deploy or
+runtime. Cache interception lets the Worker short-circuit cached routes before loading the
+NextServer JS (cold-start / CPU win).
+
+Why this exact shape — there are two traps in the history worth knowing:
+
+1. **Don't use `kv-incremental-cache`.** It writes one KV entry per page on deploy. With ~5k
+   `/convert/[slug]` pairs, a few deploys/day blew Cloudflare's free-tier 1000-KV-writes/day
+   quota → 429 on `wrangler deploy` (PR #49). The static-assets backend avoids this entirely. If
+   you ever genuinely need ISR/revalidation, switch to `r2-incremental-cache` (R2 write quota is
+   ~1000× higher), **not** KV.
+2. **Don't remove the incremental cache to "fix" the KV quota.** PR #49 originally went too far
+   and set `defineCloudflareConfig({})` (no cache at all). That didn't just disable ISR — it
+   removed the store the Worker *reads prerendered HTML from*, so every `/convert/*` request
+   re-rendered on demand (full React SSR + Luxon math). CPU time and request duration spiked.
+   The incremental cache is how prerendered pages are served cheaply, ISR or not — it must be
+   present. The static-assets backend gives you that without the KV cost.
+
+Revalidation is intentionally OFF (pair pages are fully static; data updates happen via manual
+`pnpm data:build` + redeploy). `staticAssetsIncrementalCache` doesn't support revalidation,
+which is fine. **Don't re-add `export const revalidate = ...` to these routes** — it's a no-op
+with this backend and misleading.
+
+Note `pnpm build` (= `next build`) writes prerendered pages to `.next/`; the static-assets cache
+is only *assembled into the deployable bundle* by `opennextjs-cloudflare build` (run via `pnpm
+preview` / `pnpm deploy`). Inspecting `.open-next/assets` after a bare `next build` is
+misleading — it's stale until the OpenNext build runs.
+
+Verify a cache regression via Workers Observability **CPU time / request duration** on
+`/convert/*`, not `cf-cache-status` — interception serves from the Cache API inside the Worker,
+which never emits `cf-cache-status` (see the Production caching section).
+
 **PostHog is called directly at `https://us.i.posthog.com`** (see `app/providers.tsx`). The original `/ingest/*` rewrite trick (to dodge ad blockers) does **not** work on OpenNext/Cloudflare — external rewrites become `308` redirects, the browser follows them to the PostHog domain, and ad blockers kill the request anyway. Ad-blocker users (~20–30% of a tech audience) won't generate events under this setup. **Follow-up**: if the analytics gap matters, replace `api_host` with a same-origin path served by a Worker-side proxy at `app/ingest/[[...path]]/route.ts` that `fetch`-es PostHog server-side. That sidesteps the redirect since the outbound call is made by the Worker, not the browser.
 
 The home page (`app/page.tsx`) is `force-dynamic` so it can read `cf-timezone` / `cf-ipcountry` headers and SSR contextual default zones per visitor. Every `/` request is a Worker invocation — fine at launch traffic, worth revisiting if scale becomes a cost concern. Path forward if it does: move contextual picking to a client effect (the Intl-based fallback in `Converter.tsx:51-60` already covers the static case) and let `/` go static.
 
 Env vars are validated via Zod in `lib/env.ts`. Missing `NEXT_PUBLIC_*` values throw at startup. See `.env.example` for the required set.
+
+## Production caching (Cloudflare)
+
+**The real caching mechanism is in-repo, not the dashboard.** Prerendered HTML is served cheaply
+by OpenNext's `staticAssetsIncrementalCache` + `enableCacheInterception` (see Routing &
+deployment above). The dashboard Cache Rule below does **not** cache the `/convert/*` HTML —
+*Workers run before Cloudflare's edge cache*, so a Worker-generated response never reaches the
+Cache-Rule layer (the tell: those responses emit **no `cf-cache-status` header at all**, not
+even `BYPASS`). The Cache Rule + Vary-strip are kept as a harmless config inventory and would
+only matter if a route were ever served as a true static asset (Option C). **Do not chase
+`cf-cache-status: HIT` on HTML — it is structurally unavailable here.** Measure cache health via
+Workers Observability CPU time / request duration instead.
+
+The dashboard config that *is* deployed, for the record:
+
+**Cache Rule** — `Caching → Cache Rules`:
+- Match: SSG'd routes only, RSC prefetches excluded.
+  (starts_with(http.request.uri.path, "/convert/") or
+    starts_with(http.request.uri.path, "/time-in/") or
+    starts_with(http.request.uri.path, "/articles/") or
+    http.request.uri.path eq "/dst" or 
+    http.request.uri.path eq "/about" or
+    http.request.uri.path eq "/privacy" or
+    http.request.uri.path eq "/terms" or
+    http.request.uri.path eq "/cities" or
+    http.request.uri.path eq "/conversions")
+  and not http.request.uri.query contains "_rsc="
+  and not http.request.headers["rsc"][0] eq "1"
+  and not http.request.headers["next-router-prefetch"][0] eq "1"
+
+- Action: Eligible for cache, Edge TTL = respect origin `cache-control` (the routes send
+`s-maxage=31536000`), Browser TTL = respect origin.
+- Excluding RSC requests prevents one URL from having two collision-risk variants (HTML vs RSC
+payload) competing for the same cache key.
+
+- Match: same expression as the Cache Rule. 
+- Action: Remove header `Vary`. 
+- Why: Next.js sends `vary: rsc, next-router-state-tree, next-router-prefetch,
+next-router-segment-prefetch` on every response. CF respects `Vary` strictly — a response that
+varies by custom unknown headers gets bypassed entirely (no `cf-cache-status` emitted at all).
+Since the Cache Rule already excludes RSC requests from cache eligibility, the `Vary` is 
+redundant on cached responses and safe to strip.
+
+**Homepage (`/`) is intentionally NOT cached**: `force-dynamic` reads
+`cf-timezone`/`cf-ipcountry` per visitor. Every visit = one Worker invocation. Worth this cost
+for SEO/UX at launch; revisit if `/`-only Worker volume becomes the dominant cost line.
+
+**Plan**: Workers Paid ($5/mo). Required after the free plan's 10ms CPU cap was hit during a
+Lighthouse + Googlebot-crawl combo on the pre-SSG pair pages. Free plan was structurally too
+tight for any cold-isolate SSR involving Luxon timezone math; paid plan's 50ms default budget
+is comfortable.
+
+## Future optimization paths
+
+Not urgent — site is fast and within budget — but worth knowing about:
+
+- **Drop `force-dynamic` from `/`**. Lets the homepage SSG with a static fallback (e.g.
+NY/London/Tokyo from `lib/zones/contextual.ts` FALLBACK), then re-seed contextual zones from
+`Intl.DateTimeFormat().resolvedOptions().timeZone` in a small client effect. Brief flash for
+non-US visitors. Trade: lose per-visitor SSR HTML, gain Worker invocations dropping to ~zero
+for the highest-traffic route.
+- **Defer day/night band rendering to client**. `HourStrip`'s `BandOverlay` calls
+`getNightHours` (SunCalc) at SSR; move to a `useEffect`. Cuts 2–3 SunCalc calls per SSR. Tiny
+visual delay on first paint for the soft gradient overlay; structure unchanged. 
+- **Precompute night hours at build time**. `getSunTimes` is deterministic given (zone, date,
+lat, lng). Generate a static JSON for popular (zone, month) pairs during the data:build step;
+replace the runtime calc with a lookup. Removes SunCalc from the Worker hot path entirely.
+- **Inline timezone offset math in `HourStrip`'s columns useMemo**. The current `anchorToZones`
+  makes ~7 Luxon ops per column = ~170 ops/zone for 24 columns. For pure hour-shifting, a single
+  `currentOffsetBetween` + arithmetic is 5–10× faster. Keep Luxon for date-boundary logic where
+it earns its weight (DST transitions, etc.).
+- **Bundle analyzer pass**. Run `@next/bundle-analyzer` on the main app chunks — one chunk
+(`09ymw6s-_~7w~.js` in current lighthouse reports) shipped 40 KB with 99% unused. Almost
+certainly a route-specific chunk being preloaded too eagerly. Likely MDX runtime or
+PairContent.
+- **PostHog reverse-proxy via Worker**. PostHog is currently called directly at
+`https://us.i.posthog.com`, killed by ad blockers for ~20–30% of visitors. A Worker-side proxy
+at `app/ingest/[[...path]]/route.ts` would route through same-origin and recover those events.
+Trade: per-event Worker invocation cost. Only worth doing if analytics gap matters.
 
 ### Path alias
 
@@ -102,7 +216,6 @@ Env vars are validated via Zod in `lib/env.ts`. Missing `NEXT_PUBLIC_*` values t
 
 ## Conventions learned through review
 
-- **Anchor is intentionally not settable from the UI** — neither tile clicks nor the (now removed) mobile slider set an anchor. The AnchorPill still exists for the URL-driven anchor case (`?h=N`), but tiles only fire hover preview (`previewHour`).
 - **Hover preview is cross-row vertical highlighting**: hovering any tile sets `previewHour = column.homeHour`, which causes every row's tile at that same `homeHour` index to light up. On mobile, `onPointerDown` triggers the same effect for tap.
 - **Per-column visual state, not per-row**: weekend recolor applies per column based on each column's `localDate`, so a Fri→Sat boundary mid-row recolors only the Sat tiles + the Sat portion of the baseline. Apply the same instinct for any state that can straddle a date boundary.
 - **`zones[0]` is the home zone in practice**, even though `homeZoneIndex` exists. `Converter.tsx` reads `zones[0]?.iana` directly. All store bootstrap paths (`initialize`, `setZones`, first-zone `addZone`) keep `homeZoneIndex` in sync at `0` when zones are non-empty, so the invariant "non-empty zones ⇒ `homeZoneIndex !== null`" holds — rely on either field but pick one consistently if you ever extend reordering.

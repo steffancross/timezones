@@ -14,4 +14,8 @@
     "NEXT_PUBLIC_SITE_NAME": "World Timezones",
     "NEXT_PUBLIC_BASE_URL": "https://worldtimezones.net"
   }
+  // No KV/R2 binding: the incremental cache uses Workers Static Assets (see open-next.config.ts).
+  // The old NEXT_INC_CACHE_KV namespace (id 64ee64b10cc84224a72dcc338b04a2b7) still exists in the
+  // CF account but is unbound; recover via `wrangler kv namespace list`. If ISR is ever needed,
+  // add an R2 bucket binding (not KV) and switch open-next.config.ts to r2-incremental-cache.
 }
