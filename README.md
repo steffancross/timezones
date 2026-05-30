@@ -7,7 +7,7 @@ Production: <https://worldtimezones.net>
 ## Stack
 
 - **Next.js 16** (App Router, React 19)
-- **OpenNext + Cloudflare Workers** for deployment, with KV-backed ISR cache for pair pages
+- **OpenNext + Cloudflare Workers** for deployment, with an R2-backed incremental cache for pair pages
 - **Tailwind v4** + **shadcn** primitives
 - **Zustand** for the converter store (URL-syncable + localStorage-persisted prefs)
 - **Luxon** for time math, **suncalc** for day/night bands
@@ -101,7 +101,7 @@ tests/
 
 ### Deployment
 
-OpenNext bundles the app into a single Cloudflare Worker. Static assets, including the prebuilt `public/search-index.json`, are served via the `ASSETS` binding. Pair pages (`/convert/[slug]`) use ISR cached in a KV namespace (`NEXT_INC_CACHE_KV` in `wrangler.jsonc`).
+OpenNext bundles the app into a single Cloudflare Worker. Static assets, including the prebuilt `public/search-index.json`, are served via the `ASSETS` binding. Pair pages (`/convert/[slug]`) are served from a writable incremental cache backed by an R2 bucket (`NEXT_INC_CACHE_R2_BUCKET` in `wrangler.jsonc`), fronted by a per-colo regional cache — this both serves the prerendered curated pages and persists the on-demand long-tail renders.
 
 The home page is `force-dynamic` so it can SSR contextual default zones from `cf-timezone` / `cf-ipcountry` headers. Every `/` request is a Worker invocation — see CLAUDE.md for the path forward if this ever becomes a cost concern.
 

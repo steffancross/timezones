@@ -90,36 +90,60 @@ MiniSearch index built at `scripts/build-search-index.ts` → `public/search-ind
 
 Next.js App Router. OpenNext adapts to a Cloudflare Worker (`open-next.config.ts`, `wrangler.jsonc` is generated).
 
-**Incremental cache = Workers Static Assets, no KV/R2.** `open-next.config.ts` uses
-`staticAssetsIncrementalCache` + `enableCacheInterception: true` (no `kv_namespaces`/R2 binding
-in `wrangler.jsonc`). This is a *read-only* cache: the prerendered output ships inside the
-static-assets bundle and is read at runtime, so it writes **zero KV/R2 entries** at deploy or
-runtime. Cache interception lets the Worker short-circuit cached routes before loading the
-NextServer JS (cold-start / CPU win).
+**Incremental cache = R2 + regional cache.** `open-next.config.ts` uses
+`withRegionalCache(r2IncrementalCache, { mode: 'long-lived' })` + `enableCacheInterception: true`,
+with an R2 bucket bound as `NEXT_INC_CACHE_R2_BUCKET` in `wrangler.jsonc`. R2 is a *writable*
+store, so it serves the prerendered curated pages **and** persists the on-demand long-tail
+renders (see "Why R2, and why this shape" below). The regional-cache wrapper fronts R2 with the
+per-colo Cache API so hot pages are served colo-local instead of paying an R2 read each hit.
+Cache interception lets the Worker short-circuit cached routes before loading the NextServer JS
+(cold-start / CPU win).
 
-Why this exact shape — there are two traps in the history worth knowing:
+Why R2, and why this shape — history + the reason it's writable now:
 
-1. **Don't use `kv-incremental-cache`.** It writes one KV entry per page on deploy. With ~5k
-   `/convert/[slug]` pairs, a few deploys/day blew Cloudflare's free-tier 1000-KV-writes/day
-   quota → 429 on `wrangler deploy` (PR #49). The static-assets backend avoids this entirely. If
-   you ever genuinely need ISR/revalidation, switch to `r2-incremental-cache` (R2 write quota is
-   ~1000× higher), **not** KV.
-2. **Don't remove the incremental cache to "fix" the KV quota.** PR #49 originally went too far
-   and set `defineCloudflareConfig({})` (no cache at all). That didn't just disable ISR — it
-   removed the store the Worker *reads prerendered HTML from*, so every `/convert/*` request
-   re-rendered on demand (full React SSR + Luxon math). CPU time and request duration spiked.
-   The incremental cache is how prerendered pages are served cheaply, ISR or not — it must be
-   present. The static-assets backend gives you that without the KV cost.
+1. **The route is only partly prerendered.** `app/convert/[slug]/page.tsx` has
+   `dynamicParams = true` and `generateStaticParams` returns only `getCuratedPairSlugs()`
+   (Zone×Zone + Tier1×Tier1, ~4.8k). The Tier1×Tier2 long tail (~15.6k slugs, advertised in the
+   sitemap via `getAllPairSlugs()`) renders **on demand**. Under the old read-only
+   `staticAssetsIncrementalCache` those renders were never persisted, so every crawler hit re-ran
+   the full Converter SSR (~400ms CPU). A *writable* backend caches them after the first render.
+2. **Why R2, not KV.** The old `kv-incremental-cache` 429-on-deploy trap (PR #49) was a **free-plan**
+   limit: 1000 KV writes/**day**, and one deploy writes ~4.8k entries (one per prerendered page).
+   On **Workers Paid** (1M writes/**month**, no daily cap) that specific failure is gone, so KV is
+   no longer disqualified — but R2 still wins here on **storage headroom** (10GB free vs KV's 1GB;
+   ~20k HTML+RSC entries run 2–4GB at full warm) and **cleanup** (R2 lifecycle rules age out
+   orphans; KV has no age-based expiry). R2 is also OpenNext's recommended incremental-cache
+   default (KV is recommended only for the *tag* cache, which we don't use). At our scale R2 is
+   $0 (free tier). **If you ever reconsider KV, remember the win/loss is plan-dependent — the
+   "never KV" rule was a free-plan artifact, not a hard law.**
+3. **Don't remove the incremental cache to "fix" a quota.** PR #49 originally went too far and set
+   `defineCloudflareConfig({})` (no cache at all). That removed the store the Worker *reads
+   prerendered HTML from*, so every `/convert/*` request re-rendered on demand. CPU and request
+   duration spiked. The incremental cache is how prerendered pages are served cheaply — it must be
+   present.
+
+**Redeploys are clean automatically — don't engineer around it.** R2 cache keys are
+`${prefix}/${OPEN_NEXT_BUILD_ID}/${hash}.${cacheType}` (the regional Cache API keys by build id
+too). Each `next build` mints a new build id, so a deploy reads/writes a **fresh namespace** and
+can **never serve stale HTML or dead JS-chunk refs** from a prior build. Curated pages are
+re-uploaded fresh under the new build id each deploy; the long tail re-warms on first hit. Prior
+builds' entries are merely **orphaned** (unreachable, not served), reaped by an **R2
+object-lifecycle rule**. The window must exceed the deploy gap so live curated entries are never
+prematurely culled (currently **7d** during frequent post-launch deploys; raise toward **30d** as
+cadence slows — and bump it up *before* any planned quiet stretch longer than the window). If a
+curated entry ever is culled during a quiet period it self-heals — re-renders once and re-caches,
+never a 404. Bucket: `worldtimezones-incremental-cache`.
 
 Revalidation is intentionally OFF (pair pages are fully static; data updates happen via manual
-`pnpm data:build` + redeploy). `staticAssetsIncrementalCache` doesn't support revalidation,
-which is fine. **Don't re-add `export const revalidate = ...` to these routes** — it's a no-op
-with this backend and misleading.
+`pnpm data:build` + redeploy). No `revalidate` ⇒ no tag cache / queue override needed. **Don't
+add `export const revalidate = ...` to these routes** — pages refresh on deploy via the build-id
+namespace flip, so it's unnecessary and (with no queue override) misleading.
 
 **`/dst` STALENESS (known, accepted for now — no DST transition due soon):** `/dst` previously had
-`export const revalidate = 86400`, which on this backend (read-only cache + no queue override)
-couldn't revalidate and instead logged `FatalError: Dummy queue is not implemented` on every
-stale-window hit (page still served fine — just noise). That line was removed, so the error is
+`export const revalidate = 86400`, which with no queue override couldn't revalidate and instead
+logged `FatalError: Dummy queue is not implemented` on every stale-window hit (page still served
+fine — just noise). (R2 is writable, but revalidation still needs a queue override we don't have —
+so re-adding `revalidate` would bring the dummy-queue error back, not fix anything.) That line was removed, so the error is
 gone and `/dst` is now fully static like the other SSG'd routes. **The underlying tradeoff
 remains**: `/dst` is a *pure server render* — `now = DateTime.now()` is captured at BUILD time and
 `getNextTransition(zone, now)` bakes each zone's next transition date into the HTML as text +
@@ -133,10 +157,10 @@ converter. r2-incremental-cache + a queue (real ISR) is overkill for one page. *
 back.** Code/calculation changes are unaffected by any of this — every deploy is a full re-render,
 so fixes ship the moment you deploy.
 
-Note `pnpm build` (= `next build`) writes prerendered pages to `.next/`; the static-assets cache
-is only *assembled into the deployable bundle* by `opennextjs-cloudflare build` (run via `pnpm
-preview` / `pnpm deploy`). Inspecting `.open-next/assets` after a bare `next build` is
-misleading — it's stale until the OpenNext build runs.
+Note `pnpm build` (= `next build`) writes prerendered pages to `.next/`; those are only *populated
+into the R2 incremental cache* by `opennextjs-cloudflare build` + deploy (run via `pnpm preview` /
+`pnpm deploy`). Inspecting `.open-next/` after a bare `next build` is misleading — the cache isn't
+assembled until the OpenNext build runs.
 
 Verify a cache regression via Workers Observability **CPU time / request duration** on
 `/convert/*`, not `cf-cache-status` — interception serves from the Cache API inside the Worker,
@@ -151,7 +175,7 @@ Env vars are validated via Zod in `lib/env.ts`. Missing `NEXT_PUBLIC_*` values t
 ## Production caching (Cloudflare)
 
 **The real caching mechanism is in-repo, not the dashboard.** Prerendered HTML is served cheaply
-by OpenNext's `staticAssetsIncrementalCache` + `enableCacheInterception` (see Routing &
+by OpenNext's R2 incremental cache + regional cache + `enableCacheInterception` (see Routing &
 deployment above). **Do not chase `cf-cache-status: HIT` on HTML — it is structurally
 unavailable here.** Measure cache health via Workers Observability CPU time / request duration
 instead.
