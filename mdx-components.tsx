@@ -1,4 +1,5 @@
 import type { MDXComponents } from 'mdx/types';
+import Link from 'next/link';
 import { Callout } from '@/components/site/Callout';
 import { ZoneCard } from '@/components/site/ZoneCard';
 
@@ -17,11 +18,31 @@ export function useMDXComponents(components: MDXComponents): MDXComponents {
     strong: ({ children }) => <strong className="font-semibold">{children}</strong>,
     em: ({ children }) => <em className="italic">{children}</em>,
     hr: () => <hr className="my-8 border-border" />,
-    a: ({ href, children }) => (
-      <a href={href} className="underline underline-offset-2 hover:text-[color:var(--fg)]">
-        {children}
-      </a>
-    ),
+    a: ({ href, children }) => {
+      const url = href ?? '';
+      // Internal = relative or same-origin root paths ('/dst', '/conversions').
+      // External (http/https/mailto/etc.) opens in a new tab with safe rel.
+      const isInternal = url.startsWith('/') && !url.startsWith('//');
+
+      if (isInternal) {
+        return (
+          <Link href={url} className="underline underline-offset-2 hover:text-[color:var(--fg)]">
+            {children}
+          </Link>
+        );
+      }
+
+      return (
+        <a
+          href={url}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="underline underline-offset-2 hover:text-[color:var(--fg)]"
+        >
+          {children}
+        </a>
+      );
+    },
     code: ({ children }) => (
       <code className="rounded bg-muted px-1 py-0.5 font-mono text-sm">{children}</code>
     ),

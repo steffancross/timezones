@@ -41,8 +41,9 @@ export default async function PairPage({ params }: { params: Promise<{ slug: str
   // static rendering (Next App Router rule), which would force every
   // `/convert/*` request through the Worker with `cache-control: no-store`.
   // Optional `?d`, `?r`, `?f`, `?z` overrides are applied client-side by
-  // `SearchParamsHydrator` so the page can stay SSG and live in the edge
-  // cache for `revalidate` (24h).
+  // `SearchParamsHydrator` so the page can stay statically prerendered and be
+  // served from OpenNext's incremental cache (no revalidation — pair pages are
+  // fully static).
   const initialState = urlToState({ pair });
 
   const fromLabel = shortLabel(pair.from);
@@ -52,7 +53,11 @@ export default async function PairPage({ params }: { params: Promise<{ slug: str
   return (
     <div className="mx-auto max-w-6xl px-4 py-6">
       <Breadcrumbs
-        items={[{ label: 'Home', href: '/' }, { label: `${fromLabel} to ${toLabel}` }]}
+        items={[
+          { label: 'Home', href: '/' },
+          { label: 'Conversions', href: '/conversions' },
+          { label: `${fromLabel} to ${toLabel}` },
+        ]}
       />
 
       <header className="mt-3 mb-2">

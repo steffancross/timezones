@@ -1,6 +1,7 @@
-import type { DateTime } from 'luxon';
 import type { ParsedPair, ZoneOrCity } from '@/lib/slugs/parse';
 import { getNextTransition } from '@/lib/time/dst';
+import type { DateTime } from 'luxon';
+import Link from 'next/link';
 
 interface Props {
   pair: ParsedPair;
@@ -24,6 +25,13 @@ export function DSTNotes({ pair }: Props) {
       <h2 className="text-2xl font-semibold">Daylight saving time</h2>
       <div className="mt-3 space-y-3 text-sm">
         {renderDSTBehavior(fromName, toName, fromNext, toNext)}
+        <p className="text-[color:var(--fg-muted)]">
+          See the{' '}
+          <Link href="/dst" className="underline underline-offset-2 hover:text-[color:var(--fg)]">
+            daylight saving time page
+          </Link>{' '}
+          for transition dates across every time zone.
+        </p>
       </div>
     </section>
   );

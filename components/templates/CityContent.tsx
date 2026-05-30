@@ -1,8 +1,8 @@
-import Link from 'next/link';
 import { getAllCities, getCitiesByIana, getCitiesInCountry } from '@/lib/cities/resolve';
 import type { City } from '@/lib/cities/types';
 import { getNextTransition } from '@/lib/time/dst';
 import { getZoneByIana } from '@/lib/zones/resolve';
+import Link from 'next/link';
 
 interface Props {
   city: City;
@@ -40,13 +40,31 @@ function GeographicContext({ city }: { city: City }) {
         {abbrevList}.
       </p>
       <p className="mt-2 text-sm leading-relaxed text-[color:var(--fg-muted)]">
-        {nextTx
-          ? `The next daylight saving time transition is on ${nextTx.date.toFormat(
-              'MMMM d, yyyy',
-            )}, when clocks ${
-              nextTx.direction === 'forward' ? 'spring forward' : 'fall back'
-            } from ${nextTx.abbreviationBefore} to ${nextTx.abbreviationAfter}.`
-          : `${city.name} does not observe daylight saving time.`}
+        {nextTx ? (
+          <>
+            The next{' '}
+            <Link
+              href="/dst"
+              className="underline underline-offset-2 hover:text-[color:var(--fg)]"
+            >
+              daylight saving time
+            </Link>{' '}
+            transition is on {nextTx.date.toFormat('MMMM d, yyyy')}, when clocks{' '}
+            {nextTx.direction === 'forward' ? 'spring forward' : 'fall back'} from{' '}
+            {nextTx.abbreviationBefore} to {nextTx.abbreviationAfter}.
+          </>
+        ) : (
+          <>
+            {city.name} does not observe{' '}
+            <Link
+              href="/dst"
+              className="underline underline-offset-2 hover:text-[color:var(--fg)]"
+            >
+              daylight saving time
+            </Link>
+            .
+          </>
+        )}
       </p>
       <dl className="mt-4 grid grid-cols-2 gap-3 text-sm">
         <FactRow
@@ -120,6 +138,14 @@ function ConversionLinks({ city }: { city: City }) {
           </li>
         ))}
       </ul>
+      <p className="mt-3 text-sm text-[color:var(--fg-muted)]">
+        <Link
+          href="/conversions"
+          className="underline underline-offset-2 hover:text-[color:var(--fg)]"
+        >
+          See all conversions
+        </Link>
+      </p>
     </section>
   );
 }
@@ -165,6 +191,13 @@ function RelatedCities({ city }: { city: City }) {
           </ul>
         </div>
       )}
+
+      <p className="mt-3 text-sm text-[color:var(--fg-muted)]">
+        <Link href="/cities" className="underline underline-offset-2 hover:text-[color:var(--fg)]">
+          Browse all cities
+        </Link>{' '}
+        to see the current local time anywhere.
+      </p>
     </section>
   );
 }
