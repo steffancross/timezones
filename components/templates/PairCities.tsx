@@ -41,7 +41,11 @@ export function PairCities({ pair }: Props) {
         <CityColumn title={sideTitle(pair.to)} cities={toCities} />
       </div>
       <p className="mt-4 text-sm text-[color:var(--fg-muted)]">
-        <Link href="/cities" className="underline underline-offset-2 hover:text-[color:var(--fg)]">
+        <Link
+          prefetch={false}
+          href="/cities"
+          className="underline underline-offset-2 hover:text-[color:var(--fg)]"
+        >
           Browse all cities
         </Link>{' '}
         to see the current local time anywhere.
@@ -59,6 +63,7 @@ function CityColumn({ title, cities }: { title: string; cities: City[] }) {
         {cities.map((c) => (
           <li key={c.id}>
             <Link
+              prefetch={false}
               href={`/time-in/${c.id}`}
               className="inline-flex items-center gap-2 rounded-[var(--radius)] border border-[color:var(--border)] bg-card px-3 py-1.5 text-sm hover:bg-[var(--hover)]"
             >

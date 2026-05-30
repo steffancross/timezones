@@ -135,43 +135,29 @@ Env vars are validated via Zod in `lib/env.ts`. Missing `NEXT_PUBLIC_*` values t
 
 **The real caching mechanism is in-repo, not the dashboard.** Prerendered HTML is served cheaply
 by OpenNext's `staticAssetsIncrementalCache` + `enableCacheInterception` (see Routing &
-deployment above). The dashboard Cache Rule below does **not** cache the `/convert/*` HTML —
-*Workers run before Cloudflare's edge cache*, so a Worker-generated response never reaches the
-Cache-Rule layer (the tell: those responses emit **no `cf-cache-status` header at all**, not
-even `BYPASS`). The Cache Rule + Vary-strip are kept as a harmless config inventory and would
-only matter if a route were ever served as a true static asset (Option C). **Do not chase
-`cf-cache-status: HIT` on HTML — it is structurally unavailable here.** Measure cache health via
-Workers Observability CPU time / request duration instead.
+deployment above). **Do not chase `cf-cache-status: HIT` on HTML — it is structurally
+unavailable here.** Measure cache health via Workers Observability CPU time / request duration
+instead.
 
-The dashboard config that *is* deployed, for the record:
+**There are NO dashboard Cache Rules deployed — they were removed deliberately.** This repo's
+architecture is Worker-first: *Workers run before Cloudflare's edge cache*, so a
+Worker-generated response never reaches the Cache-Rule layer at all (the tell: those responses
+emit **no `cf-cache-status` header, not even `BYPASS`**). An earlier iteration kept a
+`Caching → Cache Rules` rule (match `/convert/*`, `/time-in/*`, etc.; exclude `_rsc=` /
+`rsc:1` / `next-router-prefetch`) plus a `Vary`-strip transform rule. Both were **no-ops** for
+these routes for the reason above and have been deleted. **Do not re-add them** unless a route
+is ever served as a true static asset (not via the Worker) — at which point you'd want the
+RSC-exclusion + `Vary`-strip back to avoid HTML-vs-RSC cache-key collisions. Until then they buy
+nothing.
 
-**Cache Rule** — `Caching → Cache Rules`:
-- Match: SSG'd routes only, RSC prefetches excluded.
-  (starts_with(http.request.uri.path, "/convert/") or
-    starts_with(http.request.uri.path, "/time-in/") or
-    starts_with(http.request.uri.path, "/articles/") or
-    http.request.uri.path eq "/dst" or 
-    http.request.uri.path eq "/about" or
-    http.request.uri.path eq "/privacy" or
-    http.request.uri.path eq "/terms" or
-    http.request.uri.path eq "/cities" or
-    http.request.uri.path eq "/conversions")
-  and not http.request.uri.query contains "_rsc="
-  and not http.request.headers["rsc"][0] eq "1"
-  and not http.request.headers["next-router-prefetch"][0] eq "1"
-
-- Action: Eligible for cache, Edge TTL = respect origin `cache-control` (the routes send
-`s-maxage=31536000`), Browser TTL = respect origin.
-- Excluding RSC requests prevents one URL from having two collision-risk variants (HTML vs RSC
-payload) competing for the same cache key.
-
-- Match: same expression as the Cache Rule. 
-- Action: Remove header `Vary`. 
-- Why: Next.js sends `vary: rsc, next-router-state-tree, next-router-prefetch,
-next-router-segment-prefetch` on every response. CF respects `Vary` strictly — a response that
-varies by custom unknown headers gets bypassed entirely (no `cf-cache-status` emitted at all).
-Since the Cache Rule already excludes RSC requests from cache eligibility, the `Vary` is 
-redundant on cached responses and safe to strip.
+**RSC prefetch is disabled app-wide (`prefetch={false}` on every `<Link>`).** App Router
+prefetches each in-viewport link's RSC payload on page load. Those `?_rsc=` requests hit the
+Worker uncached (interception serves prerendered HTML, not partial prefetch payloads) → full
+NextServer re-render + Luxon math per prefetch. On link-dense pages (pair grids, `RelatedPairs`,
+`BrowseMatrix`, etc.) that was a prefetch storm and the dominant CPU line — *not* the
+incremental-cache backend. Pages are statically cached and fast, so on-click navigation is plenty
+fast without prefetch. **Keep new `<Link>`s `prefetch={false}`** unless there's a measured reason
+to prefetch a specific high-intent link.
 
 **Homepage (`/`) is intentionally NOT cached**: `force-dynamic` reads
 `cf-timezone`/`cf-ipcountry` per visitor. Every visit = one Worker invocation. Worth this cost

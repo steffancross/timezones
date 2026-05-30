@@ -43,7 +43,11 @@ function GeographicContext({ city }: { city: City }) {
         {nextTx ? (
           <>
             The next{' '}
-            <Link href="/dst" className="underline underline-offset-2 hover:text-[color:var(--fg)]">
+            <Link
+              prefetch={false}
+              href="/dst"
+              className="underline underline-offset-2 hover:text-[color:var(--fg)]"
+            >
               daylight saving time
             </Link>{' '}
             transition is on {nextTx.date.toFormat('MMMM d, yyyy')}, when clocks{' '}
@@ -53,7 +57,11 @@ function GeographicContext({ city }: { city: City }) {
         ) : (
           <>
             {city.name} does not observe{' '}
-            <Link href="/dst" className="underline underline-offset-2 hover:text-[color:var(--fg)]">
+            <Link
+              prefetch={false}
+              href="/dst"
+              className="underline underline-offset-2 hover:text-[color:var(--fg)]"
+            >
               daylight saving time
             </Link>
             .
@@ -124,6 +132,7 @@ function ConversionLinks({ city }: { city: City }) {
         {destinations.map((dest) => (
           <li key={dest.id}>
             <Link
+              prefetch={false}
               href={`/convert/${city.id}-to-${dest.id}`}
               className="block rounded-[var(--radius)] border border-[color:var(--border)] px-3 py-2 text-sm hover:bg-[var(--hover)]"
             >
@@ -134,6 +143,7 @@ function ConversionLinks({ city }: { city: City }) {
       </ul>
       <p className="mt-3 text-sm text-[color:var(--fg-muted)]">
         <Link
+          prefetch={false}
           href="/conversions"
           className="underline underline-offset-2 hover:text-[color:var(--fg)]"
         >
@@ -187,7 +197,11 @@ function RelatedCities({ city }: { city: City }) {
       )}
 
       <p className="mt-3 text-sm text-[color:var(--fg-muted)]">
-        <Link href="/cities" className="underline underline-offset-2 hover:text-[color:var(--fg)]">
+        <Link
+          prefetch={false}
+          href="/cities"
+          className="underline underline-offset-2 hover:text-[color:var(--fg)]"
+        >
           Browse all cities
         </Link>{' '}
         to see the current local time anywhere.
@@ -200,6 +214,7 @@ function CityChip({ city }: { city: City }) {
   return (
     <li>
       <Link
+        prefetch={false}
         href={`/time-in/${city.id}`}
         className="inline-flex items-center gap-2 rounded-[var(--radius)] border border-[color:var(--border)] px-3 py-1 text-sm hover:bg-[var(--hover)]"
       >

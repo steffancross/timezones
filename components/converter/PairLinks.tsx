@@ -52,6 +52,7 @@ export function PairLinks() {
           return (
             <li key={slug}>
               <Link
+                prefetch={false}
                 href={`/convert/${slug}`}
                 className="inline-flex items-center rounded-[var(--radius)] border border-[color:var(--border)] bg-card px-2.5 py-1 text-[13px] text-[color:var(--fg)] transition-colors hover:bg-[var(--hover)]"
               >
@@ -63,6 +64,7 @@ export function PairLinks() {
       </ul>
       <p className="mt-3 text-[13px] text-[color:var(--fg-muted)]">
         <Link
+          prefetch={false}
           href="/conversions"
           className="underline decoration-[color:var(--border-strong)] underline-offset-4 hover:text-[color:var(--fg)] hover:decoration-[color:var(--fg)]"
         >

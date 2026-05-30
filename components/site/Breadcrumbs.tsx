@@ -36,7 +36,7 @@ export function Breadcrumbs({ items }: Props) {
             <li key={item.href ?? `crumb-${item.label}`} className="flex items-center gap-1">
               {i > 0 && <ChevronRight className="size-3" aria-hidden="true" />}
               {item.href ? (
-                <Link href={item.href} className="hover:text-[color:var(--fg)]">
+                <Link prefetch={false} href={item.href} className="hover:text-[color:var(--fg)]">
                   {item.label}
                 </Link>
               ) : (

@@ -31,6 +31,7 @@ export function Footer() {
               {topPairs.map((p) => (
                 <li key={p.slug}>
                   <Link
+                    prefetch={false}
                     href={`/convert/${p.slug}`}
                     className="text-muted-foreground hover:text-foreground"
                   >
@@ -39,7 +40,11 @@ export function Footer() {
                 </li>
               ))}
               <li>
-                <Link href="/conversions" className="text-muted-foreground hover:text-foreground">
+                <Link
+                  prefetch={false}
+                  href="/conversions"
+                  className="text-muted-foreground hover:text-foreground"
+                >
                   See all →
                 </Link>
               </li>
@@ -52,6 +57,7 @@ export function Footer() {
               {topCities.map((c) => (
                 <li key={c.id}>
                   <Link
+                    prefetch={false}
                     href={`/time-in/${c.id}`}
                     className="text-muted-foreground hover:text-foreground"
                   >
@@ -60,7 +66,11 @@ export function Footer() {
                 </li>
               ))}
               <li>
-                <Link href="/cities" className="text-muted-foreground hover:text-foreground">
+                <Link
+                  prefetch={false}
+                  href="/cities"
+                  className="text-muted-foreground hover:text-foreground"
+                >
                   See all →
                 </Link>
               </li>
@@ -71,12 +81,20 @@ export function Footer() {
             <h3 className="mb-3 text-sm font-semibold">Resources</h3>
             <ul className="space-y-1.5 text-sm">
               <li>
-                <Link href="/dst" className="text-muted-foreground hover:text-foreground">
+                <Link
+                  prefetch={false}
+                  href="/dst"
+                  className="text-muted-foreground hover:text-foreground"
+                >
                   Daylight saving time
                 </Link>
               </li>
               <li>
-                <Link href="/articles" className="text-muted-foreground hover:text-foreground">
+                <Link
+                  prefetch={false}
+                  href="/articles"
+                  className="text-muted-foreground hover:text-foreground"
+                >
                   Articles
                 </Link>
               </li>
@@ -87,17 +105,29 @@ export function Footer() {
             <h3 className="mb-3 text-sm font-semibold">About</h3>
             <ul className="space-y-1.5 text-sm">
               <li>
-                <Link href="/about" className="text-muted-foreground hover:text-foreground">
+                <Link
+                  prefetch={false}
+                  href="/about"
+                  className="text-muted-foreground hover:text-foreground"
+                >
                   About
                 </Link>
               </li>
               <li>
-                <Link href="/privacy" className="text-muted-foreground hover:text-foreground">
+                <Link
+                  prefetch={false}
+                  href="/privacy"
+                  className="text-muted-foreground hover:text-foreground"
+                >
                   Privacy
                 </Link>
               </li>
               <li>
-                <Link href="/terms" className="text-muted-foreground hover:text-foreground">
+                <Link
+                  prefetch={false}
+                  href="/terms"
+                  className="text-muted-foreground hover:text-foreground"
+                >
                   Terms
                 </Link>
               </li>
