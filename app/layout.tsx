@@ -1,10 +1,10 @@
+import { AppToaster } from '@/components/site/AppToaster';
 import { Footer } from '@/components/site/Footer';
 import { Header } from '@/components/site/Header';
 import env from '@/lib/env';
 import { GeistMono } from 'geist/font/mono';
 import { GeistSans } from 'geist/font/sans';
 import type { Metadata } from 'next';
-import { Toaster } from 'sonner';
 import './globals.css';
 import { Providers } from './providers';
 
@@ -44,7 +44,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <Header />
           <main className="flex-1">{children}</main>
           <Footer />
-          <Toaster position="top-center" />
+          <AppToaster />
         </Providers>
       </body>
     </html>

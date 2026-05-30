@@ -22,18 +22,30 @@ describe('addZone', () => {
     expect(store.getState().zones).toHaveLength(1);
   });
 
-  it('dedupes by IANA', () => {
+  it('dedupes by kind+slug', () => {
     const { addZone } = store.getState();
-    addZone(pst);
-    addZone({ ...pst, slug: 'pacific-time' });
+    expect(addZone(pst)).toBe('added');
+    // Same entity again → rejected as a duplicate.
+    expect(addZone(pst)).toBe('duplicate');
     expect(store.getState().zones).toHaveLength(1);
+  });
+
+  it('allows the same IANA under a different entity', () => {
+    // The GMT zone and the London city are both Europe/London but are distinct
+    // entities (kind+slug differ), so both should coexist as separate rows.
+    const { addZone } = store.getState();
+    expect(addZone(london)).toBe('added');
+    expect(addZone({ kind: 'city', slug: 'london', iana: 'Europe/London' })).toBe('added');
+    expect(store.getState().zones).toHaveLength(2);
   });
 
   it('blocks past MAX_ZONES (10)', () => {
     const { addZone } = store.getState();
-    for (let i = 0; i < 12; i++) {
-      addZone({ kind: 'zone', slug: `z${i}`, iana: `Etc/GMT-${i}` });
+    for (let i = 0; i < 10; i++) {
+      expect(addZone({ kind: 'zone', slug: `z${i}`, iana: `Etc/GMT-${i}` })).toBe('added');
     }
+    // The 11th add hits the cap and reports it instead of silently no-opping.
+    expect(addZone({ kind: 'zone', slug: 'z10', iana: 'Etc/GMT-10' })).toBe('full');
     expect(store.getState().zones).toHaveLength(10);
   });
 });

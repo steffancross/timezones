@@ -9,6 +9,7 @@ import type { ZoneRef } from '@/lib/store/converter';
 import { useConverterStore } from '@/components/converter/store-context';
 import { formatDate } from '@/lib/time/format';
 import { useCallback, useEffect, useState } from 'react';
+import { toast } from 'sonner';
 import { DatePicker } from './DatePicker';
 import { DSTBanner } from './DSTBanner';
 import { EmptyState } from './EmptyState';
@@ -66,7 +67,12 @@ export function Converter({ visitorIana }: ConverterProps = {}) {
         slug: result.slug,
         iana: result.iana,
       };
-      addZone(ref);
+      const status = addZone(ref);
+      if (status === 'duplicate') {
+        toast(`${result.display_name} is already in the converter`);
+      } else if (status === 'full') {
+        toast('You can compare up to 10 zones');
+      }
     },
     [addZone],
   );
