@@ -63,8 +63,15 @@ export interface ConverterState {
   workingHours: WorkingHours;
 }
 
+/**
+ * Outcome of an `addZone` call. `duplicate` = the same entity (kind+slug) is
+ * already present; `full` = the zone list is at MAX_ZONES. Both are no-ops the
+ * caller should surface to the user instead of failing silently.
+ */
+export type AddZoneResult = 'added' | 'duplicate' | 'full';
+
 export interface ConverterActions {
-  addZone: (ref: ZoneRef) => void;
+  addZone: (ref: ZoneRef) => AddZoneResult;
   removeZone: (index: number) => void;
   moveZone: (from: number, to: number) => void;
   setZones: (zones: ZoneRef[]) => void;
@@ -203,10 +210,21 @@ export function createConverterStore(initialPartial: Partial<ConverterState> = {
     subscribeWithSelector((set) => ({
       ...seed,
 
-      addZone: (ref) =>
+      addZone: (ref) => {
+        let result: AddZoneResult = 'added';
         set((state) => {
-          if (state.zones.some((z) => z.iana === ref.iana)) return state;
-          if (state.zones.length >= MAX_ZONES) return state;
+          // Identity is the entity (kind+slug), NOT the IANA: two distinct
+          // entities can share an IANA (e.g. the GMT zone and the London city
+          // are both Europe/London) and should coexist as separate rows. Only
+          // re-adding the exact same entity is a duplicate.
+          if (state.zones.some((z) => z.kind === ref.kind && z.slug === ref.slug)) {
+            result = 'duplicate';
+            return state;
+          }
+          if (state.zones.length >= MAX_ZONES) {
+            result = 'full';
+            return state;
+          }
           const next: Partial<ConverterState> = { zones: [...state.zones, ref] };
           // First zone becomes the home: pin homeZoneIndex to 0 so the field
           // stays consistent with the other bootstrap paths (initialize,
@@ -221,7 +239,9 @@ export function createConverterStore(initialPartial: Partial<ConverterState> = {
             }
           }
           return next;
-        }),
+        });
+        return result;
+      },
 
       removeZone: (index) =>
         set((state) => {
