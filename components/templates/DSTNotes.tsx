@@ -27,7 +27,11 @@ export function DSTNotes({ pair }: Props) {
         {renderDSTBehavior(fromName, toName, fromNext, toNext)}
         <p className="text-[color:var(--fg-muted)]">
           See the{' '}
-          <Link href="/dst" className="underline underline-offset-2 hover:text-[color:var(--fg)]">
+          <Link
+            prefetch={false}
+            href="/dst"
+            className="underline underline-offset-2 hover:text-[color:var(--fg)]"
+          >
             daylight saving time page
           </Link>{' '}
           for transition dates across every time zone.

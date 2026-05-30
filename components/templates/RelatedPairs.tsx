@@ -16,6 +16,7 @@ export function RelatedPairs({ slug }: Props) {
         {related.map((r) => (
           <li key={r.slug}>
             <Link
+              prefetch={false}
               href={`/convert/${r.slug}`}
               className="block rounded-[var(--radius)] border border-[color:var(--border)] px-3 py-2 hover:bg-[var(--hover)]"
             >

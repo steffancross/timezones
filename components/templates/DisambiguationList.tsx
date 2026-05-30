@@ -48,6 +48,7 @@ export function DisambiguationList({ bareSlug, qualifiedSlugs }: Props) {
         {cities.map((c) => (
           <li key={c.id}>
             <Link
+              prefetch={false}
               href={`/time-in/${c.id}`}
               className="block rounded-[var(--radius)] border border-[color:var(--border)] bg-card p-4 hover:bg-[var(--hover)]"
             >

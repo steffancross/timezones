@@ -111,6 +111,7 @@ export default function CitiesIndex() {
             .map((c) => (
               <li key={c.id}>
                 <Link
+                  prefetch={false}
                   href={`/time-in/${c.id}`}
                   className="block rounded-md border border-border px-3 py-1.5 text-sm hover:bg-accent"
                 >
@@ -130,6 +131,7 @@ export default function CitiesIndex() {
               .map((c) => (
                 <li key={c.id}>
                   <Link
+                    prefetch={false}
                     href={`/time-in/${c.id}`}
                     className="text-muted-foreground hover:text-foreground"
                   >

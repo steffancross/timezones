@@ -269,6 +269,7 @@ function DestinationRow({ source, dest }: { source: MatrixSource; dest: MatrixSo
   return (
     <li>
       <Link
+        prefetch={false}
         href={`/convert/${source.id}-to-${dest.id}`}
         className="flex items-center gap-2 rounded-md px-2.5 py-1.5 text-[13px] text-[color:var(--fg)] transition-colors hover:bg-[var(--hover)]"
       >

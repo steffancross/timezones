@@ -67,6 +67,7 @@ export default async function PairPage({ params }: { params: Promise<{ slug: str
       </header>
 
       <Link
+        prefetch={false}
         href={`/convert/${reverseSlug}`}
         className="mb-6 inline-flex items-center gap-1.5 text-sm text-[color:var(--fg-muted)] transition-colors hover:text-[color:var(--fg)]"
       >

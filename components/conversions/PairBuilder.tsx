@@ -66,6 +66,7 @@ export function PairBuilder({ initialFrom, initialTo, curated }: Props) {
       <PairSelector label="TO" value={to} onChange={setTo} curated={curated} />
 
       <Link
+        prefetch={false}
         href={href}
         className={cn(
           'order-4 inline-flex h-[68px] items-center justify-center gap-2 self-stretch',

@@ -28,6 +28,7 @@ export default async function ArticlesIndex() {
         {articles.map((a) => (
           <li key={a.slug}>
             <Link
+              prefetch={false}
               href={`/articles/${a.slug}`}
               className="block rounded-md border border-border p-4 hover:bg-accent"
             >

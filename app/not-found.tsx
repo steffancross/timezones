@@ -16,6 +16,7 @@ export default function NotFound() {
         The page you were looking for does not exist, or the link is no longer valid.
       </p>
       <Link
+        prefetch={false}
         href="/"
         className="mt-6 inline-block rounded-[var(--radius)] border border-[color:var(--border)] bg-card px-4 py-2 text-sm hover:bg-[var(--hover)]"
       >

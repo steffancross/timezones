@@ -11,6 +11,7 @@ export function PopularPairsGrid({ cards }: { cards: PopularCard[] }) {
       {cards.map((card) => (
         <li key={card.slug}>
           <Link
+            prefetch={false}
             href={`/convert/${card.slug}`}
             className="group block rounded-lg border border-[color:var(--border)] bg-[var(--card)] px-4 py-3 transition-colors hover:border-[color:var(--border-strong)] hover:bg-[var(--hover)]"
           >

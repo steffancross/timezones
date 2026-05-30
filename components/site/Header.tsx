@@ -13,13 +13,14 @@ export function Header() {
   return (
     <header className="border-b border-border">
       <div className="mx-auto flex h-14 max-w-6xl items-center justify-between px-4">
-        <Link href="/" className="font-semibold">
+        <Link prefetch={false} href="/" className="font-semibold">
           {env.NEXT_PUBLIC_SITE_NAME}
         </Link>
         <div className="flex items-center gap-6">
           <nav className="hidden items-center gap-6 md:flex">
             {navLinks.map((link) => (
               <Link
+                prefetch={false}
                 key={link.href}
                 href={link.href}
                 className="text-sm text-muted-foreground hover:text-foreground"
