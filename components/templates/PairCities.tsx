@@ -40,6 +40,12 @@ export function PairCities({ pair }: Props) {
         <CityColumn title={sideTitle(pair.from)} cities={fromCities} />
         <CityColumn title={sideTitle(pair.to)} cities={toCities} />
       </div>
+      <p className="mt-4 text-sm text-[color:var(--fg-muted)]">
+        <Link href="/cities" className="underline underline-offset-2 hover:text-[color:var(--fg)]">
+          Browse all cities
+        </Link>{' '}
+        to see the current local time anywhere.
+      </p>
     </section>
   );
 }

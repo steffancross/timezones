@@ -29,7 +29,13 @@ export function DisambiguationList({ bareSlug, qualifiedSlugs }: Props) {
 
   return (
     <div className="mx-auto max-w-3xl px-4 py-6">
-      <Breadcrumbs items={[{ label: 'Home', href: '/' }, { label: displayName }]} />
+      <Breadcrumbs
+        items={[
+          { label: 'Home', href: '/' },
+          { label: 'Cities', href: '/cities' },
+          { label: displayName },
+        ]}
+      />
 
       <header className="mt-3 mb-6">
         <h1 className="text-3xl font-semibold">{displayName}</h1>

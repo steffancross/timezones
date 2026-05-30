@@ -26,7 +26,13 @@ export async function CityShell({ city }: Props) {
     <div className="mx-auto max-w-3xl px-4 py-6">
       <CitySchema city={city} />
 
-      <Breadcrumbs items={[{ label: 'Home', href: '/' }, { label: city.name }]} />
+      <Breadcrumbs
+        items={[
+          { label: 'Home', href: '/' },
+          { label: 'Cities', href: '/cities' },
+          { label: city.name },
+        ]}
+      />
 
       <section className="mt-6 text-center">
         <h1 className="text-3xl font-semibold">{city.name}</h1>

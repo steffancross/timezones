@@ -3,8 +3,11 @@ import { getAllCities } from '@/lib/cities/resolve';
 
 /**
  * Pair slugs to pre-render at build time. The pair page route uses this for
- * `generateStaticParams`; everything else is generated on demand via ISR and
- * cached in KV.
+ * `generateStaticParams`; everything else (the tier1×tier2 long tail) renders
+ * on demand in the Worker (`dynamicParams = true`). Those on-demand renders are
+ * NOT cached under the current read-only static-assets incremental cache — a
+ * writable backend (R2/KV) would be needed to cache them. See the caching
+ * notes / Linear ticket.
  *
  * Composition:
  *  - Zone × Zone (full N×N, excluding identity)
