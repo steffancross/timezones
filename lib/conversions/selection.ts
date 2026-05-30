@@ -1,8 +1,9 @@
 import { zones } from '@/data/zones';
 import { getAllCities } from '@/lib/cities/resolve';
 import type { SearchResult } from '@/lib/search/types';
-import { currentAbbreviation, currentOffset } from '@/lib/time/luxon';
+import { currentOffset } from '@/lib/time/luxon';
 import { resolveSlugSegment, type ZoneOrCity } from '@/lib/slugs/parse';
+import { standardAbbreviation } from '@/lib/zones/abbreviation';
 
 export interface Selection {
   id: string;
@@ -44,7 +45,7 @@ export function selectionFromZoneOrCity(entry: ZoneOrCity): Selection {
     id: c.id,
     kind: 'city',
     name: c.name,
-    code: currentAbbreviation(c.iana),
+    code: standardAbbreviation(c.iana),
     offsetLabel: formatUtcOffset(c.iana),
     country: c.country,
     iana: c.iana,

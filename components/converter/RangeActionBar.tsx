@@ -7,6 +7,7 @@ import { toast } from 'sonner';
 import { useConverterStore } from '@/components/converter/store-context';
 import { stateToQueryString } from '@/lib/store/to-url';
 import { formatDate, formatTime } from '@/lib/time/format';
+import { currentAbbreviation } from '@/lib/zones/abbreviation';
 
 /**
  * Action bar that appears below the zones card whenever a range is selected.
@@ -45,7 +46,7 @@ export function RangeActionBar() {
   const homeEnd = DateTime.fromISO(anchorDate, { zone: homeIana }).set({ hour: end + 1 });
 
   const timeLabel = `${formatTime(homeStart, format)} – ${formatTime(homeEnd, format)}`;
-  const abbreviation = homeStart.toFormat('ZZZZ');
+  const abbreviation = currentAbbreviation(homeIana, homeStart);
   const dateLabel = formatDate(homeStart);
   const durationLabel = `${end - rangeStart + 1}h`;
 
@@ -54,7 +55,7 @@ export function RangeActionBar() {
       .map((zone) => {
         const s = homeStart.setZone(zone.iana);
         const e = homeEnd.setZone(zone.iana);
-        return `${formatTime(s, format)} – ${formatTime(e, format)} ${s.toFormat('ZZZZ')} (${formatDate(s)})`;
+        return `${formatTime(s, format)} – ${formatTime(e, format)} ${currentAbbreviation(zone.iana, s)} (${formatDate(s)})`;
       })
       .join('\n');
 

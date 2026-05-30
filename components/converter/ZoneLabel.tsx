@@ -8,6 +8,7 @@ import { useNow } from '@/lib/hooks/useNow';
 import type { ZoneRef } from '@/lib/store/converter';
 import { useConverterStore } from '@/components/converter/store-context';
 import { formatDate, formatOffset, formatTime } from '@/lib/time/format';
+import { currentAbbreviation } from '@/lib/zones/abbreviation';
 import { cn } from '@/lib/utils';
 
 interface Props {
@@ -32,7 +33,7 @@ export function ZoneLabel({ zone, isHome }: Props) {
   });
 
   const meta = getLabelMeta(zone);
-  const abbreviation = displayTime.toFormat('ZZZZ');
+  const abbreviation = currentAbbreviation(zone.iana, displayTime);
   const offsetText = formatOffset(displayTime.offset);
 
   // "Next day" indicator: when a range is set and the projected date in this

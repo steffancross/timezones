@@ -4,6 +4,7 @@ import { zoneObservesDst } from '@/lib/time/luxon';
 import {
   computeBusinessOverlap,
   DEFAULT_WORKING_HOURS,
+  EXTENDED_WORKING_HOURS,
   getWorkingHoursOnDay,
   isWorkingHour,
   WORKING_HOURS_STORAGE_KEY,
@@ -95,6 +96,14 @@ describe('exports', () => {
     });
   });
 
+  it('EXTENDED_WORKING_HOURS is 7-20 Mon-Fri', () => {
+    expect(EXTENDED_WORKING_HOURS).toEqual({
+      start: 7,
+      end: 20,
+      days: [1, 2, 3, 4, 5],
+    });
+  });
+
   it('WORKING_HOURS_STORAGE_KEY is stable', () => {
     expect(WORKING_HOURS_STORAGE_KEY).toBe('working_hours');
   });
@@ -172,6 +181,58 @@ describe('computeBusinessOverlap', () => {
       JAN_MONDAY,
     );
     expect(windows).toEqual([]);
+  });
+
+  it('EXTENDED_WORKING_HOURS recovers a fringe slot where 9–5 finds none (London → Tokyo)', () => {
+    // London UTC+0 vs Tokyo UTC+9. Standard 9–17 misses entirely: London 9–17
+    // is Tokyo 18:00–02:00, all outside Tokyo working hours.
+    const standard = computeBusinessOverlap('Europe/London', 'Asia/Tokyo', undefined, JAN_MONDAY);
+    expect(standard).toEqual([]);
+
+    // Widening to 7am–8pm catches London's morning against Tokyo's evening:
+    // London 7–11 = Tokyo 16–20, same calendar day.
+    const extended = computeBusinessOverlap(
+      'Europe/London',
+      'Asia/Tokyo',
+      EXTENDED_WORKING_HOURS,
+      JAN_MONDAY,
+    );
+    expect(extended).toEqual([
+      {
+        fromStartHour: 7,
+        fromEndHour: 12,
+        toStartHour: 16,
+        toEndHour: 21,
+        toDayDelta: 0,
+      },
+    ]);
+  });
+
+  it('near-antipodal extended overlap yields TWO fringe windows (London → Auckland)', () => {
+    // London UTC+0 vs Auckland UTC+13 (NZDT in January) = 13h delta. Standard
+    // 9–5 misses entirely. The extended window catches both shoulders of the
+    // clock: London's early morning against Auckland's evening, and London's
+    // evening against Auckland's next-day morning.
+    const standard = computeBusinessOverlap(
+      'Europe/London',
+      'Pacific/Auckland',
+      undefined,
+      JAN_MONDAY,
+    );
+    expect(standard).toEqual([]);
+
+    const extended = computeBusinessOverlap(
+      'Europe/London',
+      'Pacific/Auckland',
+      EXTENDED_WORKING_HOURS,
+      JAN_MONDAY,
+    );
+    expect(extended).toEqual([
+      // London 7–8am = Auckland 8–9pm, same day.
+      { fromStartHour: 7, fromEndHour: 8, toStartHour: 20, toEndHour: 21, toDayDelta: 0 },
+      // London 6–9pm = Auckland 7–10am, next day.
+      { fromStartHour: 18, fromEndHour: 21, toStartHour: 7, toEndHour: 10, toDayDelta: 1 },
+    ]);
   });
 
   it('same zone yields the full default working-hours window', () => {

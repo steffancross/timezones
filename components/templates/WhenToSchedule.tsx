@@ -5,6 +5,7 @@ import {
   type BusinessOverlapWindow,
   computeBusinessOverlap,
   DEFAULT_WORKING_HOURS,
+  EXTENDED_WORKING_HOURS,
 } from '@/lib/time/working-hours';
 
 interface Props {
@@ -40,6 +41,19 @@ function hoursAhead(fromIana: string, toIana: string): number {
   const fromOffset = now.setZone(fromIana).offset;
   const toOffset = now.setZone(toIana).offset;
   return Math.round((toOffset - fromOffset) / 60);
+}
+
+/**
+ * Pick a concrete suggested meeting time at the middle of an overlap window,
+ * expressed in both zones. Anchored on this week's Monday in `from` (matching
+ * computeBusinessOverlap) so the time is a real weekday instant, not "now".
+ */
+function suggestedTime(window: BusinessOverlapWindow, fromIana: string, toIana: string) {
+  const midFromHour =
+    window.fromStartHour + Math.floor((window.fromEndHour - window.fromStartHour) / 2);
+  const monday = DateTime.now().setZone(fromIana).startOf('week');
+  const midFrom = monday.set({ hour: midFromHour });
+  return { midFrom, midTo: midFrom.setZone(toIana) };
 }
 
 export function WhenToSchedule({ pair }: Props) {
@@ -93,12 +107,7 @@ function OverlapDetail({
   const toRange = formatHourRange(primary.toStartHour, primary.toEndHour);
   const toDayNote = dayDeltaLabel(primary.toDayDelta);
 
-  // Suggested meeting: middle of the window, expressed in both zones.
-  const midFromHour =
-    primary.fromStartHour + Math.floor((primary.fromEndHour - primary.fromStartHour) / 2);
-  const monday = DateTime.now().setZone(fromIana).startOf('week');
-  const midFrom = monday.set({ hour: midFromHour });
-  const midTo = midFrom.setZone(toIana);
+  const { midFrom, midTo } = suggestedTime(primary, fromIana, toIana);
 
   return (
     <div className="mt-3 space-y-3 text-sm">
@@ -130,16 +139,88 @@ function NoOverlap({
   const absDelta = Math.abs(delta);
   const direction = delta > 0 ? 'ahead of' : 'behind';
 
+  // Standard 9–5 misses, but an early-start / late-finish slot may still line
+  // up. Because the strict window already returned empty, any window found here
+  // necessarily falls in the 7–9am / 5–8pm fringe — never plain business hours.
+  // Near-antipodal offsets (~11–13h) yield two windows: each side's morning
+  // catches the other's evening, on both sides of the clock.
+  const extended = computeBusinessOverlap(pair.fromIana, pair.toIana, EXTENDED_WORKING_HOURS);
+
   return (
     <div className="mt-3 space-y-3 text-sm">
       <p>
         Standard business hours (9 AM–5 PM, Mon–Fri) in {fromName} and {toName} don't overlap on the
         same weekday. {toName} is {absDelta} hour{absDelta === 1 ? '' : 's'} {direction} {fromName}.
       </p>
-      <p className="text-[color:var(--fg-muted)]">
-        Realistic options: hand off asynchronously, or stretch one side by an hour to catch the
-        other team at the start or end of their day.
-      </p>
+
+      {extended.length > 0 ? (
+        <ExtendedSuggestion
+          windows={extended}
+          fromName={fromName}
+          toName={toName}
+          fromIana={pair.fromIana}
+          toIana={pair.toIana}
+        />
+      ) : (
+        <p className="text-[color:var(--fg-muted)]">
+          Realistic options: hand off asynchronously, or stretch one side by an hour to catch the
+          other team at the start or end of their day.
+        </p>
+      )}
     </div>
+  );
+}
+
+/**
+ * Shown when 9–5 doesn't overlap but a wider 7am–8pm window does. Frames the
+ * slot honestly as outside standard hours — an early start or late finish for
+ * one side — while still giving a concrete time to propose. Near-antipodal
+ * pairs surface two windows (early-AM and late-PM options); the geometry of
+ * two 14h windows on a 24h clock caps the count at two.
+ */
+function ExtendedSuggestion({
+  windows,
+  fromName,
+  toName,
+  fromIana,
+  toIana,
+}: {
+  windows: BusinessOverlapWindow[];
+  fromName: string;
+  toName: string;
+  fromIana: string;
+  toIana: string;
+}) {
+  const multiple = windows.length > 1;
+
+  return (
+    <>
+      <p>
+        <strong>With some flexibility,</strong>{' '}
+        {multiple
+          ? 'there are two workable windows outside standard hours, depending on which side takes the early or late slot:'
+          : 'there’s a workable window outside standard hours:'}
+      </p>
+      <ul className={multiple ? 'list-disc space-y-2 pl-5' : 'space-y-2'}>
+        {windows.map((window) => {
+          const fromRange = formatHourRange(window.fromStartHour, window.fromEndHour);
+          const toRange = formatHourRange(window.toStartHour, window.toEndHour);
+          const toDayNote = dayDeltaLabel(window.toDayDelta);
+          const { midFrom, midTo } = suggestedTime(window, fromIana, toIana);
+          return (
+            <li key={window.fromStartHour}>
+              {fromRange} in {fromName} ({toRange}
+              {toDayNote} in {toName}) — suggest {midFrom.toFormat('h:mm a')} {fromName} (
+              {midTo.toFormat('h:mm a')} {toName}).
+            </li>
+          );
+        })}
+      </ul>
+      <p className="text-[color:var(--fg-muted)]">
+        {multiple
+          ? 'Either is an early start or late finish for one side, but workable for a one-off meeting.'
+          : 'This means an early start or late finish for one side, but it’s a reasonable slot for a one-off meeting.'}
+      </p>
+    </>
   );
 }

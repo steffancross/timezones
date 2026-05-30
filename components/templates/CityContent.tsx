@@ -43,10 +43,7 @@ function GeographicContext({ city }: { city: City }) {
         {nextTx ? (
           <>
             The next{' '}
-            <Link
-              href="/dst"
-              className="underline underline-offset-2 hover:text-[color:var(--fg)]"
-            >
+            <Link href="/dst" className="underline underline-offset-2 hover:text-[color:var(--fg)]">
               daylight saving time
             </Link>{' '}
             transition is on {nextTx.date.toFormat('MMMM d, yyyy')}, when clocks{' '}
@@ -56,10 +53,7 @@ function GeographicContext({ city }: { city: City }) {
         ) : (
           <>
             {city.name} does not observe{' '}
-            <Link
-              href="/dst"
-              className="underline underline-offset-2 hover:text-[color:var(--fg)]"
-            >
+            <Link href="/dst" className="underline underline-offset-2 hover:text-[color:var(--fg)]">
               daylight saving time
             </Link>
             .
