@@ -27,13 +27,6 @@ export function currentOffsetBetween(from: string, to: string): number {
 }
 
 /**
- * Get the current short abbreviation for a zone (e.g., 'PST' or 'PDT' depending on date).
- */
-export function currentAbbreviation(iana: string): string {
-  return DateTime.now().setZone(iana).toFormat('ZZZZ');
-}
-
-/**
  * Whether a zone is currently observing DST.
  */
 export function isInDST(iana: string): boolean {

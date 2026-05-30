@@ -21,6 +21,19 @@ export const DEFAULT_WORKING_HOURS: WorkingHours = Object.freeze({
 });
 
 /**
+ * "Reasonable but outside standard" hours: 7am–8pm Mon–Fri. Used as a fallback
+ * in the "When to schedule" section when the strict 9–5 window yields no
+ * overlap — an early-start / late-finish slot (e.g. 7–9am or 5–8pm) is still a
+ * sane time for a one-off meeting, so we surface it rather than giving up.
+ * Not a user setting; purely a widening of the search for the no-overlap case.
+ */
+export const EXTENDED_WORKING_HOURS: WorkingHours = Object.freeze({
+  start: 7,
+  end: 20,
+  days: Object.freeze([1, 2, 3, 4, 5]),
+});
+
+/**
  * Storage key for localStorage persistence.
  * Settings modal in E8 reads/writes via this key.
  */

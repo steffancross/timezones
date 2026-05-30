@@ -1,4 +1,5 @@
 import { DateTime } from 'luxon';
+import { currentAbbreviation } from '@/lib/zones/abbreviation';
 
 export interface DSTTransition {
   /** The instant the transition occurs */
@@ -117,8 +118,10 @@ function buildTransition(
     direction: offsetAfter > offsetBefore ? 'forward' : 'back',
     offsetBefore,
     offsetAfter,
-    abbreviationBefore: before.toFormat('ZZZZ'),
-    abbreviationAfter: after.toFormat('ZZZZ'),
+    // DST-aware curated abbreviation (BST/NZDT) rather than the runtime's
+    // generic "GMT±N"; evaluated at each side of the transition instant.
+    abbreviationBefore: currentAbbreviation(iana, before),
+    abbreviationAfter: currentAbbreviation(iana, after),
   };
 }
 

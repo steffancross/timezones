@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { useNow } from '@/lib/hooks/useNow';
+import { currentAbbreviation } from '@/lib/zones/abbreviation';
 
 interface Props {
   iana: string;
@@ -36,7 +37,7 @@ export function HeroClock({ iana }: Props) {
   const time = local.toFormat('h:mm:ss');
   const ampm = local.toFormat('a');
   const date = local.toFormat('cccc, MMMM d');
-  const abbrev = local.toFormat('ZZZZ');
+  const abbrev = currentAbbreviation(iana, local);
   const offset = local.toFormat('ZZ');
 
   return (

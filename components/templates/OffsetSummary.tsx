@@ -1,5 +1,6 @@
 import { DateTime } from 'luxon';
 import type { ParsedPair, ZoneOrCity } from '@/lib/slugs/parse';
+import { currentAbbreviation } from '@/lib/zones/abbreviation';
 import { formatOffset } from '@/lib/time/format';
 
 interface Props {
@@ -11,8 +12,11 @@ function displayName(zoc: ZoneOrCity): string {
 }
 
 function abbrev(zoc: ZoneOrCity, at: DateTime): string {
-  if (zoc.kind === 'zone') return zoc.zone.abbreviations[0] ?? '';
-  return at.setZone(zoc.city.iana).toFormat('ZZZZ');
+  // DST-aware colloquial abbreviation from our curated table (BST/NZDT in
+  // summer), not the runtime's "GMT±N" short name. Unify on IANA so zone and
+  // city refs resolve identically.
+  const iana = zoc.kind === 'zone' ? zoc.zone.iana : zoc.city.iana;
+  return currentAbbreviation(iana, at);
 }
 
 export function OffsetSummary({ pair }: Props) {

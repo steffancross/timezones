@@ -1,5 +1,6 @@
 import { resolveSlugSegment, type ZoneOrCity } from '@/lib/slugs/parse';
-import { currentAbbreviation, currentOffsetBetween } from '@/lib/time/luxon';
+import { currentOffsetBetween } from '@/lib/time/luxon';
+import { standardAbbreviation } from '@/lib/zones/abbreviation';
 import { CURATED_PAIR_SLUGS } from './curated-pairs';
 
 export interface PopularCard {
@@ -20,7 +21,7 @@ function nameOf(entry: ZoneOrCity): string {
 
 function codeOf(entry: ZoneOrCity): string {
   if (entry.kind === 'zone') return entry.zone.abbreviations[0] ?? entry.zone.id.toUpperCase();
-  return currentAbbreviation(entry.city.iana);
+  return standardAbbreviation(entry.city.iana);
 }
 
 function formatDelta(minutes: number): string {

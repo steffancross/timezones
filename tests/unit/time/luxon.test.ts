@@ -1,7 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import {
   anchorToZones,
-  currentAbbreviation,
   currentOffset,
   currentOffsetBetween,
   dayHours,
@@ -41,13 +40,6 @@ describe('currentOffsetBetween', () => {
     const a = currentOffsetBetween('Asia/Tokyo', 'America/New_York');
     const b = currentOffsetBetween('America/New_York', 'Asia/Tokyo');
     expect(a).toBe(-b);
-  });
-});
-
-describe('currentAbbreviation', () => {
-  it('returns PST or PDT for Los Angeles', () => {
-    const abbr = currentAbbreviation('America/Los_Angeles');
-    expect(['PST', 'PDT']).toContain(abbr);
   });
 });
 
