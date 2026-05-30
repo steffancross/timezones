@@ -116,6 +116,23 @@ Revalidation is intentionally OFF (pair pages are fully static; data updates hap
 which is fine. **Don't re-add `export const revalidate = ...` to these routes** — it's a no-op
 with this backend and misleading.
 
+**`/dst` STALENESS (known, accepted for now — no DST transition due soon):** `/dst` previously had
+`export const revalidate = 86400`, which on this backend (read-only cache + no queue override)
+couldn't revalidate and instead logged `FatalError: Dummy queue is not implemented` on every
+stale-window hit (page still served fine — just noise). That line was removed, so the error is
+gone and `/dst` is now fully static like the other SSG'd routes. **The underlying tradeoff
+remains**: `/dst` is a *pure server render* — `now = DateTime.now()` is captured at BUILD time and
+`getNextTransition(zone, now)` bakes each zone's next transition date into the HTML as text +
+`Event` JSON-LD. It is NOT client-recomputed (unlike the `/convert/*` converter, which self-heals
+on hydration). So with no revalidation, `/dst` shows stale "next transition" dates between
+deploys — once a transition passes, it keeps showing the past one until a redeploy. If/when that
+matters: either a low-frequency scheduled `pnpm deploy` (transitions are months apart, weekly is
+plenty), or move `getNextTransition` to a client `useEffect` so the page self-heals like the
+converter. r2-incremental-cache + a queue (real ISR) is overkill for one page. **Do NOT re-add
+`revalidate` to "fix" the staleness — it can't work here and only brings the dummy-queue error
+back.** Code/calculation changes are unaffected by any of this — every deploy is a full re-render,
+so fixes ship the moment you deploy.
+
 Note `pnpm build` (= `next build`) writes prerendered pages to `.next/`; the static-assets cache
 is only *assembled into the deployable bundle* by `opennextjs-cloudflare build` (run via `pnpm
 preview` / `pnpm deploy`). Inspecting `.open-next/assets` after a bare `next build` is

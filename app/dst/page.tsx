@@ -6,7 +6,6 @@ import { buildMetadata } from '@/lib/seo/metadata';
 import { type DSTTransition, getNextTransition } from '@/lib/time/dst';
 
 export const dynamicParams = false;
-export const revalidate = 86400;
 
 export const metadata = buildMetadata({
   title: 'Daylight saving time around the world',
