@@ -1,6 +1,7 @@
 import { DateTime } from 'luxon';
 import type { ParsedPair, ZoneOrCity } from '@/lib/slugs/parse';
-import { formatTime } from '@/lib/time/format';
+import { formatClock } from '@/lib/time/format';
+import { projectAnchorDay } from '@/lib/time/luxon';
 
 interface Props {
   pair: ParsedPair;
@@ -13,19 +14,16 @@ function shortLabel(zoc: ZoneOrCity): string {
 export function QuickReferenceTable({ pair }: Props) {
   // 24 rows: each hour 0-23 in the "from" zone, projected into the "to" zone.
   // Day delta covers cases where the "to" time crosses a calendar boundary.
-  const base = DateTime.now().setZone(pair.fromIana).startOf('day');
+  // Offset arithmetic (one projection) instead of 24 per-row `setZone` chains.
+  const isoDate = DateTime.now().setZone(pair.fromIana).toISODate() ?? '';
+  const proj = projectAnchorDay(isoDate, pair.fromIana, pair.toIana);
 
-  const rows = Array.from({ length: 24 }, (_, hour) => {
-    const fromTime = base.set({ hour });
-    const toTime = fromTime.setZone(pair.toIana);
-    const dayDelta = Math.round(toTime.startOf('day').diff(fromTime.startOf('day'), 'days').days);
-    return {
-      hour,
-      fromText: formatTime(fromTime, '12'),
-      toText: formatTime(toTime, '12'),
-      dayDelta,
-    };
-  });
+  const rows = proj.map((e, hour) => ({
+    hour,
+    fromText: formatClock(hour, 0, '12'),
+    toText: formatClock(e.hour, e.minute, '12'),
+    dayDelta: e.day_delta,
+  }));
 
   const fromName = shortLabel(pair.from);
   const toName = shortLabel(pair.to);

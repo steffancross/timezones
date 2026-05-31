@@ -90,6 +90,89 @@ function daysBetween(fromIsoDate: string, toIsoDate: string): number {
   return Math.round(b.diff(a, 'days').days);
 }
 
+export interface ProjectedHour {
+  /** Local hour 0-23 in the target zone. */
+  hour: number;
+  /** Local minute 0-59 (non-zero only for 30/45-min offset zones). */
+  minute: number;
+  /** Local ISO date in the target zone, e.g. '2026-05-14'. */
+  date: string;
+  /** Calendar days the local date differs from the anchor date: -1 | 0 | 1. */
+  day_delta: number;
+}
+
+/**
+ * Project all 24 home-zone hours of `anchorDate` into `targetIana`, returning
+ * one entry per home hour (index = home hour 0-23). This is the offset-arithmetic
+ * equivalent of calling `anchorToZones(h, anchorDate, homeIana, [targetIana])`
+ * for every hour, but it resolves each zone's offset ~twice instead of ~24×.
+ *
+ * The hour/date/day_delta fields are identical to `anchorToZones` (which stays
+ * the equivalence oracle in tests); `minute` is additionally exposed for the
+ * 30/45-minute offset zones (e.g. +5:30, +5:45) that the strip ignores but the
+ * reference table renders.
+ *
+ * DST-correct: on a day where either zone transitions (offset at hour 0 differs
+ * from hour 23), it falls back to the exact per-hour `setZone` path so boundary
+ * days stay byte-identical to the old behavior.
+ */
+export function projectAnchorDay(
+  anchorDate: string,
+  homeIana: string,
+  targetIana: string,
+): ProjectedHour[] {
+  const home0 = DateTime.fromISO(anchorDate, { zone: homeIana }).set({ hour: 0 });
+  if (!home0.isValid) {
+    return Array.from({ length: 24 }, (_, h) => ({
+      hour: h,
+      minute: 0,
+      date: anchorDate,
+      day_delta: 0,
+    }));
+  }
+
+  const baseDate = home0.toISODate() ?? anchorDate;
+  const home23 = home0.set({ hour: 23 });
+  const t0 = home0.setZone(targetIana);
+  const t23 = home23.setZone(targetIana);
+
+  // A transition anywhere in [0,23] shifts one of these endpoint offsets, so
+  // checking the endpoints of both zones is sufficient to detect a DST day.
+  const isTransitionDay = home0.offset !== home23.offset || t0.offset !== t23.offset;
+
+  if (isTransitionDay) {
+    return Array.from({ length: 24 }, (_, h) => {
+      const local = home0.set({ hour: h }).setZone(targetIana);
+      const localDate = local.toISODate() ?? baseDate;
+      return {
+        hour: local.hour,
+        minute: local.minute,
+        date: localDate,
+        day_delta: daysBetween(baseDate, localDate),
+      };
+    });
+  }
+
+  // Fast path: constant offset across the day → pure integer arithmetic.
+  const diffMin = t0.offset - home0.offset;
+  const dateForDelta = new Map<number, string>();
+  const resolveDate = (delta: number): string => {
+    const cached = dateForDelta.get(delta);
+    if (cached !== undefined) return cached;
+    const d = DateTime.fromISO(anchorDate).plus({ days: delta }).toISODate() ?? baseDate;
+    dateForDelta.set(delta, d);
+    return d;
+  };
+
+  return Array.from({ length: 24 }, (_, h) => {
+    const total = h * 60 + diffMin;
+    const hour = ((Math.floor(total / 60) % 24) + 24) % 24;
+    const minute = ((total % 60) + 60) % 60;
+    const day_delta = Math.floor(total / 1440);
+    return { hour, minute, date: resolveDate(day_delta), day_delta };
+  });
+}
+
 /**
  * Generate the 24 hour-tile entries for a single zone's strip on a given anchor date.
  * Each tile represents an hour 0-23 in that zone's local time on that date.

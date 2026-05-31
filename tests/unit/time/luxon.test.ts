@@ -1,3 +1,4 @@
+import { DateTime } from 'luxon';
 import { describe, expect, it } from 'vitest';
 import {
   anchorToZones,
@@ -5,6 +6,7 @@ import {
   currentOffsetBetween,
   dayHours,
   nowIn,
+  projectAnchorDay,
 } from '@/lib/time/luxon';
 
 describe('nowIn', () => {
@@ -61,6 +63,82 @@ describe('anchorToZones', () => {
     const result = anchorToZones(9, '2026-01-15', 'Europe/London', ['Europe/London']);
     const london = result.get('Europe/London');
     expect(london).toEqual({ hour: 9, date: '2026-01-15', day_delta: 0 });
+  });
+});
+
+describe('projectAnchorDay', () => {
+  // The oracle: projectAnchorDay must match anchorToZones for every hour, on
+  // hour/date/day_delta, plus expose the correct local minute.
+  const cases: Array<{ name: string; date: string; home: string; target: string }> = [
+    { name: 'same zone', date: '2026-05-14', home: 'Asia/Tokyo', target: 'Asia/Tokyo' },
+    {
+      name: 'whole-hour',
+      date: '2026-05-14',
+      home: 'America/Los_Angeles',
+      target: 'America/New_York',
+    },
+    {
+      name: 'half-hour (+5:30)',
+      date: '2026-05-14',
+      home: 'Europe/London',
+      target: 'Asia/Kolkata',
+    },
+    {
+      name: 'quarter-hour (+5:45)',
+      date: '2026-05-14',
+      home: 'Europe/London',
+      target: 'Asia/Kathmandu',
+    },
+    {
+      name: 'westward straddle',
+      date: '2026-05-14',
+      home: 'Asia/Tokyo',
+      target: 'America/Los_Angeles',
+    },
+    // DST days — these force the per-hour fallback path.
+    {
+      name: 'home spring-forward',
+      date: '2026-03-08',
+      home: 'America/New_York',
+      target: 'Asia/Tokyo',
+    },
+    {
+      name: 'home fall-back',
+      date: '2026-11-01',
+      home: 'America/New_York',
+      target: 'Asia/Tokyo',
+    },
+    {
+      name: 'target transition (London BST)',
+      date: '2026-03-29',
+      home: 'America/New_York',
+      target: 'Europe/London',
+    },
+  ];
+
+  for (const { name, date, home, target } of cases) {
+    it(`matches anchorToZones for all 24 hours — ${name}`, () => {
+      const projected = projectAnchorDay(date, home, target);
+      expect(projected).toHaveLength(24);
+      for (let h = 0; h < 24; h++) {
+        const oracle = anchorToZones(h, date, home, [target]).get(target);
+        const entry = projected[h];
+        expect(entry).toBeDefined();
+        expect({ hour: entry?.hour, date: entry?.date, day_delta: entry?.day_delta }).toEqual(
+          oracle,
+        );
+        const expectedMinute = DateTime.fromISO(date, { zone: home })
+          .set({ hour: h })
+          .setZone(target).minute;
+        expect(entry?.minute).toBe(expectedMinute);
+      }
+    });
+  }
+
+  it('returns identity entries for an invalid anchor date', () => {
+    const projected = projectAnchorDay('not-a-date', 'America/New_York', 'Asia/Tokyo');
+    expect(projected).toHaveLength(24);
+    expect(projected[5]).toEqual({ hour: 5, minute: 0, date: 'not-a-date', day_delta: 0 });
   });
 });
 
