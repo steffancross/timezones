@@ -7,6 +7,12 @@
     "pnpm": ">=9.0.0"
   },
   "packageManager": "pnpm@9.15.0",
+  "browserslist": [
+    "chrome >= 111",
+    "edge >= 111",
+    "firefox >= 113",
+    "safari >= 15.4"
+  ],
   "scripts": {
     "dev": "next dev",
     "data:cities": "tsx scripts/build-cities/run.ts",
