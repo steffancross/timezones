@@ -4,7 +4,6 @@ import {
   anchorToZones,
   currentOffset,
   currentOffsetBetween,
-  dayHours,
   nowIn,
   projectAnchorDay,
 } from '@/lib/time/luxon';
@@ -139,24 +138,5 @@ describe('projectAnchorDay', () => {
     const projected = projectAnchorDay('not-a-date', 'America/New_York', 'Asia/Tokyo');
     expect(projected).toHaveLength(24);
     expect(projected[5]).toEqual({ hour: 5, minute: 0, date: 'not-a-date', day_delta: 0 });
-  });
-});
-
-describe('dayHours', () => {
-  it('returns 24 entries for one day', () => {
-    const hours = dayHours('America/New_York', '2026-05-14');
-    expect(hours).toHaveLength(24);
-  });
-
-  it('first entry is hour 0 and marked midnight', () => {
-    const hours = dayHours('America/New_York', '2026-05-14');
-    expect(hours[0]?.hour).toBe(0);
-    expect(hours[0]?.isMidnight).toBe(true);
-    expect(hours[1]?.isMidnight).toBe(false);
-  });
-
-  it('iso strings are sequential by hour', () => {
-    const hours = dayHours('America/New_York', '2026-05-14');
-    expect(hours.map((h) => h.hour)).toEqual(Array.from({ length: 24 }, (_, i) => i));
   });
 });

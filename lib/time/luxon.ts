@@ -172,27 +172,3 @@ export function projectAnchorDay(
     return { hour, minute, date: resolveDate(day_delta), day_delta };
   });
 }
-
-/**
- * Generate the 24 hour-tile entries for a single zone's strip on a given anchor date.
- * Each tile represents an hour 0-23 in that zone's local time on that date.
- */
-export function dayHours(
-  iana: string,
-  anchorDate: string,
-): Array<{
-  hour: number;
-  iso: string;
-  isMidnight: boolean;
-}> {
-  const start = DateTime.fromISO(anchorDate, { zone: iana }).set({ hour: 0 });
-  return Array.from({ length: 24 }, (_, i) => {
-    const dt = start.plus({ hours: i });
-    const iso = dt.toISO();
-    return {
-      hour: i,
-      iso: iso ?? '',
-      isMidnight: i === 0,
-    };
-  });
-}

@@ -2,7 +2,7 @@
 
 import { Moon, Sun } from 'lucide-react';
 import { DateTime } from 'luxon';
-import { useMemo } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useNow } from '@/lib/hooks/useNow';
 import type { ZoneRef } from '@/lib/store/converter';
 import { useConverterStore } from '@/components/converter/store-context';
@@ -210,6 +210,16 @@ function BandOverlay({
 }) {
   const coords = getCoordsForIana(zone.iana);
 
+  // Day/night bands are deferred to the client. `getNightHours` runs SunCalc's
+  // astronomical math (~2-4 calls/render); paying it during SSR burns Worker
+  // CPU on every cache-miss render of a long-tail pair page. The band is purely
+  // decorative, so we skip it server-side and paint it after hydration. First
+  // client render matches the server (no band) → no hydration mismatch; the
+  // effect flips `mounted` and the band fades in. Work bands stay server-side
+  // (cheap store + Luxon math, no SunCalc).
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
+
   const segments = useMemo(() => {
     const empty = {
       night: [] as Array<[number, number]>,
@@ -220,7 +230,7 @@ function BandOverlay({
 
     let night: Array<[number, number]> = [];
     let day: Array<[number, number]> = [];
-    if (dayNightOn && coords) {
+    if (mounted && dayNightOn && coords) {
       const nightSet = new Set(getNightHours(zone.iana, primaryDate, coords.lat, coords.lng));
       const nightCols: number[] = [];
       const dayCols: number[] = [];
@@ -246,7 +256,7 @@ function BandOverlay({
     }
 
     return { night, day, work };
-  }, [dayNightOn, workHoursOn, columns, primaryDate, workingHours, zone.iana, coords]);
+  }, [mounted, dayNightOn, workHoursOn, columns, primaryDate, workingHours, zone.iana, coords]);
 
   if (!dayNightOn && !workHoursOn) return null;
 
