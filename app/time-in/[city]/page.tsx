@@ -44,7 +44,7 @@ export async function generateMetadata({ params }: { params: Promise<{ city: str
   if (!c) return { title: 'Not found' };
 
   return buildMetadata({
-    title: `Current time in ${c.name}`,
+    title: `Current time in ${c.name}, ${c.country}`,
     description: `Current local time in ${c.name}, ${c.country}. Time zone: ${c.iana}. Includes sunrise, sunset, and conversions to other zones.`,
     path: `/time-in/${city}`,
   });

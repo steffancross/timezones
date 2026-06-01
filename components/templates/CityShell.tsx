@@ -5,6 +5,7 @@ import { Breadcrumbs } from '@/components/site/Breadcrumbs';
 import { HeroClock } from '@/components/site/HeroClock';
 import type { City } from '@/lib/cities/types';
 import { getSunTimes } from '@/lib/time/sun';
+import { resolveZoneForIana, zoneDisplayNameForIana } from '@/lib/zones/resolve';
 import { CityContent } from './CityContent';
 import { CitySchema } from './CitySchema';
 import { CityYourTime } from './CityYourTime';
@@ -46,6 +47,8 @@ export async function CityShell({ city }: Props) {
           <HeroClock iana={city.iana} />
         </div>
 
+        <ZoneLine city={city} />
+
         <SunsetSunriseLine city={city} />
       </section>
 
@@ -81,6 +84,32 @@ function AlsoKnownAs({ city }: { city: City }) {
   return (
     <p className="mt-1 text-sm text-[color:var(--fg-muted)]">
       Also known as: {filtered.join(', ')}
+    </p>
+  );
+}
+
+/**
+ * SSR'd, JS-independent sentence right under the live clock. Answers
+ * "what time zone is {city} in?" and surfaces the "current local time in
+ * {city}" phrasing as crawlable body text high on the page — covering the
+ * search intent without changing the bare-name H1.
+ *
+ * Uses the zone's stable abbreviation list (not the current DST offset) so it
+ * stays correct year-round: city pages are SSG with no revalidation, and the
+ * live clock above already shows the current offset.
+ */
+function ZoneLine({ city }: { city: City }) {
+  const zone = resolveZoneForIana(city.iana);
+  const zoneName = zoneDisplayNameForIana(city.iana);
+  if (!zoneName) return null;
+
+  const abbrevList =
+    zone && zone.abbreviations.length > 0 ? ` (${zone.abbreviations.join(', ')})` : '';
+
+  return (
+    <p className="mx-auto mt-4 max-w-prose text-sm text-[color:var(--fg-muted)]">
+      {city.name}, {city.country} is in the {zoneName} zone{abbrevList}. The current local time in{' '}
+      {city.name} is shown above.
     </p>
   );
 }
