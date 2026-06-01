@@ -3,12 +3,24 @@ import type { DateTime } from 'luxon';
 export type TimeFormat = '12' | '24';
 
 /**
+ * Format a wall-clock hour/minute to a time string in the given format, with
+ * no Luxon dependency. 12: '3:00 pm' / 24: '15:00'. Single source of truth for
+ * `formatTime`, and lets hot loops format from integer offset arithmetic
+ * instead of constructing a DateTime per cell.
+ */
+export function formatClock(hour: number, minute: number, format: TimeFormat): string {
+  const mm = String(minute).padStart(2, '0');
+  if (format === '24') return `${String(hour).padStart(2, '0')}:${mm}`;
+  const h12 = hour % 12 === 0 ? 12 : hour % 12;
+  return `${h12}:${mm} ${hour < 12 ? 'am' : 'pm'}`;
+}
+
+/**
  * Format a DateTime to a time string in the given format.
  * 12: '3:00 pm' / 24: '15:00'
  */
 export function formatTime(dt: DateTime, format: TimeFormat): string {
-  if (format === '24') return dt.toFormat('HH:mm');
-  return dt.toFormat('h:mm a').toLowerCase();
+  return formatClock(dt.hour, dt.minute, format);
 }
 
 /**

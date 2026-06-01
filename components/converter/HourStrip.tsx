@@ -6,8 +6,9 @@ import { useMemo } from 'react';
 import { useNow } from '@/lib/hooks/useNow';
 import type { ZoneRef } from '@/lib/store/converter';
 import { useConverterStore } from '@/components/converter/store-context';
-import { anchorToZones } from '@/lib/time/luxon';
+import { projectAnchorDay } from '@/lib/time/luxon';
 import { getNightHours } from '@/lib/time/sun';
+import { isWeekend } from '@/lib/time/weekend';
 import { getWorkingHoursOnDay, type WorkingHours } from '@/lib/time/working-hours';
 import { getCoordsForIana } from '@/lib/zones/resolve';
 import { HourTile } from './HourTile';
@@ -49,18 +50,12 @@ export function HourStrip({ zone, index }: Props) {
   // E3's markdown originally proposed (240 redundant Luxon calls/render).
   const columns = useMemo<ColumnData[]>(() => {
     if (!homeIana) return [];
-    return Array.from({ length: 24 }, (_, h) => {
-      const entry = anchorToZones(h, anchorDate, homeIana, [zone.iana]).get(zone.iana);
-      if (!entry) {
-        return { homeHour: h, localHour: h, localDate: anchorDate, dayDelta: 0 };
-      }
-      return {
-        homeHour: h,
-        localHour: entry.hour,
-        localDate: entry.date,
-        dayDelta: entry.day_delta,
-      };
-    });
+    return projectAnchorDay(anchorDate, homeIana, zone.iana).map((e, h) => ({
+      homeHour: h,
+      localHour: e.hour,
+      localDate: e.date,
+      dayDelta: e.day_delta,
+    }));
   }, [zone.iana, anchorDate, homeIana]);
 
   // Row's primary date = the most common localDate across columns. Tiles whose
@@ -110,11 +105,19 @@ export function HourStrip({ zone, index }: Props) {
   // segment under those tiles — not the whole row.
   const columnIsWeekend = useMemo(() => {
     if (!weekendOn) return columns.map(() => false);
+    // A weekday is zone-independent (midnight is the same calendar day in every
+    // zone), and a strip spans only ~2-3 distinct dates — so resolve each
+    // distinct date once instead of constructing a DateTime per column.
+    const byDate = new Map<string, boolean>();
     return columns.map((c) => {
-      const dt = DateTime.fromISO(c.localDate, { zone: zone.iana });
-      return dt.isValid && dt.weekday >= 6;
+      const cached = byDate.get(c.localDate);
+      if (cached !== undefined) return cached;
+      const dt = DateTime.fromISO(c.localDate);
+      const isWknd = dt.isValid && isWeekend(dt.weekday);
+      byDate.set(c.localDate, isWknd);
+      return isWknd;
     });
-  }, [weekendOn, columns, zone.iana]);
+  }, [weekendOn, columns]);
 
   return (
     <div className="relative w-full pt-[18px] pb-1 max-md:pt-[14px]">

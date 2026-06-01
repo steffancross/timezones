@@ -1,12 +1,41 @@
 import { DateTime } from 'luxon';
 import { describe, expect, it } from 'vitest';
 import {
+  formatClock,
   formatDate,
   formatDayDelta,
   formatHourTile,
   formatOffset,
   formatTime,
 } from '@/lib/time/format';
+
+describe('formatClock', () => {
+  it('12-hour: midnight, noon, and pm with minutes', () => {
+    expect(formatClock(0, 0, '12')).toBe('12:00 am');
+    expect(formatClock(12, 0, '12')).toBe('12:00 pm');
+    expect(formatClock(15, 30, '12')).toBe('3:30 pm');
+    expect(formatClock(9, 45, '12')).toBe('9:45 am');
+  });
+
+  it('24-hour pads hours and minutes', () => {
+    expect(formatClock(0, 0, '24')).toBe('00:00');
+    expect(formatClock(9, 5, '24')).toBe('09:05');
+    expect(formatClock(23, 30, '24')).toBe('23:30');
+  });
+
+  it('matches formatTime for arbitrary DateTimes, including half-hour zones', () => {
+    const samples = [
+      DateTime.fromISO('2026-05-14T15:00', { zone: 'America/Los_Angeles' }),
+      DateTime.fromISO('2026-05-14T00:00', { zone: 'UTC' }),
+      DateTime.fromISO('2026-05-14T12:00', { zone: 'UTC' }).setZone('Asia/Kolkata'),
+      DateTime.fromISO('2026-05-14T12:00', { zone: 'UTC' }).setZone('Asia/Kathmandu'),
+    ];
+    for (const dt of samples) {
+      expect(formatClock(dt.hour, dt.minute, '12')).toBe(formatTime(dt, '12'));
+      expect(formatClock(dt.hour, dt.minute, '24')).toBe(formatTime(dt, '24'));
+    }
+  });
+});
 
 describe('formatTime', () => {
   const dt = DateTime.fromISO('2026-05-14T15:00', { zone: 'America/Los_Angeles' });
