@@ -2,11 +2,9 @@ import { Converter } from '@/components/converter/Converter';
 import { ConverterStateProvider } from '@/components/converter/ConverterStateProvider';
 import { PairLinks } from '@/components/converter/PairLinks';
 import { WebsiteSchema } from '@/components/site/WebsiteSchema';
-import { getZoneByIana } from '@/data/zones';
 import { buildMetadata } from '@/lib/seo/metadata';
-import type { ZoneRef } from '@/lib/store/converter';
 import { parseSearchParams, urlToState } from '@/lib/store/from-url';
-import { pickContextualZones } from '@/lib/zones/contextual';
+import { pickContextualHomeRefs } from '@/lib/zones/contextual';
 import { headers } from 'next/headers';
 
 // Force per-request render so the cf-timezone / cf-ipcountry headers actually
@@ -34,12 +32,12 @@ export default async function HomePage({
   // the URL state (range, date, format) is hydrated via urlToState so a pasted
   // share link restores the full view, not just the zones.
   const parsed = parseSearchParams(sp);
-  const contextualZones: ZoneRef[] = pickContextualZones(detectedTz, country).map((iana) => {
-    const z = getZoneByIana(iana);
-    return z
-      ? { kind: 'zone', slug: z.id, iana: z.iana }
-      : { kind: 'zone', slug: iana.toLowerCase().replace(/\//g, '-'), iana };
-  });
+  // Contextual default rows as friendly CITY refs (zone fallback), resolved
+  // server-side from the cf-headers — the visitor lands on their relevant cities
+  // with no client reorientation. Never fabricates a bogus zone slug, so an
+  // uncurated zone like Europe/Berlin resolves to the Berlin city instead of
+  // 500ing (the original bug).
+  const contextualZones = pickContextualHomeRefs(detectedTz, country);
   const initialState = {
     ...urlToState(parsed),
     // urlToState only sets zones when the URL provided them; on the homepage
