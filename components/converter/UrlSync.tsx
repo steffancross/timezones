@@ -1,18 +1,29 @@
 'use client';
 
-import { usePathname, useRouter } from 'next/navigation';
+import { usePathname } from 'next/navigation';
 import { useEffect } from 'react';
 import { useConverterStore } from '@/components/converter/store-context';
 import { stateToQueryString } from '@/lib/store/to-url';
 
 /**
- * Subscribes to URL-relevant store fields and updates the URL via
- * router.replace (no history entry). Mount once inside the converter.
+ * Subscribes to URL-relevant store fields and mirrors them into the address bar
+ * via the native History API (`replaceState` — no history entry). Mount once
+ * inside the converter.
+ *
+ * Why `history.replaceState` and not `router.replace`: in the App Router,
+ * `router.replace` is a navigation — it fetches the destination's RSC payload
+ * from the server even when only the query string changes. Cache interception
+ * serves prerendered HTML, not partial RSC, so each one boots NextServer and
+ * re-renders → a Worker request + CPU per slider nudge. The URL here is purely a
+ * write-only mirror of the store (initial state is SSR'd from the slug, and
+ * SearchParamsHydrator seeds `?d/?r/?f/?z` once on mount), so we want a
+ * client-only URL update with zero server round-trip. `history.replaceState`
+ * does exactly that. Passing `window.history.state` preserves Next's internal
+ * routing metadata on the current entry.
  *
  * Debounced lightly to avoid rapid URL updates during hover/preview interactions.
  */
 export function UrlSync() {
-  const router = useRouter();
   const pathname = usePathname();
 
   const anchorDate = useConverterStore((s) => s.anchorDate);
@@ -39,11 +50,11 @@ export function UrlSync() {
     if (currentPath === nextPath && window.location.search === (qs ? `?${qs}` : '')) return;
 
     const t = setTimeout(() => {
-      router.replace(next, { scroll: false });
+      window.history.replaceState(window.history.state, '', next);
     }, 100);
 
     return () => clearTimeout(t);
-  }, [pathname, anchorDate, defaultAnchorDate, rangeStart, rangeEnd, format, router]);
+  }, [pathname, anchorDate, defaultAnchorDate, rangeStart, rangeEnd, format]);
 
   return null;
 }

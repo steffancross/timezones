@@ -1,9 +1,9 @@
 'use client';
 
-import { usePathname, useSearchParams } from 'next/navigation';
+import { usePathname } from 'next/navigation';
 import posthog from 'posthog-js';
 import { PostHogProvider, usePostHog } from 'posthog-js/react';
-import { Suspense, useEffect } from 'react';
+import { useEffect } from 'react';
 import { TooltipProvider } from '@/components/ui/tooltip';
 import env from '@/lib/env';
 
@@ -41,9 +41,7 @@ if (typeof window !== 'undefined') {
 export function Providers({ children }: { children: React.ReactNode }) {
   return (
     <PostHogProvider client={posthog}>
-      <Suspense fallback={null}>
-        <PageviewTracker />
-      </Suspense>
+      <PageviewTracker />
       <TooltipProvider delayDuration={300}>{children}</TooltipProvider>
     </PostHogProvider>
   );
@@ -51,14 +49,20 @@ export function Providers({ children }: { children: React.ReactNode }) {
 
 function PageviewTracker() {
   const pathname = usePathname();
-  const searchParams = useSearchParams();
   const ph = usePostHog();
 
+  // Fire a $pageview only on real navigations (pathname change), NOT on
+  // query-param-only updates. The converter mirrors slider/date/format state
+  // into the URL via history.replaceState (see UrlSync) — those are not page
+  // views and must not inflate counts. We read window.location at fire time so a
+  // share-link landing still records its full URL (params included) on mount.
+  // Dropping useSearchParams also removes this subtree's Suspense/CSR-bailout
+  // requirement, so the wrapper is gone.
   useEffect(() => {
     if (!pathname || !ph) return;
-    const url = window.origin + pathname + (searchParams.toString() ? `?${searchParams}` : '');
+    const url = window.location.origin + window.location.pathname + window.location.search;
     ph.capture('$pageview', { $current_url: url });
-  }, [pathname, searchParams, ph]);
+  }, [pathname, ph]);
 
   return null;
 }
