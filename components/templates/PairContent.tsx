@@ -4,6 +4,7 @@ import { OffsetSummary } from './OffsetSummary';
 import { PairAirports } from './PairAirports';
 import { PairCities } from './PairCities';
 import { PairDaylight } from './PairDaylight';
+import { PairFaq } from './PairFaq';
 import { PairZoneFacts } from './PairZoneFacts';
 import { QuickReferenceTable } from './QuickReferenceTable';
 import { RelatedPairs } from './RelatedPairs';
@@ -31,6 +32,7 @@ export function PairContent({ pair, slug }: Props) {
       <PairCities pair={pair} />
       <PairAirports pair={pair} />
       <RelatedPairs slug={slug} />
+      <PairFaq pair={pair} />
     </article>
   );
 }
