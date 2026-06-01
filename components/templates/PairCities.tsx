@@ -2,7 +2,7 @@ import Link from 'next/link';
 import { getCitiesByIana } from '@/lib/cities/resolve';
 import type { City } from '@/lib/cities/types';
 import type { ParsedPair, ZoneOrCity } from '@/lib/slugs/parse';
-import { getZoneByIana } from '@/lib/zones/resolve';
+import { zoneDisplayNameForIana } from '@/lib/zones/resolve';
 
 interface Props {
   pair: ParsedPair;
@@ -20,7 +20,7 @@ function citiesForSide(zoc: ZoneOrCity): City[] {
 
 function zoneDisplayName(zoc: ZoneOrCity): string {
   if (zoc.kind === 'zone') return zoc.zone.display_name;
-  return getZoneByIana(zoc.city.iana)?.display_name ?? zoc.city.iana;
+  return zoneDisplayNameForIana(zoc.city.iana);
 }
 
 function sideTitle(zoc: ZoneOrCity): string {

@@ -1,6 +1,6 @@
 import { getCitiesByIana } from '@/lib/cities/resolve';
 import type { ParsedPair, ZoneOrCity } from '@/lib/slugs/parse';
-import { getZoneByIana } from '@/lib/zones/resolve';
+import { zoneDisplayNameForIana } from '@/lib/zones/resolve';
 
 interface Props {
   pair: ParsedPair;
@@ -32,7 +32,7 @@ function airportsForSide(zoc: ZoneOrCity): Airport[] {
 
 function zoneDisplayName(zoc: ZoneOrCity): string {
   if (zoc.kind === 'zone') return zoc.zone.display_name;
-  return getZoneByIana(zoc.city.iana)?.display_name ?? zoc.city.iana;
+  return zoneDisplayNameForIana(zoc.city.iana);
 }
 
 export function PairAirports({ pair }: Props) {

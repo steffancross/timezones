@@ -1,5 +1,5 @@
 import { DateTime } from 'luxon';
-import { getZoneByIana } from '@/data/zones';
+import { resolveZoneForIana } from '@/lib/zones/resolve';
 
 /**
  * Current colloquial abbreviation for an IANA zone, DST-aware.
@@ -14,12 +14,15 @@ import { getZoneByIana } from '@/data/zones';
  * runtime has no real abbreviation and returns the "GMT±N" form — which is
  * exactly why we don't rely on it when we have curated data.
  *
- * @param iana Canonical IANA zone id, e.g. 'Europe/London'.
+ * Resolution goes through `resolveZoneForIana`, so non-canonical IANAs map to
+ * their curated zone too (`Europe/Berlin` → CET → "CET"/"CEST", not "GMT+2").
+ *
+ * @param iana IANA zone id, e.g. 'Europe/London' or 'Europe/Berlin'.
  * @param at   Instant to evaluate DST at; defaults to now.
  */
 export function currentAbbreviation(iana: string, at: DateTime = DateTime.now()): string {
   const local = at.setZone(iana);
-  const zone = getZoneByIana(iana);
+  const zone = resolveZoneForIana(iana);
   if (!zone) return local.toFormat('ZZZZ');
 
   const [std, dst] = zone.abbreviations;
@@ -36,6 +39,6 @@ export function currentAbbreviation(iana: string, at: DateTime = DateTime.now())
  * to the runtime "GMT±N" form for zones we don't have.
  */
 export function standardAbbreviation(iana: string): string {
-  const zone = getZoneByIana(iana);
+  const zone = resolveZoneForIana(iana);
   return zone?.abbreviations[0] ?? DateTime.now().setZone(iana).toFormat('ZZZZ');
 }

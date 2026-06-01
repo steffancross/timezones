@@ -1,14 +1,14 @@
 import { DateTime } from 'luxon';
-import { getZoneByIana } from '@/data/zones';
 import { formatOffset } from '@/lib/time/format';
 import { currentAbbreviation } from '@/lib/zones/abbreviation';
+import { resolveZoneForIana } from '@/lib/zones/resolve';
 
 interface Props {
   iana: string;
 }
 
 export function ZoneCard({ iana }: Props) {
-  const zone = getZoneByIana(iana);
+  const zone = resolveZoneForIana(iana);
   if (!zone) return null;
 
   const now = DateTime.now().setZone(iana);

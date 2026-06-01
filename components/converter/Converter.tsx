@@ -1,6 +1,7 @@
 'use client';
 
-import { getZoneByIana, getZoneById } from '@/data/zones';
+import { getZoneById } from '@/data/zones';
+import { zoneDisplayNameForIana } from '@/lib/zones/resolve';
 import { getCityById } from '@/lib/cities/resolve';
 import { useDragSelectionGlobalListener } from '@/lib/converter/drag-selection';
 import { useNow } from '@/lib/hooks/useNow';
@@ -36,7 +37,10 @@ interface ConverterProps {
    * `zones[0]` so it doesn't switch around as the user reorders the converter.
    * Pair pages are statically generated and won't pass this prop — on those,
    * the visitor zone is resolved client-side from `Intl`.
-   * Falls back to `zones[0]` if the IANA isn't a known zone in our dataset.
+   * The IANA is mapped to a curated zone via `resolveZoneForIana` (handles
+   * non-canonical IANAs like `Europe/Berlin` → CET); if no curated zone fits,
+   * the heading names the visitor's actual zone from the IANA itself rather
+   * than falling back to `zones[0]`.
    */
   visitorIana?: string;
 }
@@ -77,10 +81,17 @@ export function Converter({ visitorIana }: ConverterProps = {}) {
     [addZone],
   );
 
-  const visitorZone = resolvedVisitorIana ? getZoneByIana(resolvedVisitorIana) : null;
-  const headingIana = visitorZone?.iana ?? zones[0]?.iana;
-  const headingName = visitorZone?.display_name ?? getHomeName(zones[0]);
+  // Heading locks to the visitor's own zone. Use the visitor IANA itself (not the
+  // curated zone's canonical IANA) for the clock so the time is exactly their
+  // local time. `zoneDisplayNameForIana` names it: curated zone name when we have
+  // one, else the zone's own long name (e.g. "Central European Summer Time",
+  // "Mountain Standard Time") — never an unrelated `zones[0]` row. Only with no
+  // visitor IANA at all do we fall back to the first converter row.
+  const headingIana = resolvedVisitorIana ?? zones[0]?.iana;
   const headingNow = headingIana ? now.setZone(headingIana) : null;
+  const headingName = resolvedVisitorIana
+    ? zoneDisplayNameForIana(resolvedVisitorIana, now)
+    : getHomeName(zones[0]);
   const liveStamp = headingNow
     ? headingNow.toFormat(format === '24' ? 'HH:mm' : 'h:mm a').toLowerCase()
     : null;
