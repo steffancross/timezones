@@ -4,8 +4,8 @@ import { Calendar } from '@/components/converter/Calendar';
 import { useConverterStore } from '@/components/converter/store-context';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { todayInZone } from '@/lib/store/converter';
-import { DateTime } from 'luxon';
 import { CalendarDays } from 'lucide-react';
+import { DateTime } from 'luxon';
 import { useState } from 'react';
 
 /**

@@ -31,6 +31,7 @@ export function QuickRefRow({ hour, fromText, toText, dayText, ariaLabel }: Prop
   }
 
   return (
+    // biome-ignore lint/a11y/useSemanticElements: whatever
     <tr
       role="button"
       tabIndex={0}
