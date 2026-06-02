@@ -1,8 +1,11 @@
+import { DateTime } from 'luxon';
+import Link from 'next/link';
+import { COUNTRY_INFO } from '@/lib/cities/countries';
 import { getAllCities, getCitiesByIana, getCitiesInCountry } from '@/lib/cities/resolve';
 import type { City } from '@/lib/cities/types';
+import { getHolidays, HOLIDAYS_YEAR } from '@/lib/holidays/resolve';
 import { getNextTransition } from '@/lib/time/dst';
 import { resolveZoneForIana, zoneDisplayNameForIana } from '@/lib/zones/resolve';
-import Link from 'next/link';
 import { AirportChip, CityChip } from './chips';
 
 interface Props {
@@ -20,6 +23,7 @@ export function CityContent({ city }: Props) {
     <article className="mt-12 space-y-10">
       <GeographicContext city={city} />
       {city.airports.length > 0 && <Airports city={city} />}
+      <CityHolidays city={city} />
       <ConversionLinks city={city} />
       <RelatedCities city={city} />
     </article>
@@ -32,6 +36,9 @@ function GeographicContext({ city }: { city: City }) {
   const abbrevList =
     zone && zone.abbreviations.length > 0 ? ` (${zone.abbreviations.join(', ')})` : '';
   const nextTx = getNextTransition(city.iana);
+  const countryInfo = COUNTRY_INFO[city.country_code];
+  // GeoNames stores some dialing codes with a leading '+' and some without.
+  const dialCode = countryInfo?.phone ? `+${countryInfo.phone.replace(/^\+/, '')}` : null;
 
   return (
     <section>
@@ -78,7 +85,37 @@ function GeographicContext({ city }: { city: City }) {
         <FactRow label="Population" value={city.population.toLocaleString()} mono />
         <FactRow label="Time zone" value={city.iana} />
         <FactRow label="Country" value={city.country} />
+        {countryInfo?.capital && <FactRow label="Capital" value={countryInfo.capital} />}
+        {dialCode && <FactRow label="Calling code" value={dialCode} mono />}
       </dl>
+    </section>
+  );
+}
+
+/**
+ * Public-holiday calendar for the city's country (current year, baked at build
+ * time). Framed as a year calendar — see lib/holidays/resolve.ts. Returns null
+ * when we have no holiday data for the country.
+ */
+function CityHolidays({ city }: { city: City }) {
+  const holidays = getHolidays(city.country_code);
+  if (holidays.length === 0) return null;
+
+  return (
+    <section>
+      <h2 className="text-2xl font-semibold">
+        Public holidays in {city.country} ({HOLIDAYS_YEAR})
+      </h2>
+      <ul className="mt-3 space-y-1 text-sm">
+        {holidays.map((h) => (
+          <li key={h.date} className="flex justify-between gap-4">
+            <span>{h.name}</span>
+            <span className="shrink-0 tabular-nums text-[color:var(--fg-muted)]">
+              {DateTime.fromISO(h.date).toFormat('EEE, MMM d')}
+            </span>
+          </li>
+        ))}
+      </ul>
     </section>
   );
 }

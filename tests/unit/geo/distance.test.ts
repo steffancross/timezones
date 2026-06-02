@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { greatCircleMiles, roundMiles } from '@/lib/geo/distance';
+import { bearing, cardinalDirection, greatCircleMiles, roundMiles } from '@/lib/geo/distance';
 
 describe('greatCircleMiles', () => {
   it('returns 0 for the same point', () => {
@@ -56,5 +56,52 @@ describe('roundMiles', () => {
     expect(roundMiles(2451)).toBe(2450);
     expect(roundMiles(2476)).toBe(2500);
     expect(roundMiles(12_450)).toBe(12_450);
+  });
+});
+
+describe('bearing', () => {
+  it('points due east along the equator', () => {
+    expect(bearing(0, 0, 0, 1)).toBeCloseTo(90, 4);
+  });
+
+  it('points due west along the equator', () => {
+    expect(bearing(0, 0, 0, -1)).toBeCloseTo(270, 4);
+  });
+
+  it('points due north along a meridian', () => {
+    expect(bearing(0, 0, 1, 0)).toBeCloseTo(0, 4);
+  });
+
+  it('points due south along a meridian', () => {
+    expect(bearing(0, 0, -1, 0)).toBeCloseTo(180, 4);
+  });
+
+  it('returns a value in [0, 360)', () => {
+    const b = bearing(51.5074, -0.1278, 35.6895, 139.6917);
+    expect(b).toBeGreaterThanOrEqual(0);
+    expect(b).toBeLessThan(360);
+  });
+});
+
+describe('cardinalDirection', () => {
+  it('maps cardinal degrees to compass words', () => {
+    expect(cardinalDirection(0)).toBe('north');
+    expect(cardinalDirection(90)).toBe('east');
+    expect(cardinalDirection(180)).toBe('south');
+    expect(cardinalDirection(270)).toBe('west');
+  });
+
+  it('maps intercardinal degrees', () => {
+    expect(cardinalDirection(45)).toBe('northeast');
+    expect(cardinalDirection(135)).toBe('southeast');
+    expect(cardinalDirection(225)).toBe('southwest');
+    expect(cardinalDirection(315)).toBe('northwest');
+  });
+
+  it('rounds to the nearest of 8 points and wraps at 360', () => {
+    expect(cardinalDirection(22)).toBe('north'); // <22.5 → north
+    expect(cardinalDirection(23)).toBe('northeast'); // ≥22.5 → northeast
+    expect(cardinalDirection(360)).toBe('north');
+    expect(cardinalDirection(359)).toBe('north');
   });
 });
