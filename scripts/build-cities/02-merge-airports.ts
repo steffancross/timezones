@@ -137,20 +137,24 @@ function matchAirportsToCities(
     // any airport within ~50km. Either signal is good enough; together they
     // catch faraway-but-named airports (e.g. NRT for Tokyo) and unnamed-but-near
     // airports (e.g. EWR labelled "Newark" but near NYC).
-    const matchedIatas = new Set<string>();
+    // iata -> airport name; Map dedupes by code (first match wins).
+    const matched = new Map<string, string>();
     for (const a of candidates) {
       const acl = a.city.toLowerCase();
       const nameMatch = acl === cityNameLower || acl === cityNameAsciiLower;
       const nearby =
         Math.abs(a.lat - city.lat) < LAT_TOLERANCE && Math.abs(a.lng - city.lng) < lngTolerance;
       if (nameMatch || nearby) {
-        matchedIatas.add(a.iata as string);
+        const code = a.iata as string;
+        if (!matched.has(code)) matched.set(code, a.name);
       }
     }
 
     return {
       ...city,
-      iata_codes: [...matchedIatas].sort(),
+      airports: [...matched.entries()]
+        .map(([iata, name]) => ({ iata, name }))
+        .sort((x, y) => x.iata.localeCompare(y.iata)),
     };
   });
 }
@@ -161,8 +165,8 @@ export async function mergeAirports(cities: RawCity[]): Promise<EnrichedCity[]> 
   const enriched = matchAirportsToCities(cities, airports, commercialIatas);
   await writeFile(OUT_PATH, JSON.stringify(enriched, null, 2));
 
-  const withIata = enriched.filter((c) => c.iata_codes.length > 0);
-  console.warn(`Enriched ${enriched.length} cities; ${withIata.length} have IATA codes`);
+  const withIata = enriched.filter((c) => c.airports.length > 0);
+  console.warn(`Enriched ${enriched.length} cities; ${withIata.length} have airports`);
   return enriched;
 }
 

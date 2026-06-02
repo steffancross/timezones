@@ -3,6 +3,7 @@ import { getCitiesByIana } from '@/lib/cities/resolve';
 import type { City } from '@/lib/cities/types';
 import type { ParsedPair, ZoneOrCity } from '@/lib/slugs/parse';
 import { zoneDisplayNameForIana } from '@/lib/zones/resolve';
+import { CityChip } from './chips';
 
 interface Props {
   pair: ParsedPair;
@@ -61,18 +62,7 @@ function CityColumn({ title, cities }: { title: string; cities: City[] }) {
       <h3 className="text-sm font-semibold">{title}</h3>
       <ul className="mt-3 flex flex-wrap gap-2">
         {cities.map((c) => (
-          <li key={c.id}>
-            <Link
-              prefetch={false}
-              href={`/time-in/${c.id}`}
-              className="inline-flex items-center gap-2 rounded-[var(--radius)] border border-[color:var(--border)] bg-card px-3 py-1.5 text-sm hover:bg-[var(--hover)]"
-            >
-              <span>{c.name}</span>
-              <span className="font-mono text-[10px] uppercase text-[color:var(--fg-muted)]">
-                {c.country_code}
-              </span>
-            </Link>
-          </li>
+          <CityChip key={c.id} city={c} />
         ))}
       </ul>
     </div>

@@ -160,9 +160,11 @@ function buildDocs(): SearchDoc[] {
     popularity: c.popularity,
     tier: c.tier,
     name: c.name,
-    alt_names: [...c.alt_names, c.ascii_name].filter((s) => s !== c.name).join(' '),
+    alt_names: [...c.alt_names, c.ascii_name, ...c.airports.map((a) => a.name)]
+      .filter((s) => s !== c.name)
+      .join(' '),
     abbreviations: '',
-    iata: c.iata_codes.join(' '),
+    iata: c.airports.map((a) => a.iata).join(' '),
     country: c.country,
     country_code: c.country_code,
     region: continentFromCountry(c.country_code),
