@@ -16,8 +16,11 @@
       "Abidjan",
       "Abidzan"
     ],
-    "iata_codes": [
-      "ABJ"
+    "airports": [
+      {
+        "iata": "ABJ",
+        "name": "Port Bouet Airport"
+      }
     ],
     "popularity": 78
   },
@@ -36,8 +39,11 @@
       "Abobo",
       "Abobo-Gare"
     ],
-    "iata_codes": [
-      "ABJ"
+    "airports": [
+      {
+        "iata": "ABJ",
+        "name": "Port Bouet Airport"
+      }
     ],
     "popularity": 61
   },
@@ -58,8 +64,11 @@
       "AUH",
       "Aboe Dhabi"
     ],
-    "iata_codes": [
-      "AUH"
+    "airports": [
+      {
+        "iata": "AUH",
+        "name": "Abu Dhabi International Airport"
+      }
     ],
     "popularity": 73
   },
@@ -80,8 +89,11 @@
       "Abouja",
       "Abuca"
     ],
-    "iata_codes": [
-      "ABV"
+    "airports": [
+      {
+        "iata": "ABV",
+        "name": "Nnamdi Azikiwe International Airport"
+      }
     ],
     "popularity": 64
   },
@@ -102,8 +114,11 @@
       "Accra",
       "Acra"
     ],
-    "iata_codes": [
-      "ACC"
+    "airports": [
+      {
+        "iata": "ACC",
+        "name": "Kotoka International Airport"
+      }
     ],
     "popularity": 73
   },
@@ -124,9 +139,15 @@
       "Adane",
       "Adano"
     ],
-    "iata_codes": [
-      "ADA",
-      "COV"
+    "airports": [
+      {
+        "iata": "ADA",
+        "name": "Adana Airport"
+      },
+      {
+        "iata": "COV",
+        "name": "Çukurova International Airport"
+      }
     ],
     "popularity": 63
   },
@@ -147,8 +168,11 @@
       "Addis Abaeba",
       "Addis Abbaba"
     ],
-    "iata_codes": [
-      "ADD"
+    "airports": [
+      {
+        "iata": "ADD",
+        "name": "Bole International Airport"
+      }
     ],
     "popularity": 76
   },
@@ -169,8 +193,11 @@
       "Adehlaida",
       "Adelaida"
     ],
-    "iata_codes": [
-      "ADL"
+    "airports": [
+      {
+        "iata": "ADL",
+        "name": "Adelaide International Airport"
+      }
     ],
     "popularity": 72
   },
@@ -191,8 +218,11 @@
       "Agra - agara",
       "Agro"
     ],
-    "iata_codes": [
-      "AGR"
+    "airports": [
+      {
+        "iata": "AGR",
+        "name": "Agra Airport"
+      }
     ],
     "popularity": 62
   },
@@ -213,8 +243,11 @@
       "Ahmadabad",
       "Ahmadabadas"
     ],
-    "iata_codes": [
-      "AMD"
+    "airports": [
+      {
+        "iata": "AMD",
+        "name": "Sardar Vallabhbhai Patel International Airport"
+      }
     ],
     "popularity": 78
   },
@@ -234,8 +267,11 @@
       "Al Basrat al Qadimah",
       "albsrt alqdymt"
     ],
-    "iata_codes": [
-      "BSR"
+    "airports": [
+      {
+        "iata": "BSR",
+        "name": "Basrah International Airport"
+      }
     ],
     "popularity": 63
   },
@@ -254,7 +290,7 @@
       "Al Mawsil al Jadidah",
       "almwsl aljdydt"
     ],
-    "iata_codes": [],
+    "airports": [],
     "popularity": 63
   },
   {
@@ -274,8 +310,11 @@
       "Alepas",
       "Alepo"
     ],
-    "iata_codes": [
-      "ALP"
+    "airports": [
+      {
+        "iata": "ALP",
+        "name": "Aleppo International Airport"
+      }
     ],
     "popularity": 63
   },
@@ -296,8 +335,11 @@
       "Alegsandiri",
       "Alehandriya"
     ],
-    "iata_codes": [
-      "HBE"
+    "airports": [
+      {
+        "iata": "HBE",
+        "name": "Borg El Arab International Airport"
+      }
     ],
     "popularity": 67
   },
@@ -318,8 +360,11 @@
       "Al-jezair",
       "Alcher"
     ],
-    "iata_codes": [
-      "ALG"
+    "airports": [
+      {
+        "iata": "ALG",
+        "name": "Houari Boumediene Airport"
+      }
     ],
     "popularity": 74
   },
@@ -340,8 +385,11 @@
       "Almaato",
       "Almata"
     ],
-    "iata_codes": [
-      "ALA"
+    "airports": [
+      {
+        "iata": "ALA",
+        "name": "Almaty Airport"
+      }
     ],
     "popularity": 63
   },
@@ -362,9 +410,15 @@
       "Ama",
       "Aman"
     ],
-    "iata_codes": [
-      "ADJ",
-      "AMM"
+    "airports": [
+      {
+        "iata": "ADJ",
+        "name": "Amman-Marka International Airport"
+      },
+      {
+        "iata": "AMM",
+        "name": "Queen Alia International Airport"
+      }
     ],
     "popularity": 71
   },
@@ -385,9 +439,15 @@
       "Aemsterdam",
       "Amestelledamme"
     ],
-    "iata_codes": [
-      "AMS",
-      "RTM"
+    "airports": [
+      {
+        "iata": "AMS",
+        "name": "Amsterdam Airport Schiphol"
+      },
+      {
+        "iata": "RTM",
+        "name": "Rotterdam Airport"
+      }
     ],
     "popularity": 79
   },
@@ -409,9 +469,15 @@
       "An'koreitz",
       "Anchorage"
     ],
-    "iata_codes": [
-      "ANC",
-      "MRI"
+    "airports": [
+      {
+        "iata": "ANC",
+        "name": "Ted Stevens Anchorage International Airport"
+      },
+      {
+        "iata": "MRI",
+        "name": "Merrill Field"
+      }
     ],
     "popularity": 65
   },
@@ -432,8 +498,11 @@
       "Ancara",
       "Ancyra"
     ],
-    "iata_codes": [
-      "ESB"
+    "airports": [
+      {
+        "iata": "ESB",
+        "name": "Esenboga International Airport"
+      }
     ],
     "popularity": 75
   },
@@ -454,8 +523,11 @@
       "An'shan'",
       "An-san"
     ],
-    "iata_codes": [
-      "AOG"
+    "airports": [
+      {
+        "iata": "AOG",
+        "name": "Anshan Air Base"
+      }
     ],
     "popularity": 62
   },
@@ -476,8 +548,11 @@
       "Antal'ja",
       "Antalia"
     ],
-    "iata_codes": [
-      "AYT"
+    "airports": [
+      {
+        "iata": "AYT",
+        "name": "Antalya International Airport"
+      }
     ],
     "popularity": 61
   },
@@ -498,8 +573,11 @@
       "Antananarivu",
       "Antananariwo"
     ],
-    "iata_codes": [
-      "TNR"
+    "airports": [
+      {
+        "iata": "TNR",
+        "name": "Ivato Airport"
+      }
     ],
     "popularity": 61
   },
@@ -520,8 +598,11 @@
       "Asounsyon",
       "Asounthion"
     ],
-    "iata_codes": [
-      "ASU"
+    "airports": [
+      {
+        "iata": "ASU",
+        "name": "Silvio Pettirossi International Airport"
+      }
     ],
     "popularity": 72
   },
@@ -543,8 +624,11 @@
       "Afini",
       "Afiny"
     ],
-    "iata_codes": [
-      "ATH"
+    "airports": [
+      {
+        "iata": "ATH",
+        "name": "Eleftherios Venizelos International Airport"
+      }
     ],
     "popularity": 68
   },
@@ -566,9 +650,15 @@
       "Atlanta",
       "Atlantae"
     ],
-    "iata_codes": [
-      "ATL",
-      "PDK"
+    "airports": [
+      {
+        "iata": "ATL",
+        "name": "Hartsfield Jackson Atlanta International Airport"
+      },
+      {
+        "iata": "PDK",
+        "name": "DeKalb Peachtree Airport"
+      }
     ],
     "popularity": 67
   },
@@ -590,8 +680,11 @@
       "Aucland",
       "Aucopolis"
     ],
-    "iata_codes": [
-      "AKL"
+    "airports": [
+      {
+        "iata": "AKL",
+        "name": "Auckland International Airport"
+      }
     ],
     "popularity": 82
   },
@@ -613,8 +706,11 @@
       "Austino",
       "Austinopolis"
     ],
-    "iata_codes": [
-      "AUS"
+    "airports": [
+      {
+        "iata": "AUS",
+        "name": "Austin Bergstrom International Airport"
+      }
     ],
     "popularity": 70
   },
@@ -635,8 +731,11 @@
       "Bagdad",
       "Bagdadas"
     ],
-    "iata_codes": [
-      "BGW"
+    "airports": [
+      {
+        "iata": "BGW",
+        "name": "Baghdad International Airport"
+      }
     ],
     "popularity": 79
   },
@@ -657,8 +756,11 @@
       "Baki",
       "Bako"
     ],
-    "iata_codes": [
-      "GYD"
+    "airports": [
+      {
+        "iata": "GYD",
+        "name": "Heydar Aliyev International Airport"
+      }
     ],
     "popularity": 64
   },
@@ -680,9 +782,15 @@
       "Baltimor",
       "Baltimor shaary"
     ],
-    "iata_codes": [
-      "BWI",
-      "DCA"
+    "airports": [
+      {
+        "iata": "BWI",
+        "name": "Baltimore/Washington International Thurgood Marshal Airport"
+      },
+      {
+        "iata": "DCA",
+        "name": "Ronald Reagan Washington National Airport"
+      }
     ],
     "popularity": 68
   },
@@ -703,8 +811,11 @@
       "Bamaco - Bamako",
       "Bamakas"
     ],
-    "iata_codes": [
-      "BKO"
+    "airports": [
+      {
+        "iata": "BKO",
+        "name": "Senou Airport"
+      }
     ],
     "popularity": 66
   },
@@ -725,8 +836,11 @@
       "Banduna",
       "Bandung"
     ],
-    "iata_codes": [
-      "BDO"
+    "airports": [
+      {
+        "iata": "BDO",
+        "name": "Husein Sastranegara International Airport"
+      }
     ],
     "popularity": 74
   },
@@ -747,9 +861,15 @@
       "Ban'nkok",
       "Bancac"
     ],
-    "iata_codes": [
-      "BKK",
-      "DMK"
+    "airports": [
+      {
+        "iata": "BKK",
+        "name": "Suvarnabhumi Airport"
+      },
+      {
+        "iata": "DMK",
+        "name": "Don Mueang International Airport"
+      }
     ],
     "popularity": 87
   },
@@ -770,7 +890,7 @@
       "Banu",
       "ban'nu"
     ],
-    "iata_codes": [],
+    "airports": [],
     "popularity": 61
   },
   {
@@ -785,8 +905,11 @@
     "population": 4476554,
     "tier": 3,
     "alt_names": [],
-    "iata_codes": [
-      "SZX"
+    "airports": [
+      {
+        "iata": "SZX",
+        "name": "Shenzhen Bao'an International Airport"
+      }
     ],
     "popularity": 67
   },
@@ -807,7 +930,7 @@
       "Baodin",
       "Baodina"
     ],
-    "iata_codes": [],
+    "airports": [],
     "popularity": 64
   },
   {
@@ -827,7 +950,7 @@
       "PJI",
       "bao ji"
     ],
-    "iata_codes": [],
+    "airports": [],
     "popularity": 62
   },
   {
@@ -847,9 +970,15 @@
       "Pao-shan-ch'eng",
       "Pao-shan-hsien"
     ],
-    "iata_codes": [
-      "PVG",
-      "SHA"
+    "airports": [
+      {
+        "iata": "PVG",
+        "name": "Shanghai Pudong International Airport"
+      },
+      {
+        "iata": "SHA",
+        "name": "Shanghai Hongqiao International Airport"
+      }
     ],
     "popularity": 64
   },
@@ -870,8 +999,11 @@
       "Bao GJau",
       "Baotou"
     ],
-    "iata_codes": [
-      "BAV"
+    "airports": [
+      {
+        "iata": "BAV",
+        "name": "Baotou Airport"
+      }
     ],
     "popularity": 63
   },
@@ -892,8 +1024,11 @@
       "Barcellonn-a",
       "Barcelona"
     ],
-    "iata_codes": [
-      "BCN"
+    "airports": [
+      {
+        "iata": "BCN",
+        "name": "Barcelona International Airport"
+      }
     ],
     "popularity": 72
   },
@@ -914,8 +1049,11 @@
       "BSR",
       "Bacora"
     ],
-    "iata_codes": [
-      "BSR"
+    "airports": [
+      {
+        "iata": "BSR",
+        "name": "Basrah International Airport"
+      }
     ],
     "popularity": 61
   },
@@ -933,8 +1071,11 @@
     "alt_names": [
       "ba yan nao er shi"
     ],
-    "iata_codes": [
-      "RLK"
+    "airports": [
+      {
+        "iata": "RLK",
+        "name": "Bayannaoer Tianjitai Airport"
+      }
     ],
     "popularity": 62
   },
@@ -955,8 +1096,11 @@
       "Bazhong",
       "ba zhong"
     ],
-    "iata_codes": [
-      "BZX"
+    "airports": [
+      {
+        "iata": "BZX",
+        "name": "Bazhong Enyang Airport"
+      }
     ],
     "popularity": 64
   },
@@ -977,9 +1121,15 @@
       "Baek-ging",
       "Baekging"
     ],
-    "iata_codes": [
-      "PEK",
-      "PKX"
+    "airports": [
+      {
+        "iata": "PEK",
+        "name": "Beijing Capital International Airport"
+      },
+      {
+        "iata": "PKX",
+        "name": "Beijing Daxing International Airport"
+      }
     ],
     "popularity": 93
   },
@@ -1000,8 +1150,11 @@
       "Bairut",
       "Bayrut"
     ],
-    "iata_codes": [
-      "BEY"
+    "airports": [
+      {
+        "iata": "BEY",
+        "name": "Beirut Rafic Hariri International Airport"
+      }
     ],
     "popularity": 73
   },
@@ -1022,9 +1175,15 @@
       "Bekaso",
       "Kota Bekasi"
     ],
-    "iata_codes": [
-      "CGK",
-      "HLP"
+    "airports": [
+      {
+        "iata": "CGK",
+        "name": "Soekarno-Hatta International Airport"
+      },
+      {
+        "iata": "HLP",
+        "name": "Halim Perdanakusuma International Airport"
+      }
     ],
     "popularity": 64
   },
@@ -1045,8 +1204,11 @@
       "Belem do Para",
       "Belemo"
     ],
-    "iata_codes": [
-      "BEL"
+    "airports": [
+      {
+        "iata": "BEL",
+        "name": "Val de Cans/Julio Cezar Ribeiro International Airport"
+      }
     ],
     "popularity": 62
   },
@@ -1068,9 +1230,15 @@
       "Beeal Feirshtey",
       "Belfast"
     ],
-    "iata_codes": [
-      "BFS",
-      "BHD"
+    "airports": [
+      {
+        "iata": "BFS",
+        "name": "Belfast International Airport"
+      },
+      {
+        "iata": "BHD",
+        "name": "George Best Belfast City Airport"
+      }
     ],
     "popularity": 65
   },
@@ -1092,8 +1260,11 @@
       "Belgrad",
       "Belgrada"
     ],
-    "iata_codes": [
-      "BEG"
+    "airports": [
+      {
+        "iata": "BEG",
+        "name": "Belgrade Nikola Tesla Airport"
+      }
     ],
     "popularity": 71
   },
@@ -1114,8 +1285,11 @@
       "BHZ",
       "Bel-Horizonto"
     ],
-    "iata_codes": [
-      "CNF"
+    "airports": [
+      {
+        "iata": "CNF",
+        "name": "Tancredo Neves International Airport"
+      }
     ],
     "popularity": 74
   },
@@ -1136,8 +1310,11 @@
       "Bangalor",
       "Bangalore"
     ],
-    "iata_codes": [
-      "BLR"
+    "airports": [
+      {
+        "iata": "BLR",
+        "name": "Bengaluru International Airport"
+      }
     ],
     "popularity": 89
   },
@@ -1158,8 +1335,11 @@
       "Benin",
       "Benin City"
     ],
-    "iata_codes": [
-      "BNI"
+    "airports": [
+      {
+        "iata": "BNI",
+        "name": "Benin Airport"
+      }
     ],
     "popularity": 63
   },
@@ -1180,8 +1360,11 @@
       "Belin",
       "Berleno"
     ],
-    "iata_codes": [
-      "BER"
+    "airports": [
+      {
+        "iata": "BER",
+        "name": "Berlin Brandenburg Airport"
+      }
     ],
     "popularity": 85
   },
@@ -1203,8 +1386,11 @@
       "Beirn",
       "Ben"
     ],
-    "iata_codes": [
-      "BRN"
+    "airports": [
+      {
+        "iata": "BRN",
+        "name": "Bern Belp Airport"
+      }
     ],
     "popularity": 61
   },
@@ -1225,8 +1411,11 @@
       "Bhopal",
       "Bhopala"
     ],
-    "iata_codes": [
-      "BHO"
+    "airports": [
+      {
+        "iata": "BHO",
+        "name": "Bhopal Airport"
+      }
     ],
     "popularity": 63
   },
@@ -1247,8 +1436,11 @@
       "Bia Hoa",
       "Bien Hoa"
     ],
-    "iata_codes": [
-      "SGN"
+    "airports": [
+      {
+        "iata": "SGN",
+        "name": "Tan Son Nhat International Airport"
+      }
     ],
     "popularity": 61
   },
@@ -1270,9 +1462,15 @@
       "Birmingam",
       "Birmingamas"
     ],
-    "iata_codes": [
-      "BHX",
-      "EMA"
+    "airports": [
+      {
+        "iata": "BHX",
+        "name": "Birmingham International Airport"
+      },
+      {
+        "iata": "EMA",
+        "name": "East Midlands Airport"
+      }
     ],
     "popularity": 71
   },
@@ -1293,8 +1491,11 @@
       "Bogot",
       "Bogota"
     ],
-    "iata_codes": [
-      "BOG"
+    "airports": [
+      {
+        "iata": "BOG",
+        "name": "El Dorado International Airport"
+      }
     ],
     "popularity": 89
   },
@@ -1316,8 +1517,11 @@
       "Boise City",
       "Boisisitija"
     ],
-    "iata_codes": [
-      "BOI"
+    "airports": [
+      {
+        "iata": "BOI",
+        "name": "Boise Air Terminal/Gowen field"
+      }
     ],
     "popularity": 64
   },
@@ -1339,9 +1543,15 @@
       "Bostan",
       "Boston"
     ],
-    "iata_codes": [
-      "BED",
-      "BOS"
+    "airports": [
+      {
+        "iata": "BED",
+        "name": "Laurence G Hanscom Field"
+      },
+      {
+        "iata": "BOS",
+        "name": "General Edward Lawrence Logan International Airport"
+      }
     ],
     "popularity": 68
   },
@@ -1362,7 +1572,7 @@
       "Bochzhou",
       "Bok-ciu"
     ],
-    "iata_codes": [],
+    "airports": [],
     "popularity": 61
   },
   {
@@ -1382,8 +1592,11 @@
       "Brasilia",
       "Brasiliopolis"
     ],
-    "iata_codes": [
-      "BSB"
+    "airports": [
+      {
+        "iata": "BSB",
+        "name": "Presidente Juscelino Kubistschek International Airport"
+      }
     ],
     "popularity": 73
   },
@@ -1404,8 +1617,11 @@
       "Brazavil",
       "Brazavil'"
     ],
-    "iata_codes": [
-      "BZV"
+    "airports": [
+      {
+        "iata": "BZV",
+        "name": "Maya-Maya Airport"
+      }
     ],
     "popularity": 63
   },
@@ -1426,8 +1642,11 @@
       "Brisbane",
       "Brisbane City"
     ],
-    "iata_codes": [
-      "BNE"
+    "airports": [
+      {
+        "iata": "BNE",
+        "name": "Brisbane International Airport"
+      }
     ],
     "popularity": 74
   },
@@ -1449,12 +1668,27 @@
       "Borough of Brooklyn",
       "Breuckelen"
     ],
-    "iata_codes": [
-      "EWR",
-      "HPN",
-      "JFK",
-      "LGA",
-      "TEB"
+    "airports": [
+      {
+        "iata": "EWR",
+        "name": "Newark Liberty International Airport"
+      },
+      {
+        "iata": "HPN",
+        "name": "Westchester County Airport"
+      },
+      {
+        "iata": "JFK",
+        "name": "John F Kennedy International Airport"
+      },
+      {
+        "iata": "LGA",
+        "name": "La Guardia Airport"
+      },
+      {
+        "iata": "TEB",
+        "name": "Teterboro Airport"
+      }
     ],
     "popularity": 64
   },
@@ -1476,10 +1710,19 @@
       "Brasels",
       "Breissel"
     ],
-    "iata_codes": [
-      "ANR",
-      "BRU",
-      "CRL"
+    "airports": [
+      {
+        "iata": "ANR",
+        "name": "Antwerp International Airport (Deurne)"
+      },
+      {
+        "iata": "BRU",
+        "name": "Brussels Airport"
+      },
+      {
+        "iata": "CRL",
+        "name": "Brussels South Charleroi Airport"
+      }
     ],
     "popularity": 70
   },
@@ -1500,9 +1743,15 @@
       "Boukouresti",
       "Bucarest"
     ],
-    "iata_codes": [
-      "BBU",
-      "OTP"
+    "airports": [
+      {
+        "iata": "BBU",
+        "name": "Baneasa International Airport"
+      },
+      {
+        "iata": "OTP",
+        "name": "Henri Coanda International Airport"
+      }
     ],
     "popularity": 73
   },
@@ -1523,8 +1772,11 @@
       "Boedapest",
       "Boudapes"
     ],
-    "iata_codes": [
-      "BUD"
+    "airports": [
+      {
+        "iata": "BUD",
+        "name": "Budapest Ferenc Liszt International Airport"
+      }
     ],
     "popularity": 72
   },
@@ -1542,8 +1794,11 @@
     "alt_names": [
       "Budta"
     ],
-    "iata_codes": [
-      "CBO"
+    "airports": [
+      {
+        "iata": "CBO",
+        "name": "Awang Airport"
+      }
     ],
     "popularity": 61
   },
@@ -1564,9 +1819,15 @@
       "Bonaero",
       "Bonaeropolis"
     ],
-    "iata_codes": [
-      "AEP",
-      "EZE"
+    "airports": [
+      {
+        "iata": "AEP",
+        "name": "Jorge Newbery Airpark"
+      },
+      {
+        "iata": "EZE",
+        "name": "Ministro Pistarini International Airport"
+      }
     ],
     "popularity": 85
   },
@@ -1587,8 +1848,11 @@
       "Broussa",
       "Brousse"
     ],
-    "iata_codes": [
-      "YEI"
+    "airports": [
+      {
+        "iata": "YEI",
+        "name": "Bursa Yenisehir Airport"
+      }
     ],
     "popularity": 65
   },
@@ -1609,8 +1873,11 @@
       "Busan-si",
       "Fousan"
     ],
-    "iata_codes": [
-      "PUS"
+    "airports": [
+      {
+        "iata": "PUS",
+        "name": "Gimhae International Airport"
+      }
     ],
     "popularity": 75
   },
@@ -1631,9 +1898,15 @@
       "Caire",
       "Cairo"
     ],
-    "iata_codes": [
-      "CAI",
-      "SPX"
+    "airports": [
+      {
+        "iata": "CAI",
+        "name": "Cairo International Airport"
+      },
+      {
+        "iata": "SPX",
+        "name": "Sphinx International Airport"
+      }
     ],
     "popularity": 90
   },
@@ -1654,8 +1927,11 @@
       "Kalgari",
       "Kalgario"
     ],
-    "iata_codes": [
-      "YYC"
+    "airports": [
+      {
+        "iata": "YYC",
+        "name": "Calgary International Airport"
+      }
     ],
     "popularity": 71
   },
@@ -1676,8 +1952,11 @@
       "Calium",
       "Kali"
     ],
-    "iata_codes": [
-      "CLO"
+    "airports": [
+      {
+        "iata": "CLO",
+        "name": "Alfonso Bonilla Aragon International Airport"
+      }
     ],
     "popularity": 64
   },
@@ -1698,8 +1977,11 @@
       "Kajao",
       "Kal'jaa"
     ],
-    "iata_codes": [
-      "LIM"
+    "airports": [
+      {
+        "iata": "LIM",
+        "name": "Jorge Chavez International Airport"
+      }
     ],
     "popularity": 61
   },
@@ -1721,8 +2003,11 @@
       "Kalookan",
       "Kalukan"
     ],
-    "iata_codes": [
-      "MNL"
+    "airports": [
+      {
+        "iata": "MNL",
+        "name": "Ninoy Aquino International Airport"
+      }
     ],
     "popularity": 62
   },
@@ -1741,8 +2026,11 @@
       "Camayen",
       "Camayenne"
     ],
-    "iata_codes": [
-      "CKY"
+    "airports": [
+      {
+        "iata": "CKY",
+        "name": "Conakry Airport"
+      }
     ],
     "popularity": 63
   },
@@ -1763,8 +2051,11 @@
       "Kan Tkho",
       "VCA"
     ],
-    "iata_codes": [
-      "VCA"
+    "airports": [
+      {
+        "iata": "VCA",
+        "name": "Tra Noc Airport"
+      }
     ],
     "popularity": 62
   },
@@ -1785,8 +2076,11 @@
       "Canberra",
       "Canberrah"
     ],
-    "iata_codes": [
-      "CBR"
+    "airports": [
+      {
+        "iata": "CBR",
+        "name": "Canberra International Airport"
+      }
     ],
     "popularity": 66
   },
@@ -1807,8 +2101,11 @@
       "Ciudad Cancun",
       "Kan'koun"
     ],
-    "iata_codes": [
-      "CUN"
+    "airports": [
+      {
+        "iata": "CUN",
+        "name": "Cancun International Airport"
+      }
     ],
     "popularity": 69
   },
@@ -1829,8 +2126,11 @@
       "CPT",
       "Cape Toun"
     ],
-    "iata_codes": [
-      "CPT"
+    "airports": [
+      {
+        "iata": "CPT",
+        "name": "Cape Town International Airport"
+      }
     ],
     "popularity": 77
   },
@@ -1851,8 +2151,11 @@
       "Caracas",
       "Caraques"
     ],
-    "iata_codes": [
-      "CCS"
+    "airports": [
+      {
+        "iata": "CCS",
+        "name": "Maiquetia (Simon Bolivar Internacional) Airport"
+      }
     ],
     "popularity": 75
   },
@@ -1873,8 +2176,11 @@
       "Anafi",
       "Anfa"
     ],
-    "iata_codes": [
-      "CMN"
+    "airports": [
+      {
+        "iata": "CMN",
+        "name": "Mohammed V International Airport"
+      }
     ],
     "popularity": 76
   },
@@ -1895,8 +2201,11 @@
       "Cebu",
       "Cebu City"
     ],
-    "iata_codes": [
-      "CEB"
+    "airports": [
+      {
+        "iata": "CEB",
+        "name": "Mactan Cebu International Airport"
+      }
     ],
     "popularity": 70
   },
@@ -1917,8 +2226,11 @@
       "Cancuna",
       "Cangcun"
     ],
-    "iata_codes": [
-      "CGQ"
+    "airports": [
+      {
+        "iata": "CGQ",
+        "name": "Longjia Airport"
+      }
     ],
     "popularity": 67
   },
@@ -1939,8 +2251,11 @@
       "Cchang-te",
       "Ch'ang-te"
     ],
-    "iata_codes": [
-      "CGD"
+    "airports": [
+      {
+        "iata": "CGD",
+        "name": "Changde Airport"
+      }
     ],
     "popularity": 62
   },
@@ -1961,8 +2276,11 @@
       "Cangzsah",
       "Cansa"
     ],
-    "iata_codes": [
-      "CSX"
+    "airports": [
+      {
+        "iata": "CSX",
+        "name": "Changsha Huanghua Airport"
+      }
     ],
     "popularity": 65
   },
@@ -1978,9 +2296,15 @@
     "population": 1677050,
     "tier": 3,
     "alt_names": [],
-    "iata_codes": [
-      "NTG",
-      "WUX"
+    "airports": [
+      {
+        "iata": "NTG",
+        "name": "Nantong Airport"
+      },
+      {
+        "iata": "WUX",
+        "name": "Sunan Shuofang International Airport"
+      }
     ],
     "popularity": 62
   },
@@ -2001,9 +2325,15 @@
       "Cangdzov",
       "Canggouo"
     ],
-    "iata_codes": [
-      "CZX",
-      "WUX"
+    "airports": [
+      {
+        "iata": "CZX",
+        "name": "Changzhou Airport"
+      },
+      {
+        "iata": "WUX",
+        "name": "Sunan Shuofang International Airport"
+      }
     ],
     "popularity": 65
   },
@@ -2024,8 +2354,11 @@
       "Cchao-cou",
       "Ch'ao-an-hsien"
     ],
-    "iata_codes": [
-      "SWA"
+    "airports": [
+      {
+        "iata": "SWA",
+        "name": "Shantou Waisha Airport"
+      }
     ],
     "popularity": 62
   },
@@ -2047,9 +2380,15 @@
       "Charlotte",
       "Charlotte i Nord-Carolina"
     ],
-    "iata_codes": [
-      "CLT",
-      "USA"
+    "airports": [
+      {
+        "iata": "CLT",
+        "name": "Charlotte Douglas International Airport"
+      },
+      {
+        "iata": "USA",
+        "name": "Concord Regional Airport"
+      }
     ],
     "popularity": 70
   },
@@ -2070,8 +2409,11 @@
       "Cetagons",
       "Chattogram"
     ],
-    "iata_codes": [
-      "CGP"
+    "airports": [
+      {
+        "iata": "CGP",
+        "name": "Shah Amanat International Airport"
+      }
     ],
     "popularity": 66
   },
@@ -2092,9 +2434,15 @@
       "Cendu",
       "Cengdu"
     ],
-    "iata_codes": [
-      "CTU",
-      "TFU"
+    "airports": [
+      {
+        "iata": "CTU",
+        "name": "Chengdu Shuangliu International Airport"
+      },
+      {
+        "iata": "TFU",
+        "name": "Chengdu Tianfu International Airport"
+      }
     ],
     "popularity": 81
   },
@@ -2115,8 +2463,11 @@
       "Cenajus",
       "Cenay"
     ],
-    "iata_codes": [
-      "MAA"
+    "airports": [
+      {
+        "iata": "MAA",
+        "name": "Chennai International Airport"
+      }
     ],
     "popularity": 77
   },
@@ -2138,10 +2489,19 @@
       "Chi-ka-ko",
       "Chicago"
     ],
-    "iata_codes": [
-      "GYY",
-      "MDW",
-      "ORD"
+    "airports": [
+      {
+        "iata": "GYY",
+        "name": "Gary Chicago International Airport"
+      },
+      {
+        "iata": "MDW",
+        "name": "Chicago Midway International Airport"
+      },
+      {
+        "iata": "ORD",
+        "name": "Chicago O'Hare International Airport"
+      }
     ],
     "popularity": 84
   },
@@ -2162,9 +2522,15 @@
       "Cchung-cching",
       "Ch'ung-ch'ing"
     ],
-    "iata_codes": [
-      "CKG",
-      "JIQ"
+    "airports": [
+      {
+        "iata": "CKG",
+        "name": "Chongqing Jiangbei International Airport"
+      },
+      {
+        "iata": "JIQ",
+        "name": "Qianjiang Wulingshan Airport"
+      }
     ],
     "popularity": 79
   },
@@ -2186,8 +2552,11 @@
       "Christopolis",
       "Cristcirice"
     ],
-    "iata_codes": [
-      "CHC"
+    "airports": [
+      {
+        "iata": "CHC",
+        "name": "Christchurch International Airport"
+      }
     ],
     "popularity": 66
   },
@@ -2208,8 +2577,11 @@
       "Chuaresas",
       "Ciudad Juarez"
     ],
-    "iata_codes": [
-      "CJS"
+    "airports": [
+      {
+        "iata": "CJS",
+        "name": "Abraham Gonzalez International Airport"
+      }
     ],
     "popularity": 62
   },
@@ -2230,8 +2602,11 @@
       "Cixi City",
       "Cixi Shi"
     ],
-    "iata_codes": [
-      "NGB"
+    "airports": [
+      {
+        "iata": "NGB",
+        "name": "Ningbo Lishe International Airport"
+      }
     ],
     "popularity": 62
   },
@@ -2253,8 +2628,11 @@
       "Cleveland",
       "Forest City"
     ],
-    "iata_codes": [
-      "CLE"
+    "airports": [
+      {
+        "iata": "CLE",
+        "name": "Cleveland Hopkins International Airport"
+      }
     ],
     "popularity": 66
   },
@@ -2275,8 +2653,11 @@
       "Koimbator",
       "Koimbatore"
     ],
-    "iata_codes": [
-      "CJB"
+    "airports": [
+      {
+        "iata": "CJB",
+        "name": "Coimbatore International Airport"
+      }
     ],
     "popularity": 63
   },
@@ -2297,9 +2678,15 @@
       "Columbo",
       "Columbum"
     ],
-    "iata_codes": [
-      "CMB",
-      "RML"
+    "airports": [
+      {
+        "iata": "CMB",
+        "name": "Bandaranaike International Colombo Airport"
+      },
+      {
+        "iata": "RML",
+        "name": "Colombo Ratmalana Airport"
+      }
     ],
     "popularity": 68
   },
@@ -2320,8 +2707,11 @@
       "Conakry",
       "Konakri"
     ],
-    "iata_codes": [
-      "CKY"
+    "airports": [
+      {
+        "iata": "CKY",
+        "name": "Conakry Airport"
+      }
     ],
     "popularity": 63
   },
@@ -2342,9 +2732,15 @@
       "Copenaga",
       "Copenaghen"
     ],
-    "iata_codes": [
-      "CPH",
-      "RKE"
+    "airports": [
+      {
+        "iata": "CPH",
+        "name": "Copenhagen Kastrup Airport"
+      },
+      {
+        "iata": "RKE",
+        "name": "Copenhagen Roskilde Airport"
+      }
     ],
     "popularity": 71
   },
@@ -2365,8 +2761,11 @@
       "Cordoba",
       "Cordoba i Argentina"
     ],
-    "iata_codes": [
-      "COR"
+    "airports": [
+      {
+        "iata": "COR",
+        "name": "Ingeniero Ambrosio Taravella Airport"
+      }
     ],
     "popularity": 63
   },
@@ -2387,8 +2786,11 @@
       "Curitiba",
       "Curityba"
     ],
-    "iata_codes": [
-      "CWB"
+    "airports": [
+      {
+        "iata": "CWB",
+        "name": "Afonso Pena Airport"
+      }
     ],
     "popularity": 63
   },
@@ -2409,8 +2811,11 @@
       "Danan",
       "Danang"
     ],
-    "iata_codes": [
-      "DAD"
+    "airports": [
+      {
+        "iata": "DAD",
+        "name": "Da Nang International Airport"
+      }
     ],
     "popularity": 61
   },
@@ -2431,8 +2836,11 @@
       "Daegu-si",
       "Daikyu"
     ],
-    "iata_codes": [
-      "TAE"
+    "airports": [
+      {
+        "iata": "TAE",
+        "name": "Daegu Airport"
+      }
     ],
     "popularity": 64
   },
@@ -2453,8 +2861,11 @@
       "Daejon",
       "Daiden"
     ],
-    "iata_codes": [
-      "CJJ"
+    "airports": [
+      {
+        "iata": "CJJ",
+        "name": "Cheongju International Airport"
+      }
     ],
     "popularity": 62
   },
@@ -2475,9 +2886,15 @@
       "Dakaa",
       "Dakar"
     ],
-    "iata_codes": [
-      "DKR",
-      "DSS"
+    "airports": [
+      {
+        "iata": "DKR",
+        "name": "Leopold Sedar Senghor International Airport"
+      },
+      {
+        "iata": "DSS",
+        "name": "Blaise Diagne International Airport"
+      }
     ],
     "popularity": 64
   },
@@ -2498,8 +2915,11 @@
       "Dal'niy",
       "Dalian"
     ],
-    "iata_codes": [
-      "DLC"
+    "airports": [
+      {
+        "iata": "DLC",
+        "name": "Zhoushuizi Airport"
+      }
     ],
     "popularity": 67
   },
@@ -2521,9 +2941,15 @@
       "Dalasa",
       "Dalasas"
     ],
-    "iata_codes": [
-      "DAL",
-      "DFW"
+    "airports": [
+      {
+        "iata": "DAL",
+        "name": "Dallas Love Field"
+      },
+      {
+        "iata": "DFW",
+        "name": "Dallas Fort Worth International Airport"
+      }
     ],
     "popularity": 71
   },
@@ -2544,8 +2970,11 @@
       "Cham",
       "DAM"
     ],
-    "iata_codes": [
-      "DAM"
+    "airports": [
+      {
+        "iata": "DAM",
+        "name": "Damascus International Airport"
+      }
     ],
     "popularity": 62
   },
@@ -2566,8 +2995,11 @@
       "Ad-Damman",
       "DMM"
     ],
-    "iata_codes": [
-      "DMM"
+    "airports": [
+      {
+        "iata": "DMM",
+        "name": "King Fahd International Airport"
+      }
     ],
     "popularity": 61
   },
@@ -2588,7 +3020,7 @@
       "Anda",
       "DQA"
     ],
-    "iata_codes": [],
+    "airports": [],
     "popularity": 62
   },
   {
@@ -2608,8 +3040,11 @@
       "Dar Es Salam",
       "Dar as-Salom"
     ],
-    "iata_codes": [
-      "DAR"
+    "airports": [
+      {
+        "iata": "DAR",
+        "name": "Mwalimu Julius K. Nyerere International Airport"
+      }
     ],
     "popularity": 77
   },
@@ -2630,8 +3065,11 @@
       "Daido",
       "Datong"
     ],
-    "iata_codes": [
-      "DAT"
+    "airports": [
+      {
+        "iata": "DAT",
+        "name": "Datong Airport"
+      }
     ],
     "popularity": 63
   },
@@ -2652,8 +3090,11 @@
       "Dakbayan sa Davao",
       "Davaa"
     ],
-    "iata_codes": [
-      "DVO"
+    "airports": [
+      {
+        "iata": "DVO",
+        "name": "Francisco Bangoy International Airport"
+      }
     ],
     "popularity": 73
   },
@@ -2674,8 +3115,11 @@
       "Dak-ciu",
       "Dasyan'"
     ],
-    "iata_codes": [
-      "DZH"
+    "airports": [
+      {
+        "iata": "DZH",
+        "name": "Dazhou Jinya Airport"
+      }
     ],
     "popularity": 62
   },
@@ -2696,8 +3140,11 @@
       "Dehli",
       "Delchi"
     ],
-    "iata_codes": [
-      "DEL"
+    "airports": [
+      {
+        "iata": "DEL",
+        "name": "Indira Gandhi International Airport"
+      }
     ],
     "popularity": 90
   },
@@ -2719,9 +3166,15 @@
       "Denber",
       "Denvr"
     ],
-    "iata_codes": [
-      "BJC",
-      "DEN"
+    "airports": [
+      {
+        "iata": "BJC",
+        "name": "Rocky Mountain Metropolitan Airport"
+      },
+      {
+        "iata": "DEN",
+        "name": "Denver International Airport"
+      }
     ],
     "popularity": 69
   },
@@ -2742,9 +3195,15 @@
       "Depok kutha",
       "Depokas"
     ],
-    "iata_codes": [
-      "CGK",
-      "HLP"
+    "airports": [
+      {
+        "iata": "CGK",
+        "name": "Soekarno-Hatta International Airport"
+      },
+      {
+        "iata": "HLP",
+        "name": "Halim Perdanakusuma International Airport"
+      }
     ],
     "popularity": 63
   },
@@ -2766,8 +3225,11 @@
       "Dehtrojt",
       "Detroit"
     ],
-    "iata_codes": [
-      "DTW"
+    "airports": [
+      {
+        "iata": "DTW",
+        "name": "Detroit Metropolitan Wayne County Airport"
+      }
     ],
     "popularity": 68
   },
@@ -2788,8 +3250,11 @@
       "Daca",
       "Dacca"
     ],
-    "iata_codes": [
-      "DAC"
+    "airports": [
+      {
+        "iata": "DAC",
+        "name": "Dhaka / Hazrat Shahjalal International Airport"
+      }
     ],
     "popularity": 80
   },
@@ -2810,8 +3275,11 @@
       "DIY",
       "Diarbekir"
     ],
-    "iata_codes": [
-      "DIY"
+    "airports": [
+      {
+        "iata": "DIY",
+        "name": "Diyarbakir Airport"
+      }
     ],
     "popularity": 63
   },
@@ -2832,9 +3300,15 @@
       "Ad Doha",
       "Ad Dowhah"
     ],
-    "iata_codes": [
-      "DIA",
-      "DOH"
+    "airports": [
+      {
+        "iata": "DIA",
+        "name": "Doha International Airport"
+      },
+      {
+        "iata": "DOH",
+        "name": "Hamad International Airport"
+      }
     ],
     "popularity": 65
   },
@@ -2855,9 +3329,15 @@
       "Dongguan City",
       "Dongwen shehiri"
     ],
-    "iata_codes": [
-      "CAN",
-      "SZX"
+    "airports": [
+      {
+        "iata": "CAN",
+        "name": "Guangzhou Baiyun International Airport"
+      },
+      {
+        "iata": "SZX",
+        "name": "Shenzhen Bao'an International Airport"
+      }
     ],
     "popularity": 70
   },
@@ -2878,8 +3358,11 @@
       "Doula",
       "Dual"
     ],
-    "iata_codes": [
-      "DLA"
+    "airports": [
+      {
+        "iata": "DLA",
+        "name": "Douala International Airport"
+      }
     ],
     "popularity": 61
   },
@@ -2900,10 +3383,19 @@
       "Dibai",
       "Dibay"
     ],
-    "iata_codes": [
-      "DWC",
-      "DXB",
-      "SHJ"
+    "airports": [
+      {
+        "iata": "DWC",
+        "name": "Al Maktoum International Airport"
+      },
+      {
+        "iata": "DXB",
+        "name": "Dubai International Airport"
+      },
+      {
+        "iata": "SHJ",
+        "name": "Sharjah International Airport"
+      }
     ],
     "popularity": 86
   },
@@ -2925,8 +3417,11 @@
       "DUB",
       "Dablin"
     ],
-    "iata_codes": [
-      "DUB"
+    "airports": [
+      {
+        "iata": "DUB",
+        "name": "Dublin Airport"
+      }
     ],
     "popularity": 70
   },
@@ -2947,8 +3442,11 @@
       "Durbana",
       "Durbanas"
     ],
-    "iata_codes": [
-      "DUR"
+    "airports": [
+      {
+        "iata": "DUR",
+        "name": "King Shaka International Airport"
+      }
     ],
     "popularity": 75
   },
@@ -2969,9 +3467,15 @@
       "Ecatepec de Morelos",
       "Ekatepeko"
     ],
-    "iata_codes": [
-      "MEX",
-      "NLU"
+    "airports": [
+      {
+        "iata": "MEX",
+        "name": "Licenciado Benito Juarez International Airport"
+      },
+      {
+        "iata": "NLU",
+        "name": "Felipe Angeles International Airport"
+      }
     ],
     "popularity": 62
   },
@@ -2993,8 +3497,11 @@
       "Dinedin",
       "Doon Edin"
     ],
-    "iata_codes": [
-      "EDI"
+    "airports": [
+      {
+        "iata": "EDI",
+        "name": "Edinburgh Airport"
+      }
     ],
     "popularity": 67
   },
@@ -3015,8 +3522,11 @@
       "Edmontonas",
       "Edmontono"
     ],
-    "iata_codes": [
-      "YEG"
+    "airports": [
+      {
+        "iata": "YEG",
+        "name": "Edmonton International Airport"
+      }
     ],
     "popularity": 70
   },
@@ -3037,8 +3547,11 @@
       "Arbil",
       "Arvila"
     ],
-    "iata_codes": [
-      "EBL"
+    "airports": [
+      {
+        "iata": "EBL",
+        "name": "Erbil International Airport"
+      }
     ],
     "popularity": 62
   },
@@ -3059,8 +3572,11 @@
       "Faisalabado",
       "Fajsalabad"
     ],
-    "iata_codes": [
-      "LYP"
+    "airports": [
+      {
+        "iata": "LYP",
+        "name": "Faisalabad International Airport"
+      }
     ],
     "popularity": 66
   },
@@ -3081,8 +3597,11 @@
       "Faridabado",
       "Farydabad"
     ],
-    "iata_codes": [
-      "DEL"
+    "airports": [
+      {
+        "iata": "DEL",
+        "name": "Indira Gandhi International Airport"
+      }
     ],
     "popularity": 62
   },
@@ -3103,8 +3622,11 @@
       "Firenca",
       "Firence"
     ],
-    "iata_codes": [
-      "FLR"
+    "airports": [
+      {
+        "iata": "FLR",
+        "name": "Firenze / Peretola Airport"
+      }
     ],
     "popularity": 66
   },
@@ -3125,8 +3647,11 @@
       "Fartaleza",
       "Fortalaetia"
     ],
-    "iata_codes": [
-      "FOR"
+    "airports": [
+      {
+        "iata": "FOR",
+        "name": "Pinto Martins International Airport"
+      }
     ],
     "popularity": 64
   },
@@ -3147,9 +3672,15 @@
       "Fak San",
       "Fatshan"
     ],
-    "iata_codes": [
-      "CAN",
-      "FUO"
+    "airports": [
+      {
+        "iata": "CAN",
+        "name": "Guangzhou Baiyun International Airport"
+      },
+      {
+        "iata": "FUO",
+        "name": "Foshan Shadi Airport"
+      }
     ],
     "popularity": 70
   },
@@ -3170,8 +3701,11 @@
       "Francfort",
       "Francfort - Frankfurt am Main"
     ],
-    "iata_codes": [
-      "FRA"
+    "airports": [
+      {
+        "iata": "FRA",
+        "name": "Frankfurt am Main International Airport"
+      }
     ],
     "popularity": 78
   },
@@ -3192,9 +3726,15 @@
       "Fukuoka",
       "Fukuoka-shi"
     ],
-    "iata_codes": [
-      "FUK",
-      "HSG"
+    "airports": [
+      {
+        "iata": "FUK",
+        "name": "Fukuoka Airport"
+      },
+      {
+        "iata": "HSG",
+        "name": "Saga Airport"
+      }
     ],
     "popularity": 72
   },
@@ -3215,8 +3755,11 @@
       "FUS",
       "Fu-shan"
     ],
-    "iata_codes": [
-      "SHE"
+    "airports": [
+      {
+        "iata": "SHE",
+        "name": "Taoxian Airport"
+      }
     ],
     "popularity": 61
   },
@@ -3237,8 +3780,11 @@
       "Fou-yang-hsien",
       "Fowyang"
     ],
-    "iata_codes": [
-      "FUG"
+    "airports": [
+      {
+        "iata": "FUG",
+        "name": "Fuyang Xiguan Airport"
+      }
     ],
     "popularity": 62
   },
@@ -3259,8 +3805,11 @@
       "Foochow",
       "Foutsoou"
     ],
-    "iata_codes": [
-      "FOC"
+    "airports": [
+      {
+        "iata": "FOC",
+        "name": "Fuzhou Changle International Airport"
+      }
     ],
     "popularity": 66
   },
@@ -3281,7 +3830,7 @@
       "Gandzou",
       "Gandzov"
     ],
-    "iata_codes": [],
+    "airports": [],
     "popularity": 63
   },
   {
@@ -3301,8 +3850,11 @@
       "Ayintap",
       "Dilok"
     ],
-    "iata_codes": [
-      "GZT"
+    "airports": [
+      {
+        "iata": "GZT",
+        "name": "Gaziantep International Airport"
+      }
     ],
     "popularity": 63
   },
@@ -3323,8 +3875,11 @@
       "Joydebpur",
       "Joydeypur"
     ],
-    "iata_codes": [
-      "DAC"
+    "airports": [
+      {
+        "iata": "DAC",
+        "name": "Dhaka / Hazrat Shahjalal International Airport"
+      }
     ],
     "popularity": 64
   },
@@ -3346,7 +3901,7 @@
       "Genava",
       "Genebe"
     ],
-    "iata_codes": [],
+    "airports": [],
     "popularity": 63
   },
   {
@@ -3366,9 +3921,15 @@
       "El-Giza",
       "Ghizeh"
     ],
-    "iata_codes": [
-      "CAI",
-      "SPX"
+    "airports": [
+      {
+        "iata": "CAI",
+        "name": "Cairo International Airport"
+      },
+      {
+        "iata": "SPX",
+        "name": "Sphinx International Airport"
+      }
     ],
     "popularity": 66
   },
@@ -3390,9 +3951,15 @@
       "Glaschu",
       "Glasgovo"
     ],
-    "iata_codes": [
-      "GLA",
-      "PIK"
+    "airports": [
+      {
+        "iata": "GLA",
+        "name": "Glasgow International Airport"
+      },
+      {
+        "iata": "PIK",
+        "name": "Glasgow Prestwick Airport"
+      }
     ],
     "popularity": 68
   },
@@ -3413,8 +3980,11 @@
       "Goiana",
       "Goiania"
     ],
-    "iata_codes": [
-      "GYN"
+    "airports": [
+      {
+        "iata": "GYN",
+        "name": "Santa Genoveva Airport"
+      }
     ],
     "popularity": 62
   },
@@ -3433,9 +4003,15 @@
       "Gorakhpur",
       "Gorakpura"
     ],
-    "iata_codes": [
-      "GOP",
-      "HSS"
+    "airports": [
+      {
+        "iata": "GOP",
+        "name": "Gorakhpur Airport"
+      },
+      {
+        "iata": "HSS",
+        "name": "Hissar Airport"
+      }
     ],
     "popularity": 61
   },
@@ -3456,8 +4032,11 @@
       "Gouadalachara",
       "Guadalajara"
     ],
-    "iata_codes": [
-      "GDL"
+    "airports": [
+      {
+        "iata": "GDL",
+        "name": "Don Miguel Hidalgo Y Costilla International Airport"
+      }
     ],
     "popularity": 71
   },
@@ -3478,9 +4057,15 @@
       "Canton",
       "Fan-yu"
     ],
-    "iata_codes": [
-      "CAN",
-      "FUO"
+    "airports": [
+      {
+        "iata": "CAN",
+        "name": "Guangzhou Baiyun International Airport"
+      },
+      {
+        "iata": "FUO",
+        "name": "Foshan Shadi Airport"
+      }
     ],
     "popularity": 82
   },
@@ -3501,8 +4086,11 @@
       "Liujang",
       "Liuyang"
     ],
-    "iata_codes": [
-      "CSX"
+    "airports": [
+      {
+        "iata": "CSX",
+        "name": "Changsha Huanghua Airport"
+      }
     ],
     "popularity": 61
   },
@@ -3523,8 +4111,11 @@
       "Guaiaquil",
       "Guaiaquilum"
     ],
-    "iata_codes": [
-      "GYE"
+    "airports": [
+      {
+        "iata": "GYE",
+        "name": "Simon Bolivar International Airport"
+      }
     ],
     "popularity": 64
   },
@@ -3545,8 +4136,11 @@
       "Guilin",
       "Guilin Shi"
     ],
-    "iata_codes": [
-      "KWL"
+    "airports": [
+      {
+        "iata": "KWL",
+        "name": "Guilin Liangjiang International Airport"
+      }
     ],
     "popularity": 62
   },
@@ -3567,8 +4161,11 @@
       "Guejjan",
       "Guijang"
     ],
-    "iata_codes": [
-      "KWE"
+    "airports": [
+      {
+        "iata": "KWE",
+        "name": "Longdongbao Airport"
+      }
     ],
     "popularity": 65
   },
@@ -3589,8 +4186,11 @@
       "Gudzranvala",
       "Gudzranwala"
     ],
-    "iata_codes": [
-      "SKT"
+    "airports": [
+      {
+        "iata": "SKT",
+        "name": "Sialkot Airport"
+      }
     ],
     "popularity": 64
   },
@@ -3611,9 +4211,15 @@
       "Gwangju Kong-hek-chhi",
       "Gwangju-si"
     ],
-    "iata_codes": [
-      "KWJ",
-      "MWX"
+    "airports": [
+      {
+        "iata": "KWJ",
+        "name": "Gwangju Airport"
+      },
+      {
+        "iata": "MWX",
+        "name": "Muan International Airport"
+      }
     ],
     "popularity": 61
   },
@@ -3634,8 +4240,11 @@
       "Ha k'uo-shih",
       "Hai Khau"
     ],
-    "iata_codes": [
-      "HAK"
+    "airports": [
+      {
+        "iata": "HAK",
+        "name": "Haikou Meilan International Airport"
+      }
     ],
     "popularity": 65
   },
@@ -3656,8 +4265,11 @@
       "Haiphong",
       "Hajfong"
     ],
-    "iata_codes": [
-      "HPH"
+    "airports": [
+      {
+        "iata": "HPH",
+        "name": "Cat Bi International Airport"
+      }
     ],
     "popularity": 64
   },
@@ -3678,8 +4290,11 @@
       "Halifax",
       "Khalifaks"
     ],
-    "iata_codes": [
-      "YHZ"
+    "airports": [
+      {
+        "iata": "YHZ",
+        "name": "Halifax / Stanfield International Airport"
+      }
     ],
     "popularity": 67
   },
@@ -3700,9 +4315,15 @@
       "Amburgo",
       "Amburgu"
     ],
-    "iata_codes": [
-      "HAM",
-      "LBC"
+    "airports": [
+      {
+        "iata": "HAM",
+        "name": "Hamburg Airport"
+      },
+      {
+        "iata": "LBC",
+        "name": "Lubeck Blankensee Airport"
+      }
     ],
     "popularity": 73
   },
@@ -3723,8 +4344,11 @@
       "Ham GJan",
       "Han-tan"
     ],
-    "iata_codes": [
-      "HDG"
+    "airports": [
+      {
+        "iata": "HDG",
+        "name": "Handan Airport"
+      }
     ],
     "popularity": 61
   },
@@ -3745,8 +4369,11 @@
       "HGH",
       "Hancheum"
     ],
-    "iata_codes": [
-      "HGH"
+    "airports": [
+      {
+        "iata": "HGH",
+        "name": "Hangzhou Xiaoshan International Airport"
+      }
     ],
     "popularity": 80
   },
@@ -3767,8 +4394,11 @@
       "Ganoj",
       "HAN"
     ],
-    "iata_codes": [
-      "HAN"
+    "airports": [
+      {
+        "iata": "HAN",
+        "name": "Noi Bai International Airport"
+      }
     ],
     "popularity": 79
   },
@@ -3789,8 +4419,11 @@
       "HRE",
       "Harare"
     ],
-    "iata_codes": [
-      "HRE"
+    "airports": [
+      {
+        "iata": "HRE",
+        "name": "Harare International Airport"
+      }
     ],
     "popularity": 62
   },
@@ -3811,8 +4444,11 @@
       "Charbinas",
       "Charmpin"
     ],
-    "iata_codes": [
-      "HRB"
+    "airports": [
+      {
+        "iata": "HRB",
+        "name": "Taiping Airport"
+      }
     ],
     "popularity": 67
   },
@@ -3833,8 +4469,11 @@
       "Gavana",
       "Gavanae"
     ],
-    "iata_codes": [
-      "HAV"
+    "airports": [
+      {
+        "iata": "HAV",
+        "name": "Jose Marti International Airport"
+      }
     ],
     "popularity": 73
   },
@@ -3855,8 +4494,11 @@
       "HFE",
       "Hak-bui"
     ],
-    "iata_codes": [
-      "HFE"
+    "airports": [
+      {
+        "iata": "HFE",
+        "name": "Hefei Xinqiao International Airport"
+      }
     ],
     "popularity": 67
   },
@@ -3877,8 +4519,11 @@
       "Elzinki",
       "Gel'sinki"
     ],
-    "iata_codes": [
-      "HEL"
+    "airports": [
+      {
+        "iata": "HEL",
+        "name": "Helsinki Vantaa Airport"
+      }
     ],
     "popularity": 68
   },
@@ -3899,7 +4544,7 @@
       "HZA",
       "Ha Trach"
     ],
-    "iata_codes": [],
+    "airports": [],
     "popularity": 61
   },
   {
@@ -3919,8 +4564,11 @@
       "Ciudad Ho Chi Minh",
       "Gia GJinh"
     ],
-    "iata_codes": [
-      "SGN"
+    "airports": [
+      {
+        "iata": "SGN",
+        "name": "Tan Son Nhat International Airport"
+      }
     ],
     "popularity": 81
   },
@@ -3941,8 +4589,11 @@
       "HET",
       "Hohhot"
     ],
-    "iata_codes": [
-      "HET"
+    "airports": [
+      {
+        "iata": "HET",
+        "name": "Baita International Airport"
+      }
     ],
     "popularity": 64
   },
@@ -3963,8 +4614,11 @@
       "Gon Kong",
       "Gonkong"
     ],
-    "iata_codes": [
-      "HKG"
+    "airports": [
+      {
+        "iata": "HKG",
+        "name": "Chek Lap Kok International Airport"
+      }
     ],
     "popularity": 89
   },
@@ -3986,8 +4640,11 @@
       "Chonoloulou",
       "Gana-Rura"
     ],
-    "iata_codes": [
-      "HNL"
+    "airports": [
+      {
+        "iata": "HNL",
+        "name": "Honolulu International Airport"
+      }
     ],
     "popularity": 65
   },
@@ -4009,9 +4666,15 @@
       "Hiu-su-tun",
       "Hiustonas"
     ],
-    "iata_codes": [
-      "HOU",
-      "IAH"
+    "airports": [
+      {
+        "iata": "HOU",
+        "name": "William P Hobby Airport"
+      },
+      {
+        "iata": "IAH",
+        "name": "George Bush Intercontinental Houston Airport"
+      }
     ],
     "popularity": 74
   },
@@ -4032,8 +4695,11 @@
       "Ch'ing-chiang-shih",
       "Chuaj-an"
     ],
-    "iata_codes": [
-      "HIA"
+    "airports": [
+      {
+        "iata": "HIA",
+        "name": "Lianshui Airport"
+      }
     ],
     "popularity": 64
   },
@@ -4052,7 +4718,7 @@
       "Huainan",
       "huai nan shi"
     ],
-    "iata_codes": [],
+    "airports": [],
     "popularity": 62
   },
   {
@@ -4072,7 +4738,7 @@
       "Hue",
       "Huje"
     ],
-    "iata_codes": [],
+    "airports": [],
     "popularity": 61
   },
   {
@@ -4092,8 +4758,11 @@
       "HUZ",
       "Hie-ciu"
     ],
-    "iata_codes": [
-      "HUZ"
+    "airports": [
+      {
+        "iata": "HUZ",
+        "name": "Huizhou Airport"
+      }
     ],
     "popularity": 65
   },
@@ -4114,8 +4783,11 @@
       "Haidarabadas",
       "Haiderabad"
     ],
-    "iata_codes": [
-      "HYD"
+    "airports": [
+      {
+        "iata": "HYD",
+        "name": "Rajiv Gandhi International Airport Shamshabad"
+      }
     ],
     "popularity": 78
   },
@@ -4136,7 +4808,7 @@
       "Haidarabad",
       "Haidarabadas"
     ],
-    "iata_codes": [],
+    "airports": [],
     "popularity": 63
   },
   {
@@ -4156,8 +4828,11 @@
       "Ibadan shaary",
       "Ibadana"
     ],
-    "iata_codes": [
-      "IBA"
+    "airports": [
+      {
+        "iata": "IBA",
+        "name": "Ibadan Airport"
+      }
     ],
     "popularity": 66
   },
@@ -4178,9 +4853,15 @@
       "Inch'on",
       "Incheon"
     ],
-    "iata_codes": [
-      "GMP",
-      "ICN"
+    "airports": [
+      {
+        "iata": "GMP",
+        "name": "Gimpo International Airport"
+      },
+      {
+        "iata": "ICN",
+        "name": "Incheon International Airport"
+      }
     ],
     "popularity": 75
   },
@@ -4202,8 +4883,11 @@
       "Indianapoli",
       "Indianapolis"
     ],
-    "iata_codes": [
-      "IND"
+    "airports": [
+      {
+        "iata": "IND",
+        "name": "Indianapolis International Airport"
+      }
     ],
     "popularity": 69
   },
@@ -4224,8 +4908,11 @@
       "Indhur",
       "Indor"
     ],
-    "iata_codes": [
-      "IDR"
+    "airports": [
+      {
+        "iata": "IDR",
+        "name": "Devi Ahilyabai Holkar Airport"
+      }
     ],
     "popularity": 63
   },
@@ -4246,8 +4933,11 @@
       "Esfahan",
       "Esfahano"
     ],
-    "iata_codes": [
-      "IFN"
+    "airports": [
+      {
+        "iata": "IFN",
+        "name": "Esfahan Shahid Beheshti International Airport"
+      }
     ],
     "popularity": 62
   },
@@ -4268,8 +4958,11 @@
       "Islamabada",
       "Islamabadas"
     ],
-    "iata_codes": [
-      "ISB"
+    "airports": [
+      {
+        "iata": "ISB",
+        "name": "Islamabad International Airport"
+      }
     ],
     "popularity": 68
   },
@@ -4290,9 +4983,15 @@
       "Byzance",
       "Byzantion"
     ],
-    "iata_codes": [
-      "IST",
-      "SAW"
+    "airports": [
+      {
+        "iata": "IST",
+        "name": "Istanbul Airport"
+      },
+      {
+        "iata": "SAW",
+        "name": "Sabiha Gokcen International Airport"
+      }
     ],
     "popularity": 92
   },
@@ -4313,8 +5012,11 @@
       "IZM",
       "Ismir"
     ],
-    "iata_codes": [
-      "ADB"
+    "airports": [
+      {
+        "iata": "ADB",
+        "name": "Adnan Menderes International Airport"
+      }
     ],
     "popularity": 65
   },
@@ -4335,9 +5037,15 @@
       "Istapalapa",
       "Ixtapalapa"
     ],
-    "iata_codes": [
-      "MEX",
-      "NLU"
+    "airports": [
+      {
+        "iata": "MEX",
+        "name": "Licenciado Benito Juarez International Airport"
+      },
+      {
+        "iata": "NLU",
+        "name": "Felipe Angeles International Airport"
+      }
     ],
     "popularity": 63
   },
@@ -4358,8 +5066,11 @@
       "Dzaipuras",
       "Dzajpur"
     ],
-    "iata_codes": [
-      "JAI"
+    "airports": [
+      {
+        "iata": "JAI",
+        "name": "Jaipur International Airport"
+      }
     ],
     "popularity": 65
   },
@@ -4380,9 +5091,15 @@
       "Cakarta",
       "D'akarta"
     ],
-    "iata_codes": [
-      "CGK",
-      "HLP"
+    "airports": [
+      {
+        "iata": "CGK",
+        "name": "Soekarno-Hatta International Airport"
+      },
+      {
+        "iata": "HLP",
+        "name": "Halim Perdanakusuma International Airport"
+      }
     ],
     "popularity": 89
   },
@@ -4403,7 +5120,7 @@
       "Dzamsedpura",
       "Dzamsedpuras"
     ],
-    "iata_codes": [],
+    "airports": [],
     "popularity": 61
   },
   {
@@ -4423,8 +5140,11 @@
       "Ciddae",
       "Cidde"
     ],
-    "iata_codes": [
-      "JED"
+    "airports": [
+      {
+        "iata": "JED",
+        "name": "King Abdulaziz International Airport"
+      }
     ],
     "popularity": 67
   },
@@ -4445,8 +5165,11 @@
       "Japara",
       "Jepara"
     ],
-    "iata_codes": [
-      "SRG"
+    "airports": [
+      {
+        "iata": "SRG",
+        "name": "Achmad Yani Airport"
+      }
     ],
     "popularity": 61
   },
@@ -4467,8 +5190,11 @@
       "Al-Kuds",
       "Al-Qudis"
     ],
-    "iata_codes": [
-      "TLV"
+    "airports": [
+      {
+        "iata": "TLV",
+        "name": "Ben Gurion International Airport"
+      }
     ],
     "popularity": 70
   },
@@ -4489,8 +5215,11 @@
       "Chia-ting-hsien",
       "Jiading"
     ],
-    "iata_codes": [
-      "SHA"
+    "airports": [
+      {
+        "iata": "SHA",
+        "name": "Shanghai Hongqiao International Airport"
+      }
     ],
     "popularity": 63
   },
@@ -4511,7 +5240,7 @@
       "Chiang-men-shih",
       "Czjanmehn'"
     ],
-    "iata_codes": [],
+    "airports": [],
     "popularity": 63
   },
   {
@@ -4531,9 +5260,15 @@
       "Chiang-yin",
       "Chiang-yin-ch'eng"
     ],
-    "iata_codes": [
-      "CZX",
-      "WUX"
+    "airports": [
+      {
+        "iata": "CZX",
+        "name": "Changzhou Airport"
+      },
+      {
+        "iata": "WUX",
+        "name": "Sunan Shuofang International Airport"
+      }
     ],
     "popularity": 63
   },
@@ -4554,8 +5289,11 @@
       "Chieh-yung",
       "Chien Yang"
     ],
-    "iata_codes": [
-      "SWA"
+    "airports": [
+      {
+        "iata": "SWA",
+        "name": "Shantou Waisha Airport"
+      }
     ],
     "popularity": 63
   },
@@ -4576,7 +5314,7 @@
       "Chi-lin-shih",
       "Chi-ling"
     ],
-    "iata_codes": [],
+    "airports": [],
     "popularity": 63
   },
   {
@@ -4596,8 +5334,11 @@
       "Chi-nam-su",
       "Chi-nan"
     ],
-    "iata_codes": [
-      "TNA"
+    "airports": [
+      {
+        "iata": "TNA",
+        "name": "Yaoqiang Airport"
+      }
     ],
     "popularity": 66
   },
@@ -4618,8 +5359,11 @@
       "Chin-hua-hsien-ch'eng",
       "Chin-hua-shih"
     ],
-    "iata_codes": [
-      "YIW"
+    "airports": [
+      {
+        "iata": "YIW",
+        "name": "Yiwu Airport"
+      }
     ],
     "popularity": 62
   },
@@ -4640,9 +5384,15 @@
       "Ch'ing-yang-chen",
       "Chin-chiang"
     ],
-    "iata_codes": [
-      "JJN",
-      "XMN"
+    "airports": [
+      {
+        "iata": "JJN",
+        "name": "Quanzhou Airport"
+      },
+      {
+        "iata": "XMN",
+        "name": "Xiamen Gaoqi International Airport"
+      }
     ],
     "popularity": 62
   },
@@ -4663,9 +5413,15 @@
       "IGoli",
       "IJohannesburg"
     ],
-    "iata_codes": [
-      "HLA",
-      "JNB"
+    "airports": [
+      {
+        "iata": "HLA",
+        "name": "Lanseria Airport"
+      },
+      {
+        "iata": "JNB",
+        "name": "O. R. Tambo International Airport"
+      }
     ],
     "popularity": 90
   },
@@ -4686,8 +5442,11 @@
       "Cabul",
       "Cabura"
     ],
-    "iata_codes": [
-      "KBL"
+    "airports": [
+      {
+        "iata": "KBL",
+        "name": "Kabul International Airport"
+      }
     ],
     "popularity": 66
   },
@@ -4708,8 +5467,11 @@
       "Kaduna",
       "Kaduno"
     ],
-    "iata_codes": [
-      "KAD"
+    "airports": [
+      {
+        "iata": "KAD",
+        "name": "Kaduna Airport"
+      }
     ],
     "popularity": 63
   },
@@ -4730,8 +5492,11 @@
       "Kai Feng",
       "Kai-feng Fu"
     ],
-    "iata_codes": [
-      "CGO"
+    "airports": [
+      {
+        "iata": "CGO",
+        "name": "Xinzheng Airport"
+      }
     ],
     "popularity": 62
   },
@@ -4752,8 +5517,11 @@
       "Kakamege",
       "ka ka mei jia"
     ],
-    "iata_codes": [
-      "KIS"
+    "airports": [
+      {
+        "iata": "KIS",
+        "name": "Kisumu Airport"
+      }
     ],
     "popularity": 63
   },
@@ -4769,7 +5537,7 @@
     "population": 1682687,
     "tier": 3,
     "alt_names": [],
-    "iata_codes": [],
+    "airports": [],
     "popularity": 62
   },
   {
@@ -4787,9 +5555,15 @@
       "Kal'jan",
       "Kalyan"
     ],
-    "iata_codes": [
-      "BOM",
-      "NMI"
+    "airports": [
+      {
+        "iata": "BOM",
+        "name": "Chhatrapati Shivaji International Airport"
+      },
+      {
+        "iata": "NMI",
+        "name": "Navi Mumbai International Airport"
+      }
     ],
     "popularity": 61
   },
@@ -4811,8 +5585,11 @@
       "KLA",
       "Kaempaala"
     ],
-    "iata_codes": [
-      "EBB"
+    "airports": [
+      {
+        "iata": "EBB",
+        "name": "Entebbe International Airport"
+      }
     ],
     "popularity": 72
   },
@@ -4833,8 +5610,11 @@
       "KAN",
       "Kanas"
     ],
-    "iata_codes": [
-      "KAN"
+    "airports": [
+      {
+        "iata": "KAN",
+        "name": "Mallam Aminu International Airport"
+      }
     ],
     "popularity": 67
   },
@@ -4855,8 +5635,11 @@
       "KNU",
       "Kanpour"
     ],
-    "iata_codes": [
-      "KNU"
+    "airports": [
+      {
+        "iata": "KNU",
+        "name": "Kanpur Airport"
+      }
     ],
     "popularity": 65
   },
@@ -4878,8 +5661,11 @@
       "Dinas Kansas",
       "Greenwood"
     ],
-    "iata_codes": [
-      "MCI"
+    "airports": [
+      {
+        "iata": "MCI",
+        "name": "Kansas City International Airport"
+      }
     ],
     "popularity": 67
   },
@@ -4900,9 +5686,15 @@
       "Gaosyongshih",
       "Gaoxiong"
     ],
-    "iata_codes": [
-      "KHH",
-      "TNN"
+    "airports": [
+      {
+        "iata": "KHH",
+        "name": "Kaohsiung International Airport"
+      },
+      {
+        "iata": "TNN",
+        "name": "Tainan Airport"
+      }
     ],
     "popularity": 74
   },
@@ -4923,8 +5715,11 @@
       "Karaaji",
       "Karaces"
     ],
-    "iata_codes": [
-      "KHI"
+    "airports": [
+      {
+        "iata": "KHI",
+        "name": "Jinnah International Airport"
+      }
     ],
     "popularity": 81
   },
@@ -4945,10 +5740,19 @@
       "Karadje",
       "Karadsch"
     ],
-    "iata_codes": [
-      "IKA",
-      "PYK",
-      "THR"
+    "airports": [
+      {
+        "iata": "IKA",
+        "name": "Imam Khomeini International Airport"
+      },
+      {
+        "iata": "PYK",
+        "name": "Payam Airport"
+      },
+      {
+        "iata": "THR",
+        "name": "Mehrabad International Airport"
+      }
     ],
     "popularity": 62
   },
@@ -4969,8 +5773,11 @@
       "KTM",
       "Kantipur"
     ],
-    "iata_codes": [
-      "KTM"
+    "airports": [
+      {
+        "iata": "KTM",
+        "name": "Tribhuvan International Airport"
+      }
     ],
     "popularity": 72
   },
@@ -4991,8 +5798,11 @@
       "Kavasaki",
       "Kavasakis"
     ],
-    "iata_codes": [
-      "HND"
+    "airports": [
+      {
+        "iata": "HND",
+        "name": "Tokyo International Airport"
+      }
     ],
     "popularity": 62
   },
@@ -5013,8 +5823,11 @@
       "Caesarea in Cappadocia",
       "Casarea"
     ],
-    "iata_codes": [
-      "ASR"
+    "airports": [
+      {
+        "iata": "ASR",
+        "name": "Kayseri Erkilet Airport"
+      }
     ],
     "popularity": 62
   },
@@ -5035,7 +5848,7 @@
       "Charkiv",
       "Charkiw"
     ],
-    "iata_codes": [],
+    "airports": [],
     "popularity": 62
   },
   {
@@ -5055,8 +5868,11 @@
       "Cartum",
       "Chartoum"
     ],
-    "iata_codes": [
-      "KRT"
+    "airports": [
+      {
+        "iata": "KRT",
+        "name": "Khartoum International Airport"
+      }
     ],
     "popularity": 73
   },
@@ -5077,8 +5893,11 @@
       "Kkhelna",
       "Kkhulna"
     ],
-    "iata_codes": [
-      "JSR"
+    "airports": [
+      {
+        "iata": "JSR",
+        "name": "Jessore Airport"
+      }
     ],
     "popularity": 62
   },
@@ -5099,8 +5918,11 @@
       "Kinchasa",
       "Kinchassa"
     ],
-    "iata_codes": [
-      "FIH"
+    "airports": [
+      {
+        "iata": "FIH",
+        "name": "Ndjili International Airport"
+      }
     ],
     "popularity": 72
   },
@@ -5121,10 +5943,19 @@
       "Kobe-shi",
       "Kobeh"
     ],
-    "iata_codes": [
-      "ITM",
-      "KIX",
-      "UKB"
+    "airports": [
+      {
+        "iata": "ITM",
+        "name": "Osaka International Airport"
+      },
+      {
+        "iata": "KIX",
+        "name": "Kansai International Airport"
+      },
+      {
+        "iata": "UKB",
+        "name": "Kobe Airport"
+      }
     ],
     "popularity": 62
   },
@@ -5145,9 +5976,15 @@
       "Cologna",
       "Cologne"
     ],
-    "iata_codes": [
-      "CGN",
-      "DUS"
+    "airports": [
+      {
+        "iata": "CGN",
+        "name": "Cologne Bonn Airport"
+      },
+      {
+        "iata": "DUS",
+        "name": "Dusseldorf International Airport"
+      }
     ],
     "popularity": 70
   },
@@ -5168,8 +6005,11 @@
       "Calcutta",
       "Caligardamana"
     ],
-    "iata_codes": [
-      "CCU"
+    "airports": [
+      {
+        "iata": "CCU",
+        "name": "Netaji Subhash Chandra Bose International Airport"
+      }
     ],
     "popularity": 77
   },
@@ -5190,8 +6030,11 @@
       "Iconio",
       "Iconium"
     ],
-    "iata_codes": [
-      "KYA"
+    "airports": [
+      {
+        "iata": "KYA",
+        "name": "Konya Airport"
+      }
     ],
     "popularity": 62
   },
@@ -5212,8 +6055,11 @@
       "Kaulunas",
       "Koulun"
     ],
-    "iata_codes": [
-      "HKG"
+    "airports": [
+      {
+        "iata": "HKG",
+        "name": "Chek Lap Kok International Airport"
+      }
     ],
     "popularity": 63
   },
@@ -5234,9 +6080,15 @@
       "KL",
       "KUL"
     ],
-    "iata_codes": [
-      "KUL",
-      "SZB"
+    "airports": [
+      {
+        "iata": "KUL",
+        "name": "Kuala Lumpur International Airport"
+      },
+      {
+        "iata": "SZB",
+        "name": "Sultan Abdul Aziz Shah International Airport"
+      }
     ],
     "popularity": 82
   },
@@ -5257,8 +6109,11 @@
       "Kumase",
       "Kumasi"
     ],
-    "iata_codes": [
-      "KMS"
+    "airports": [
+      {
+        "iata": "KMS",
+        "name": "Kumasi Airport"
+      }
     ],
     "popularity": 64
   },
@@ -5279,8 +6134,11 @@
       "K'un-ming-hsien",
       "K'un-ming-shih"
     ],
-    "iata_codes": [
-      "KMG"
+    "airports": [
+      {
+        "iata": "KMG",
+        "name": "Kunming Wujiaba International Airport"
+      }
     ],
     "popularity": 66
   },
@@ -5301,9 +6159,15 @@
       "K'un-shan-hsien",
       "KVN"
     ],
-    "iata_codes": [
-      "SHA",
-      "WUX"
+    "airports": [
+      {
+        "iata": "SHA",
+        "name": "Shanghai Hongqiao International Airport"
+      },
+      {
+        "iata": "WUX",
+        "name": "Sunan Shuofang International Airport"
+      }
     ],
     "popularity": 63
   },
@@ -5324,8 +6188,11 @@
       "Al-Kuwait",
       "Ciudad de Kuwait"
     ],
-    "iata_codes": [
-      "KWI"
+    "airports": [
+      {
+        "iata": "KWI",
+        "name": "Kuwait International Airport"
+      }
     ],
     "popularity": 58
   },
@@ -5346,8 +6213,11 @@
       "Civ",
       "IEV"
     ],
-    "iata_codes": [
-      "IEV"
+    "airports": [
+      {
+        "iata": "IEV",
+        "name": "Kiev Zhuliany International Airport"
+      }
     ],
     "popularity": 75
   },
@@ -5368,9 +6238,15 @@
       "Kiotas",
       "Kioto"
     ],
-    "iata_codes": [
-      "ITM",
-      "UKB"
+    "airports": [
+      {
+        "iata": "ITM",
+        "name": "Osaka International Airport"
+      },
+      {
+        "iata": "UKB",
+        "name": "Kobe Airport"
+      }
     ],
     "popularity": 72
   },
@@ -5391,8 +6267,11 @@
       "Chuqi Yapu",
       "Chuqiyapu"
     ],
-    "iata_codes": [
-      "LPB"
+    "airports": [
+      {
+        "iata": "LPB",
+        "name": "El Alto International Airport"
+      }
     ],
     "popularity": 73
   },
@@ -5413,8 +6292,11 @@
       "Lacupolis",
       "Lagas"
     ],
-    "iata_codes": [
-      "LOS"
+    "airports": [
+      {
+        "iata": "LOS",
+        "name": "Murtala Muhammed International Airport"
+      }
     ],
     "popularity": 92
   },
@@ -5435,8 +6317,11 @@
       "Lahaur",
       "Lahor"
     ],
-    "iata_codes": [
-      "LHE"
+    "airports": [
+      {
+        "iata": "LHE",
+        "name": "Alama Iqbal International Airport"
+      }
     ],
     "popularity": 81
   },
@@ -5457,8 +6342,11 @@
       "LHW",
       "Lan Chau"
     ],
-    "iata_codes": [
-      "LHW"
+    "airports": [
+      {
+        "iata": "LHW",
+        "name": "Lanzhou Zhongchuan Airport"
+      }
     ],
     "popularity": 65
   },
@@ -5480,9 +6368,15 @@
       "Las Vegas",
       "Las Vegas Mission"
     ],
-    "iata_codes": [
-      "BLD",
-      "LAS"
+    "airports": [
+      {
+        "iata": "BLD",
+        "name": "Boulder City Municipal Airport"
+      },
+      {
+        "iata": "LAS",
+        "name": "Harry Reid International Airport"
+      }
     ],
     "popularity": 68
   },
@@ -5503,8 +6397,11 @@
       "Leon",
       "Leon Guanajuato"
     ],
-    "iata_codes": [
-      "BJX"
+    "airports": [
+      {
+        "iata": "BJX",
+        "name": "Del Bajio International Airport"
+      }
     ],
     "popularity": 62
   },
@@ -5525,8 +6422,11 @@
       "Ljan'jun'gan",
       "lian yun gang"
     ],
-    "iata_codes": [
-      "LYG"
+    "airports": [
+      {
+        "iata": "LYG",
+        "name": "Lianyungang Airport"
+      }
     ],
     "popularity": 63
   },
@@ -5548,8 +6448,11 @@
       "Lima",
       "Limae"
     ],
-    "iata_codes": [
-      "LIM"
+    "airports": [
+      {
+        "iata": "LIM",
+        "name": "Jorge Chavez International Airport"
+      }
     ],
     "popularity": 89
   },
@@ -5570,8 +6473,11 @@
       "Ichowfu",
       "LYI"
     ],
-    "iata_codes": [
-      "LYI"
+    "airports": [
+      {
+        "iata": "LYI",
+        "name": "Shubuling Airport"
+      }
     ],
     "popularity": 64
   },
@@ -5592,9 +6498,15 @@
       "LIS",
       "Liospoin"
     ],
-    "iata_codes": [
-      "CAT",
-      "LIS"
+    "airports": [
+      {
+        "iata": "CAT",
+        "name": "Cascais Airport"
+      },
+      {
+        "iata": "LIS",
+        "name": "Lisbon Portela Airport"
+      }
     ],
     "popularity": 67
   },
@@ -5615,8 +6527,11 @@
       "Liou-pchan-suej",
       "Liupanshui"
     ],
-    "iata_codes": [
-      "LPF"
+    "airports": [
+      {
+        "iata": "LPF",
+        "name": "Liupanshui Yuezhao Airport"
+      }
     ],
     "popularity": 61
   },
@@ -5637,8 +6552,11 @@
       "Linzhou",
       "Liou-cou"
     ],
-    "iata_codes": [
-      "LZH"
+    "airports": [
+      {
+        "iata": "LZH",
+        "name": "Bailian Airport"
+      }
     ],
     "popularity": 62
   },
@@ -5659,8 +6577,11 @@
       "Lome",
       "Lomee"
     ],
-    "iata_codes": [
-      "LFW"
+    "airports": [
+      {
+        "iata": "LFW",
+        "name": "Lome-Tokoin Airport"
+      }
     ],
     "popularity": 63
   },
@@ -5682,12 +6603,27 @@
       "Lakana",
       "Landan"
     ],
-    "iata_codes": [
-      "LCY",
-      "LGW",
-      "LHR",
-      "LTN",
-      "STN"
+    "airports": [
+      {
+        "iata": "LCY",
+        "name": "London City Airport"
+      },
+      {
+        "iata": "LGW",
+        "name": "London Gatwick Airport"
+      },
+      {
+        "iata": "LHR",
+        "name": "London Heathrow Airport"
+      },
+      {
+        "iata": "LTN",
+        "name": "London Luton Airport"
+      },
+      {
+        "iata": "STN",
+        "name": "London Stansted Airport"
+      }
     ],
     "popularity": 90
   },
@@ -5709,12 +6645,27 @@
       "Cuidad De Los Angelos",
       "El Pueblo de Nuestra Senora La Reina de Los Angeles de Porcivncula"
     ],
-    "iata_codes": [
-      "BUR",
-      "HHR",
-      "LAX",
-      "LGB",
-      "SNA"
+    "airports": [
+      {
+        "iata": "BUR",
+        "name": "Bob Hope Airport"
+      },
+      {
+        "iata": "HHR",
+        "name": "Jack Northrop Field Hawthorne Municipal Airport"
+      },
+      {
+        "iata": "LAX",
+        "name": "Los Angeles International Airport"
+      },
+      {
+        "iata": "LGB",
+        "name": "Long Beach /Daugherty Field/ Airport"
+      },
+      {
+        "iata": "SNA",
+        "name": "John Wayne Airport-Orange County Airport"
+      }
     ],
     "popularity": 86
   },
@@ -5735,8 +6686,11 @@
       "Liu-an-hsien",
       "Liuanchow"
     ],
-    "iata_codes": [
-      "HFE"
+    "airports": [
+      {
+        "iata": "HFE",
+        "name": "Hefei Xinqiao International Airport"
+      }
     ],
     "popularity": 62
   },
@@ -5757,9 +6711,15 @@
       "Louanda",
       "Louanta"
     ],
-    "iata_codes": [
-      "LAD",
-      "NBJ"
+    "airports": [
+      {
+        "iata": "LAD",
+        "name": "Quatro De Fevereiro Airport"
+      },
+      {
+        "iata": "NBJ",
+        "name": "Dr. Antonio Agostinho Neto International Airport"
+      }
     ],
     "popularity": 64
   },
@@ -5780,8 +6740,11 @@
       "Elizabethstad",
       "Elizabethville"
     ],
-    "iata_codes": [
-      "FBM"
+    "airports": [
+      {
+        "iata": "FBM",
+        "name": "Lubumbashi International Airport"
+      }
     ],
     "popularity": 63
   },
@@ -5802,9 +6765,15 @@
       "Lakkhnau",
       "Lakkhnau shaary"
     ],
-    "iata_codes": [
-      "KNU",
-      "LKO"
+    "airports": [
+      {
+        "iata": "KNU",
+        "name": "Kanpur Airport"
+      },
+      {
+        "iata": "LKO",
+        "name": "Chaudhary Charan Singh International Airport"
+      }
     ],
     "popularity": 64
   },
@@ -5825,7 +6794,7 @@
       "Ludhijana",
       "Ludijana"
     ],
-    "iata_codes": [],
+    "airports": [],
     "popularity": 62
   },
   {
@@ -5842,7 +6811,7 @@
     "alt_names": [
       "lu liang shi"
     ],
-    "iata_codes": [],
+    "airports": [],
     "popularity": 65
   },
   {
@@ -5862,7 +6831,7 @@
       "Lo-ho-chai",
       "Lo-ho-shih"
     ],
-    "iata_codes": [],
+    "airports": [],
     "popularity": 61
   },
   {
@@ -5882,8 +6851,11 @@
       "LYA",
       "Lac Duong"
     ],
-    "iata_codes": [
-      "LYA"
+    "airports": [
+      {
+        "iata": "LYA",
+        "name": "Luoyang Airport"
+      }
     ],
     "popularity": 61
   },
@@ -5904,8 +6876,11 @@
       "Louzaka",
       "Lusaca"
     ],
-    "iata_codes": [
-      "LUN"
+    "airports": [
+      {
+        "iata": "LUN",
+        "name": "Kenneth Kaunda International Airport"
+      }
     ],
     "popularity": 63
   },
@@ -5926,9 +6901,15 @@
       "Lijon",
       "Lio"
     ],
-    "iata_codes": [
-      "GNB",
-      "LYS"
+    "airports": [
+      {
+        "iata": "GNB",
+        "name": "Grenoble-Isere Airport"
+      },
+      {
+        "iata": "LYS",
+        "name": "Lyon Saint-Exupery Airport"
+      }
     ],
     "popularity": 67
   },
@@ -5949,8 +6930,11 @@
       "Au-mun",
       "Aumwnz"
     ],
-    "iata_codes": [
-      "MFM"
+    "airports": [
+      {
+        "iata": "MFM",
+        "name": "Macau International Airport"
+      }
     ],
     "popularity": 68
   },
@@ -5971,8 +6955,11 @@
       "Al Madinah al Munawwarah",
       "Al Medina"
     ],
-    "iata_codes": [
-      "MED"
+    "airports": [
+      {
+        "iata": "MED",
+        "name": "Prince Mohammad Bin Abdulaziz Airport"
+      }
     ],
     "popularity": 61
   },
@@ -5993,8 +6980,11 @@
       "Lungsod ng Madrid",
       "MAD"
     ],
-    "iata_codes": [
-      "MAD"
+    "airports": [
+      {
+        "iata": "MAD",
+        "name": "Madrid Barajas International Airport"
+      }
     ],
     "popularity": 85
   },
@@ -6015,8 +7005,11 @@
       "Madurai",
       "Maduraj"
     ],
-    "iata_codes": [
-      "IXM"
+    "airports": [
+      {
+        "iata": "IXM",
+        "name": "Madurai Airport"
+      }
     ],
     "popularity": 62
   },
@@ -6037,8 +7030,11 @@
       "Macassar",
       "Makasar"
     ],
-    "iata_codes": [
-      "UPG"
+    "airports": [
+      {
+        "iata": "UPG",
+        "name": "Hasanuddin International Airport"
+      }
     ],
     "popularity": 62
   },
@@ -6059,7 +7055,7 @@
       "La Mecca",
       "La Mecque"
     ],
-    "iata_codes": [],
+    "airports": [],
     "popularity": 62
   },
   {
@@ -6079,8 +7075,11 @@
       "Al-Manama",
       "Al-Manamah"
     ],
-    "iata_codes": [
-      "BAH"
+    "airports": [
+      {
+        "iata": "BAH",
+        "name": "Bahrain International Airport"
+      }
     ],
     "popularity": 62
   },
@@ -6101,8 +7100,11 @@
       "Manaos",
       "Manaus"
     ],
-    "iata_codes": [
-      "MAO"
+    "airports": [
+      {
+        "iata": "MAO",
+        "name": "Eduardo Gomes International Airport"
+      }
     ],
     "popularity": 63
   },
@@ -6124,10 +7126,19 @@
       "Manceinion",
       "Mancesteris"
     ],
-    "iata_codes": [
-      "LBA",
-      "LPL",
-      "MAN"
+    "airports": [
+      {
+        "iata": "LBA",
+        "name": "Leeds Bradford Airport"
+      },
+      {
+        "iata": "LPL",
+        "name": "Liverpool John Lennon Airport"
+      },
+      {
+        "iata": "MAN",
+        "name": "Manchester Airport"
+      }
     ],
     "popularity": 68
   },
@@ -6149,12 +7160,27 @@
       "Manathans",
       "Manathas"
     ],
-    "iata_codes": [
-      "EWR",
-      "HPN",
-      "JFK",
-      "LGA",
-      "TEB"
+    "airports": [
+      {
+        "iata": "EWR",
+        "name": "Newark Liberty International Airport"
+      },
+      {
+        "iata": "HPN",
+        "name": "Westchester County Airport"
+      },
+      {
+        "iata": "JFK",
+        "name": "John F Kennedy International Airport"
+      },
+      {
+        "iata": "LGA",
+        "name": "La Guardia Airport"
+      },
+      {
+        "iata": "TEB",
+        "name": "Teterboro Airport"
+      }
     ],
     "popularity": 62
   },
@@ -6176,8 +7202,11 @@
       "Lungsod ng Maynila",
       "MNL"
     ],
-    "iata_codes": [
-      "MNL"
+    "airports": [
+      {
+        "iata": "MNL",
+        "name": "Ninoy Aquino International Airport"
+      }
     ],
     "popularity": 82
   },
@@ -6198,7 +7227,7 @@
       "Hsin-p'o",
       "Maiu-ming"
     ],
-    "iata_codes": [],
+    "airports": [],
     "popularity": 61
   },
   {
@@ -6218,8 +7247,11 @@
       "Lourenco Marques",
       "MPM"
     ],
-    "iata_codes": [
-      "MPM"
+    "airports": [
+      {
+        "iata": "MPM",
+        "name": "Maputo Airport"
+      }
     ],
     "popularity": 61
   },
@@ -6240,8 +7272,11 @@
       "Marakaaya",
       "Marakaibas"
     ],
-    "iata_codes": [
-      "MAR"
+    "airports": [
+      {
+        "iata": "MAR",
+        "name": "La Chinita International Airport"
+      }
     ],
     "popularity": 62
   },
@@ -6262,8 +7297,11 @@
       "Marakeso",
       "Maraksh"
     ],
-    "iata_codes": [
-      "RAK"
+    "airports": [
+      {
+        "iata": "RAK",
+        "name": "Menara Airport"
+      }
     ],
     "popularity": 70
   },
@@ -6284,8 +7322,11 @@
       "Marsegia",
       "Marseglia"
     ],
-    "iata_codes": [
-      "MRS"
+    "airports": [
+      {
+        "iata": "MRS",
+        "name": "Marseille Provence Airport"
+      }
     ],
     "popularity": 69
   },
@@ -6306,8 +7347,11 @@
       "Masant",
       "Masat"
     ],
-    "iata_codes": [
-      "MHD"
+    "airports": [
+      {
+        "iata": "MHD",
+        "name": "Mashhad International Airport"
+      }
     ],
     "popularity": 64
   },
@@ -6328,8 +7372,11 @@
       "MJM",
       "Mbudzi Maji"
     ],
-    "iata_codes": [
-      "MJM"
+    "airports": [
+      {
+        "iata": "MJM",
+        "name": "Mbuji Mayi Airport"
+      }
     ],
     "popularity": 63
   },
@@ -6350,8 +7397,11 @@
       "Kutha Medan",
       "MES"
     ],
-    "iata_codes": [
-      "KNO"
+    "airports": [
+      {
+        "iata": "KNO",
+        "name": "Polonia International Airport"
+      }
     ],
     "popularity": 64
   },
@@ -6372,9 +7422,15 @@
       "Medehl'in",
       "Medel'in"
     ],
-    "iata_codes": [
-      "EOH",
-      "MDE"
+    "airports": [
+      {
+        "iata": "EOH",
+        "name": "Enrique Olaya Herrera Airport"
+      },
+      {
+        "iata": "MDE",
+        "name": "Jose Maria Cordova International Airport"
+      }
     ],
     "popularity": 73
   },
@@ -6395,11 +7451,23 @@
       "Mel'burn",
       "Melben"
     ],
-    "iata_codes": [
-      "AVV",
-      "MBW",
-      "MEB",
-      "MEL"
+    "airports": [
+      {
+        "iata": "AVV",
+        "name": "Avalon Airport"
+      },
+      {
+        "iata": "MBW",
+        "name": "Melbourne Moorabbin Airport"
+      },
+      {
+        "iata": "MEB",
+        "name": "Melbourne Essendon Airport"
+      },
+      {
+        "iata": "MEL",
+        "name": "Melbourne International Airport"
+      }
     ],
     "popularity": 87
   },
@@ -6420,10 +7488,19 @@
       "Cidade do Mexico",
       "Cita du Messicu"
     ],
-    "iata_codes": [
-      "MEX",
-      "NLU",
-      "TLC"
+    "airports": [
+      {
+        "iata": "MEX",
+        "name": "Licenciado Benito Juarez International Airport"
+      },
+      {
+        "iata": "NLU",
+        "name": "Felipe Angeles International Airport"
+      },
+      {
+        "iata": "TLC",
+        "name": "Licenciado Adolfo Lopez Mateos International Airport"
+      }
     ],
     "popularity": 91
   },
@@ -6445,10 +7522,19 @@
       "Majami",
       "Majamis"
     ],
-    "iata_codes": [
-      "FLL",
-      "MIA",
-      "OPF"
+    "airports": [
+      {
+        "iata": "FLL",
+        "name": "Fort Lauderdale Hollywood International Airport"
+      },
+      {
+        "iata": "MIA",
+        "name": "Miami International Airport"
+      },
+      {
+        "iata": "OPF",
+        "name": "Miami-Opa Locka Executive Airport"
+      }
     ],
     "popularity": 77
   },
@@ -6469,8 +7555,11 @@
       "Mianyang",
       "Mianyang Shi"
     ],
-    "iata_codes": [
-      "MIG"
+    "airports": [
+      {
+        "iata": "MIG",
+        "name": "Mianyang Airport"
+      }
     ],
     "popularity": 62
   },
@@ -6491,10 +7580,19 @@
       "Mailand",
       "Mediolan"
     ],
-    "iata_codes": [
-      "BGY",
-      "LIN",
-      "MXP"
+    "airports": [
+      {
+        "iata": "BGY",
+        "name": "Bergamo / Orio Al Serio Airport"
+      },
+      {
+        "iata": "LIN",
+        "name": "Linate Airport"
+      },
+      {
+        "iata": "MXP",
+        "name": "Malpensa International Airport"
+      }
     ],
     "popularity": 71
   },
@@ -6515,9 +7613,15 @@
       "Minhang",
       "Shang-hai"
     ],
-    "iata_codes": [
-      "PVG",
-      "SHA"
+    "airports": [
+      {
+        "iata": "PVG",
+        "name": "Shanghai Pudong International Airport"
+      },
+      {
+        "iata": "SHA",
+        "name": "Shanghai Hongqiao International Airport"
+      }
     ],
     "popularity": 64
   },
@@ -6539,8 +7643,11 @@
       "MSP",
       "Min-ni-a-po-li-su"
     ],
-    "iata_codes": [
-      "MSP"
+    "airports": [
+      {
+        "iata": "MSP",
+        "name": "Minneapolis-St Paul International/Wold-Chamberlain Airport"
+      }
     ],
     "popularity": 66
   },
@@ -6561,8 +7668,11 @@
       "Minsc",
       "Minscum"
     ],
-    "iata_codes": [
-      "MSQ"
+    "airports": [
+      {
+        "iata": "MSQ",
+        "name": "Minsk International Airport"
+      }
     ],
     "popularity": 62
   },
@@ -6583,8 +7693,11 @@
       "Magadysha",
       "Maqdishu"
     ],
-    "iata_codes": [
-      "MGQ"
+    "airports": [
+      {
+        "iata": "MGQ",
+        "name": "Aden Adde International Airport"
+      }
     ],
     "popularity": 64
   },
@@ -6605,9 +7718,15 @@
       "Monrobia",
       "Monrofia"
     ],
-    "iata_codes": [
-      "MLW",
-      "ROB"
+    "airports": [
+      {
+        "iata": "MLW",
+        "name": "Spriggs Payne Airport"
+      },
+      {
+        "iata": "ROB",
+        "name": "Roberts International Airport"
+      }
     ],
     "popularity": 62
   },
@@ -6628,8 +7747,11 @@
       "Mons Regis",
       "Monterej"
     ],
-    "iata_codes": [
-      "MTY"
+    "airports": [
+      {
+        "iata": "MTY",
+        "name": "General Mariano Escobedo International Airport"
+      }
     ],
     "popularity": 71
   },
@@ -6650,8 +7772,11 @@
       "Mantehvideha",
       "Montebideo"
     ],
-    "iata_codes": [
-      "MVD"
+    "airports": [
+      {
+        "iata": "MVD",
+        "name": "Carrasco International /General C L Berisso Airport"
+      }
     ],
     "popularity": 71
   },
@@ -6672,10 +7797,19 @@
       "Monreal",
       "Monreal'"
     ],
-    "iata_codes": [
-      "YHU",
-      "YMX",
-      "YUL"
+    "airports": [
+      {
+        "iata": "YHU",
+        "name": "Montreal / Saint-Hubert Airport"
+      },
+      {
+        "iata": "YMX",
+        "name": "Montreal International (Mirabel) Airport"
+      },
+      {
+        "iata": "YUL",
+        "name": "Montreal / Pierre Elliott Trudeau International Airport"
+      }
     ],
     "popularity": 72
   },
@@ -6696,11 +7830,23 @@
       "Maskav",
       "Maskava"
     ],
-    "iata_codes": [
-      "DME",
-      "SVO",
-      "VKO",
-      "ZIA"
+    "airports": [
+      {
+        "iata": "DME",
+        "name": "Domodedovo International Airport"
+      },
+      {
+        "iata": "SVO",
+        "name": "Sheremetyevo International Airport"
+      },
+      {
+        "iata": "VKO",
+        "name": "Vnukovo International Airport"
+      },
+      {
+        "iata": "ZIA",
+        "name": "Ramenskoye Airport"
+      }
     ],
     "popularity": 90
   },
@@ -6721,7 +7867,7 @@
       "Al Musil",
       "Masul"
     ],
-    "iata_codes": [],
+    "airports": [],
     "popularity": 62
   },
   {
@@ -6741,8 +7887,11 @@
       "Multan",
       "Multanas"
     ],
-    "iata_codes": [
-      "MUX"
+    "airports": [
+      {
+        "iata": "MUX",
+        "name": "Multan International Airport"
+      }
     ],
     "popularity": 63
   },
@@ -6763,9 +7912,15 @@
       "Bombai",
       "Bombaim"
     ],
-    "iata_codes": [
-      "BOM",
-      "NMI"
+    "airports": [
+      {
+        "iata": "BOM",
+        "name": "Chhatrapati Shivaji International Airport"
+      },
+      {
+        "iata": "NMI",
+        "name": "Navi Mumbai International Airport"
+      }
     ],
     "popularity": 91
   },
@@ -6786,8 +7941,11 @@
       "Minca",
       "Minche"
     ],
-    "iata_codes": [
-      "MUC"
+    "airports": [
+      {
+        "iata": "MUC",
+        "name": "Munich International Airport"
+      }
     ],
     "popularity": 72
   },
@@ -6808,8 +7966,11 @@
       "Mascat",
       "Mascate"
     ],
-    "iata_codes": [
-      "MCT"
+    "airports": [
+      {
+        "iata": "MCT",
+        "name": "Muscat International Airport"
+      }
     ],
     "popularity": 69
   },
@@ -6830,8 +7991,11 @@
       "Ingamina",
       "Injamina"
     ],
-    "iata_codes": [
-      "NDJ"
+    "airports": [
+      {
+        "iata": "NDJ",
+        "name": "N'Djamena International Airport"
+      }
     ],
     "popularity": 61
   },
@@ -6852,9 +8016,15 @@
       "Nagoja",
       "Nagojo"
     ],
-    "iata_codes": [
-      "NGO",
-      "NKM"
+    "airports": [
+      {
+        "iata": "NGO",
+        "name": "Chubu Centrair International Airport"
+      },
+      {
+        "iata": "NKM",
+        "name": "Nagoya Airport"
+      }
     ],
     "popularity": 74
   },
@@ -6875,8 +8045,11 @@
       "Nagpore",
       "Nagpur"
     ],
-    "iata_codes": [
-      "NAG"
+    "airports": [
+      {
+        "iata": "NAG",
+        "name": "Dr. Babasaheb Ambedkar International Airport"
+      }
     ],
     "popularity": 64
   },
@@ -6897,9 +8070,15 @@
       "Nairoba",
       "Nairobi"
     ],
-    "iata_codes": [
-      "NBO",
-      "WIL"
+    "airports": [
+      {
+        "iata": "NBO",
+        "name": "Jomo Kenyatta International Airport"
+      },
+      {
+        "iata": "WIL",
+        "name": "Nairobi Wilson Airport"
+      }
     ],
     "popularity": 86
   },
@@ -6920,8 +8099,11 @@
       "Najfargharh",
       "na jia fu ga er"
     ],
-    "iata_codes": [
-      "DEL"
+    "airports": [
+      {
+        "iata": "DEL",
+        "name": "Indira Gandhi International Airport"
+      }
     ],
     "popularity": 61
   },
@@ -6942,8 +8124,11 @@
       "Nam Xuong",
       "Nam-chhong-su"
     ],
-    "iata_codes": [
-      "KHN"
+    "airports": [
+      {
+        "iata": "KHN",
+        "name": "Nanchang Changbei International Airport"
+      }
     ],
     "popularity": 64
   },
@@ -6964,7 +8149,7 @@
       "Nam Sung",
       "Nan'chun"
     ],
-    "iata_codes": [],
+    "airports": [],
     "popularity": 63
   },
   {
@@ -6984,8 +8169,11 @@
       "Nam-kin-su",
       "Namkin"
     ],
-    "iata_codes": [
-      "NKG"
+    "airports": [
+      {
+        "iata": "NKG",
+        "name": "Nanjing Lukou Airport"
+      }
     ],
     "popularity": 70
   },
@@ -7006,8 +8194,11 @@
       "Nam Ninh",
       "Nam-nen-su"
     ],
-    "iata_codes": [
-      "NNG"
+    "airports": [
+      {
+        "iata": "NNG",
+        "name": "Nanning Wuxu Airport"
+      }
     ],
     "popularity": 66
   },
@@ -7028,8 +8219,11 @@
       "Nam Thong",
       "Nan'tun"
     ],
-    "iata_codes": [
-      "NTG"
+    "airports": [
+      {
+        "iata": "NTG",
+        "name": "Nantong Airport"
+      }
     ],
     "popularity": 64
   },
@@ -7050,7 +8244,7 @@
       "Nam Duong",
       "Nan'jan"
     ],
-    "iata_codes": [],
+    "airports": [],
     "popularity": 63
   },
   {
@@ -7070,8 +8264,11 @@
       "Naples",
       "Napoles"
     ],
-    "iata_codes": [
-      "NAP"
+    "airports": [
+      {
+        "iata": "NAP",
+        "name": "Napoli / Capodichino International Airport"
+      }
     ],
     "popularity": 70
   },
@@ -7092,8 +8289,11 @@
       "Nasik",
       "Nasikas"
     ],
-    "iata_codes": [
-      "ISK"
+    "airports": [
+      {
+        "iata": "ISK",
+        "name": "Ozar Airport"
+      }
     ],
     "popularity": 62
   },
@@ -7115,8 +8315,11 @@
       "Nachville",
       "Nasburgum"
     ],
-    "iata_codes": [
-      "BNA"
+    "airports": [
+      {
+        "iata": "BNA",
+        "name": "Nashville International Airport"
+      }
     ],
     "popularity": 68
   },
@@ -7137,9 +8340,15 @@
       "Navi Mumbai",
       "Navi Mumbaj"
     ],
-    "iata_codes": [
-      "BOM",
-      "NMI"
+    "airports": [
+      {
+        "iata": "BOM",
+        "name": "Chhatrapati Shivaji International Airport"
+      },
+      {
+        "iata": "NMI",
+        "name": "Navi Mumbai International Airport"
+      }
     ],
     "popularity": 64
   },
@@ -7160,7 +8369,7 @@
       "Nehjczjan",
       "Nei-chiang"
     ],
-    "iata_codes": [],
+    "airports": [],
     "popularity": 61
   },
   {
@@ -7181,8 +8390,11 @@
       "Cene Orlean",
       "Crescent City"
     ],
-    "iata_codes": [
-      "MSY"
+    "airports": [
+      {
+        "iata": "MSY",
+        "name": "Louis Armstrong New Orleans International Airport"
+      }
     ],
     "popularity": 66
   },
@@ -7203,9 +8415,15 @@
       "New Taipei",
       "New Taipei City"
     ],
-    "iata_codes": [
-      "TPE",
-      "TSA"
+    "airports": [
+      {
+        "iata": "TPE",
+        "name": "Taiwan Taoyuan International Airport"
+      },
+      {
+        "iata": "TSA",
+        "name": "Taipei Songshan Airport"
+      }
     ],
     "popularity": 66
   },
@@ -7226,8 +8444,11 @@
       "Xinjie",
       "xin jie"
     ],
-    "iata_codes": [
-      "HKG"
+    "airports": [
+      {
+        "iata": "HKG",
+        "name": "Chek Lap Kok International Airport"
+      }
     ],
     "popularity": 66
   },
@@ -7249,12 +8470,27 @@
       "Big Apple",
       "Cathair Nua-Eabhrac"
     ],
-    "iata_codes": [
-      "EWR",
-      "HPN",
-      "JFK",
-      "LGA",
-      "TEB"
+    "airports": [
+      {
+        "iata": "EWR",
+        "name": "Newark Liberty International Airport"
+      },
+      {
+        "iata": "HPN",
+        "name": "Westchester County Airport"
+      },
+      {
+        "iata": "JFK",
+        "name": "John F Kennedy International Airport"
+      },
+      {
+        "iata": "LGA",
+        "name": "La Guardia Airport"
+      },
+      {
+        "iata": "TEB",
+        "name": "Teterboro Airport"
+      }
     ],
     "popularity": 89
   },
@@ -7275,8 +8511,11 @@
       "Niamei",
       "Niamej"
     ],
-    "iata_codes": [
-      "NIM"
+    "airports": [
+      {
+        "iata": "NIM",
+        "name": "Diori Hamani International Airport"
+      }
     ],
     "popularity": 61
   },
@@ -7297,8 +8536,11 @@
       "Nicaea",
       "Nicc"
     ],
-    "iata_codes": [
-      "NCE"
+    "airports": [
+      {
+        "iata": "NCE",
+        "name": "Nice-Cote d'Azur Airport"
+      }
     ],
     "popularity": 65
   },
@@ -7319,8 +8561,11 @@
       "NGB",
       "Nen-po-su"
     ],
-    "iata_codes": [
-      "NGB"
+    "airports": [
+      {
+        "iata": "NGB",
+        "name": "Ningbo Lishe International Airport"
+      }
     ],
     "popularity": 66
   },
@@ -7341,8 +8586,11 @@
       "Gor'kiy",
       "Gorkey"
     ],
-    "iata_codes": [
-      "GOJ"
+    "airports": [
+      {
+        "iata": "GOJ",
+        "name": "Nizhny Novgorod International Airport"
+      }
     ],
     "popularity": 61
   },
@@ -7363,8 +8611,11 @@
       "Novasibirsk",
       "Novo-Nikolaevsk"
     ],
-    "iata_codes": [
-      "OVB"
+    "airports": [
+      {
+        "iata": "OVB",
+        "name": "Tolmachevo Airport"
+      }
     ],
     "popularity": 62
   },
@@ -7385,8 +8636,11 @@
       "Omdurman",
       "Omdurmana"
     ],
-    "iata_codes": [
-      "KRT"
+    "airports": [
+      {
+        "iata": "KRT",
+        "name": "Khartoum International Airport"
+      }
     ],
     "popularity": 63
   },
@@ -7407,8 +8661,11 @@
       "Onitsha",
       "QNI"
     ],
-    "iata_codes": [
-      "ABB"
+    "airports": [
+      {
+        "iata": "ABB",
+        "name": "Asaba International Airport"
+      }
     ],
     "popularity": 62
   },
@@ -7429,8 +8686,11 @@
       "Ordos",
       "Ordos khot"
     ],
-    "iata_codes": [
-      "DSN"
+    "airports": [
+      {
+        "iata": "DSN",
+        "name": "Ordos Ejin Horo Airport"
+      }
     ],
     "popularity": 63
   },
@@ -7452,9 +8712,15 @@
       "Orlando",
       "Orlanto"
     ],
-    "iata_codes": [
-      "MCO",
-      "SFB"
+    "airports": [
+      {
+        "iata": "MCO",
+        "name": "Orlando International Airport"
+      },
+      {
+        "iata": "SFB",
+        "name": "Orlando Sanford International Airport"
+      }
     ],
     "popularity": 65
   },
@@ -7475,10 +8741,19 @@
       "Osaca",
       "Osaca - da ban shi"
     ],
-    "iata_codes": [
-      "ITM",
-      "KIX",
-      "UKB"
+    "airports": [
+      {
+        "iata": "ITM",
+        "name": "Osaka International Airport"
+      },
+      {
+        "iata": "KIX",
+        "name": "Kansai International Airport"
+      },
+      {
+        "iata": "UKB",
+        "name": "Kobe Airport"
+      }
     ],
     "popularity": 84
   },
@@ -7499,8 +8774,11 @@
       "Kristiania",
       "OSL"
     ],
-    "iata_codes": [
-      "OSL"
+    "airports": [
+      {
+        "iata": "OSL",
+        "name": "Oslo Gardermoen Airport"
+      }
     ],
     "popularity": 70
   },
@@ -7521,10 +8799,19 @@
       "Otavo",
       "Otawa"
     ],
-    "iata_codes": [
-      "YND",
-      "YOW",
-      "YRO"
+    "airports": [
+      {
+        "iata": "YND",
+        "name": "Ottawa / Gatineau Airport"
+      },
+      {
+        "iata": "YOW",
+        "name": "Ottawa Macdonald-Cartier International Airport"
+      },
+      {
+        "iata": "YRO",
+        "name": "Ottawa / Rockcliffe Airport"
+      }
     ],
     "popularity": 70
   },
@@ -7545,8 +8832,11 @@
       "Ouagadouga",
       "Ouagadougou"
     ],
-    "iata_codes": [
-      "OUA"
+    "airports": [
+      {
+        "iata": "OUA",
+        "name": "Ouagadougou Airport"
+      }
     ],
     "popularity": 64
   },
@@ -7567,8 +8857,11 @@
       "PLM",
       "Palembang"
     ],
-    "iata_codes": [
-      "PLM"
+    "airports": [
+      {
+        "iata": "PLM",
+        "name": "Sultan Mahmud Badaruddin Ii Airport"
+      }
     ],
     "popularity": 62
   },
@@ -7589,10 +8882,19 @@
       "PTY",
       "Panama"
     ],
-    "iata_codes": [
-      "ONX",
-      "PAC",
-      "PTY"
+    "airports": [
+      {
+        "iata": "ONX",
+        "name": "Enrique Adolfo Jimenez Airport"
+      },
+      {
+        "iata": "PAC",
+        "name": "Marcos A. Gelabert International Airport"
+      },
+      {
+        "iata": "PTY",
+        "name": "Tocumen International Airport"
+      }
     ],
     "popularity": 66
   },
@@ -7613,10 +8915,19 @@
       "Baris",
       "Bariz"
     ],
-    "iata_codes": [
-      "CDG",
-      "LBG",
-      "ORY"
+    "airports": [
+      {
+        "iata": "CDG",
+        "name": "Charles de Gaulle International Airport"
+      },
+      {
+        "iata": "LBG",
+        "name": "Paris-Le Bourget Airport"
+      },
+      {
+        "iata": "ORY",
+        "name": "Paris-Orly Airport"
+      }
     ],
     "popularity": 83
   },
@@ -7637,8 +8948,11 @@
       "PAT",
       "Patna"
     ],
-    "iata_codes": [
-      "PAT"
+    "airports": [
+      {
+        "iata": "PAT",
+        "name": "Lok Nayak Jayaprakash Airport"
+      }
     ],
     "popularity": 62
   },
@@ -7659,8 +8973,11 @@
       "Pert",
       "Perta"
     ],
-    "iata_codes": [
-      "PER"
+    "airports": [
+      {
+        "iata": "PER",
+        "name": "Perth International Airport"
+      }
     ],
     "popularity": 74
   },
@@ -7681,8 +8998,11 @@
       "Pesavar",
       "Pesavara"
     ],
-    "iata_codes": [
-      "PEW"
+    "airports": [
+      {
+        "iata": "PEW",
+        "name": "Peshawar International Airport"
+      }
     ],
     "popularity": 67
   },
@@ -7704,10 +9024,19 @@
       "Filadehl'fija",
       "Filadel'fi"
     ],
-    "iata_codes": [
-      "ILG",
-      "PHL",
-      "TTN"
+    "airports": [
+      {
+        "iata": "ILG",
+        "name": "New Castle Airport"
+      },
+      {
+        "iata": "PHL",
+        "name": "Philadelphia International Airport"
+      },
+      {
+        "iata": "TTN",
+        "name": "Trenton Mercer Airport"
+      }
     ],
     "popularity": 72
   },
@@ -7728,8 +9057,11 @@
       "Nam-Vang",
       "Nom Pen"
     ],
-    "iata_codes": [
-      "KTI"
+    "airports": [
+      {
+        "iata": "KTI",
+        "name": "Techo International Airport"
+      }
     ],
     "popularity": 72
   },
@@ -7751,9 +9083,15 @@
       "Fenikso",
       "Finiks"
     ],
-    "iata_codes": [
-      "AZA",
-      "PHX"
+    "airports": [
+      {
+        "iata": "AZA",
+        "name": "Phoenix-Mesa-Gateway Airport"
+      },
+      {
+        "iata": "PHX",
+        "name": "Phoenix Sky Harbor International Airport"
+      }
     ],
     "popularity": 72
   },
@@ -7774,8 +9112,11 @@
       "pimpiri",
       "pmpry"
     ],
-    "iata_codes": [
-      "PNQ"
+    "airports": [
+      {
+        "iata": "PNQ",
+        "name": "Pune Airport"
+      }
     ],
     "popularity": 61
   },
@@ -7796,8 +9137,11 @@
       "Pimpri-Chinchwad",
       "Pimpri-Cincvad"
     ],
-    "iata_codes": [
-      "PNQ"
+    "airports": [
+      {
+        "iata": "PNQ",
+        "name": "Pune Airport"
+      }
     ],
     "popularity": 62
   },
@@ -7819,9 +9163,15 @@
       "Fort Duquesne",
       "Fort Pitt"
     ],
-    "iata_codes": [
-      "LBE",
-      "PIT"
+    "airports": [
+      {
+        "iata": "LBE",
+        "name": "Arnold Palmer Regional Airport"
+      },
+      {
+        "iata": "PIT",
+        "name": "Pittsburgh International Airport"
+      }
     ],
     "popularity": 65
   },
@@ -7842,8 +9192,11 @@
       "Port Harkortas",
       "Port Harkurt"
     ],
-    "iata_codes": [
-      "PHC"
+    "airports": [
+      {
+        "iata": "PHC",
+        "name": "Port Harcourt International Airport"
+      }
     ],
     "popularity": 63
   },
@@ -7865,8 +9218,11 @@
       "PDX",
       "Portland"
     ],
-    "iata_codes": [
-      "PDX"
+    "airports": [
+      {
+        "iata": "PDX",
+        "name": "Portland International Airport"
+      }
     ],
     "popularity": 68
   },
@@ -7887,8 +9243,11 @@
       "Porto Alegri",
       "Porto Alenkre"
     ],
-    "iata_codes": [
-      "POA"
+    "airports": [
+      {
+        "iata": "POA",
+        "name": "Salgado Filho Airport"
+      }
     ],
     "popularity": 62
   },
@@ -7909,8 +9268,11 @@
       "Prag",
       "Praga"
     ],
-    "iata_codes": [
-      "PRG"
+    "airports": [
+      {
+        "iata": "PRG",
+        "name": "Vaclav Havel Airport"
+      }
     ],
     "popularity": 71
   },
@@ -7931,9 +9293,15 @@
       "PRY",
       "Piritoria"
     ],
-    "iata_codes": [
-      "HLA",
-      "JNB"
+    "airports": [
+      {
+        "iata": "HLA",
+        "name": "Lanseria Airport"
+      },
+      {
+        "iata": "JNB",
+        "name": "O. R. Tambo International Airport"
+      }
     ],
     "popularity": 73
   },
@@ -7954,9 +9322,15 @@
       "Pootung",
       "Pudong"
     ],
-    "iata_codes": [
-      "PVG",
-      "SHA"
+    "airports": [
+      {
+        "iata": "PVG",
+        "name": "Shanghai Pudong International Airport"
+      },
+      {
+        "iata": "SHA",
+        "name": "Shanghai Hongqiao International Airport"
+      }
     ],
     "popularity": 68
   },
@@ -7977,8 +9351,11 @@
       "Cuetlaxcoapan",
       "Ehroika-Puehbla-deh-Saragosa"
     ],
-    "iata_codes": [
-      "PBC"
+    "airports": [
+      {
+        "iata": "PBC",
+        "name": "Hermanos Serdan International Airport"
+      }
     ],
     "popularity": 62
   },
@@ -7999,8 +9376,11 @@
       "Poune",
       "Pun"
     ],
-    "iata_codes": [
-      "PNQ"
+    "airports": [
+      {
+        "iata": "PNQ",
+        "name": "Pune Airport"
+      }
     ],
     "popularity": 75
   },
@@ -8021,7 +9401,7 @@
       "Hinghwafu",
       "Hsing-hua"
     ],
-    "iata_codes": [],
+    "airports": [],
     "popularity": 62
   },
   {
@@ -8041,8 +9421,11 @@
       "P'u-yang-chen",
       "Pujiang"
     ],
-    "iata_codes": [
-      "YIW"
+    "airports": [
+      {
+        "iata": "YIW",
+        "name": "Yiwu Airport"
+      }
     ],
     "popularity": 66
   },
@@ -8063,8 +9446,11 @@
       "Heijo",
       "Heijo-fu"
     ],
-    "iata_codes": [
-      "FNJ"
+    "airports": [
+      {
+        "iata": "FNJ",
+        "name": "Pyongyang International Airport"
+      }
     ],
     "popularity": 65
   },
@@ -8085,8 +9471,11 @@
       "Ch'ing-tao-shih",
       "Chheng-to-chhi"
     ],
-    "iata_codes": [
-      "TAO"
+    "airports": [
+      {
+        "iata": "TAO",
+        "name": "Qingdao Jiaodong International Airport"
+      }
     ],
     "popularity": 69
   },
@@ -8107,8 +9496,11 @@
       "Qingpu",
       "Tsingpi hsien"
     ],
-    "iata_codes": [
-      "SHA"
+    "airports": [
+      {
+        "iata": "SHA",
+        "name": "Shanghai Hongqiao International Airport"
+      }
     ],
     "popularity": 61
   },
@@ -8127,8 +9519,11 @@
       "qing yang",
       "qing yang shi"
     ],
-    "iata_codes": [
-      "IQN"
+    "airports": [
+      {
+        "iata": "IQN",
+        "name": "Qingyang Airport"
+      }
     ],
     "popularity": 63
   },
@@ -8149,8 +9544,11 @@
       "Ch'ing-yuan-hsien",
       "Chheng-oan-chhi"
     ],
-    "iata_codes": [
-      "CAN"
+    "airports": [
+      {
+        "iata": "CAN",
+        "name": "Guangzhou Baiyun International Airport"
+      }
     ],
     "popularity": 62
   },
@@ -8171,7 +9569,7 @@
       "Ch'in-chou",
       "Ch'in-chou-chen"
     ],
-    "iata_codes": [],
+    "airports": [],
     "popularity": 61
   },
   {
@@ -8191,9 +9589,15 @@
       "Ch'uan-chou-shih",
       "Chhien-chu-su"
     ],
-    "iata_codes": [
-      "JJN",
-      "XMN"
+    "airports": [
+      {
+        "iata": "JJN",
+        "name": "Quanzhou Airport"
+      },
+      {
+        "iata": "XMN",
+        "name": "Xiamen Gaoqi International Airport"
+      }
     ],
     "popularity": 62
   },
@@ -8215,12 +9619,27 @@
       "Condado de Queens",
       "Kvino"
     ],
-    "iata_codes": [
-      "EWR",
-      "HPN",
-      "JFK",
-      "LGA",
-      "TEB"
+    "airports": [
+      {
+        "iata": "EWR",
+        "name": "Newark Liberty International Airport"
+      },
+      {
+        "iata": "HPN",
+        "name": "Westchester County Airport"
+      },
+      {
+        "iata": "JFK",
+        "name": "John F Kennedy International Airport"
+      },
+      {
+        "iata": "LGA",
+        "name": "La Guardia Airport"
+      },
+      {
+        "iata": "TEB",
+        "name": "Teterboro Airport"
+      }
     ],
     "popularity": 64
   },
@@ -8241,8 +9660,11 @@
       "Kueta",
       "Kveta"
     ],
-    "iata_codes": [
-      "UET"
+    "airports": [
+      {
+        "iata": "UET",
+        "name": "Quetta International Airport"
+      }
     ],
     "popularity": 62
   },
@@ -8264,8 +9686,11 @@
       "Kezon Siti",
       "Kezonurbo"
     ],
-    "iata_codes": [
-      "MNL"
+    "airports": [
+      {
+        "iata": "MNL",
+        "name": "Ninoy Aquino International Airport"
+      }
     ],
     "popularity": 65
   },
@@ -8286,8 +9711,11 @@
       "Kito",
       "Kitu"
     ],
-    "iata_codes": [
-      "UIO"
+    "airports": [
+      {
+        "iata": "UIO",
+        "name": "Nuevo Aeropuerto Internacional Mariscal Sucre"
+      }
     ],
     "popularity": 74
   },
@@ -8308,7 +9736,7 @@
       "Ch'u-ching-hsien",
       "Chiu-ch'u-ching"
     ],
-    "iata_codes": [],
+    "airports": [],
     "popularity": 61
   },
   {
@@ -8323,8 +9751,11 @@
     "population": 1251739,
     "tier": 3,
     "alt_names": [],
-    "iata_codes": [
-      "BEY"
+    "airports": [
+      {
+        "iata": "BEY",
+        "name": "Beirut Rafic Hariri International Airport"
+      }
     ],
     "popularity": 61
   },
@@ -8345,8 +9776,11 @@
       "Rabat",
       "Rabata"
     ],
-    "iata_codes": [
-      "RBA"
+    "airports": [
+      {
+        "iata": "RBA",
+        "name": "Rabat-Sale Airport"
+      }
     ],
     "popularity": 62
   },
@@ -8367,8 +9801,11 @@
       "Radzkot",
       "Radzkotas"
     ],
-    "iata_codes": [
-      "HSR"
+    "airports": [
+      {
+        "iata": "HSR",
+        "name": "Rajkot International Airport"
+      }
     ],
     "popularity": 61
   },
@@ -8388,8 +9825,11 @@
       "Raspari Palao",
       "Visakhapatnam"
     ],
-    "iata_codes": [
-      "VTZ"
+    "airports": [
+      {
+        "iata": "VTZ",
+        "name": "Vishakhapatnam Airport"
+      }
     ],
     "popularity": 62
   },
@@ -8410,8 +9850,11 @@
       "Ravalpindi",
       "Ravalpindis"
     ],
-    "iata_codes": [
-      "ISB"
+    "airports": [
+      {
+        "iata": "ISB",
+        "name": "Islamabad International Airport"
+      }
     ],
     "popularity": 65
   },
@@ -8432,8 +9875,11 @@
       "Mauricea",
       "Pernambuco"
     ],
-    "iata_codes": [
-      "REC"
+    "airports": [
+      {
+        "iata": "REC",
+        "name": "Guararapes - Gilberto Freyre International Airport"
+      }
     ],
     "popularity": 62
   },
@@ -8454,9 +9900,15 @@
       "Refkiavik",
       "Rehjkjavik"
     ],
-    "iata_codes": [
-      "KEF",
-      "RKV"
+    "airports": [
+      {
+        "iata": "KEF",
+        "name": "Keflavik International Airport"
+      },
+      {
+        "iata": "RKV",
+        "name": "Reykjavik Airport"
+      }
     ],
     "popularity": 61
   },
@@ -8477,9 +9929,15 @@
       "Rio",
       "Rio De Janeiro"
     ],
-    "iata_codes": [
-      "GIG",
-      "SDU"
+    "airports": [
+      {
+        "iata": "GIG",
+        "name": "Galeao - Antonio Carlos Jobim International Airport"
+      },
+      {
+        "iata": "SDU",
+        "name": "Santos Dumont Airport"
+      }
     ],
     "popularity": 88
   },
@@ -8500,8 +9958,11 @@
       "Ar Riyadh",
       "Ar-Riaad"
     ],
-    "iata_codes": [
-      "RUH"
+    "airports": [
+      {
+        "iata": "RUH",
+        "name": "King Khaled International Airport"
+      }
     ],
     "popularity": 86
   },
@@ -8522,9 +9983,15 @@
       "Hrom",
       "Lungsod ng Roma"
     ],
-    "iata_codes": [
-      "CIA",
-      "FCO"
+    "airports": [
+      {
+        "iata": "CIA",
+        "name": "Ciampino Airport"
+      },
+      {
+        "iata": "FCO",
+        "name": "Leonardo Da Vinci (Fiumicino) International Airport"
+      }
     ],
     "popularity": 84
   },
@@ -8545,9 +10012,15 @@
       "Roterdam",
       "Roterdama"
     ],
-    "iata_codes": [
-      "AMS",
-      "RTM"
+    "airports": [
+      {
+        "iata": "AMS",
+        "name": "Amsterdam Airport Schiphol"
+      },
+      {
+        "iata": "RTM",
+        "name": "Rotterdam Airport"
+      }
     ],
     "popularity": 69
   },
@@ -8569,8 +10042,11 @@
       "SAC",
       "Sacramento"
     ],
-    "iata_codes": [
-      "SMF"
+    "airports": [
+      {
+        "iata": "SMF",
+        "name": "Sacramento International Airport"
+      }
     ],
     "popularity": 67
   },
@@ -8591,8 +10067,11 @@
       "Cankt-Peterburg",
       "LED"
     ],
-    "iata_codes": [
-      "LED"
+    "airports": [
+      {
+        "iata": "LED",
+        "name": "Pulkovo Airport"
+      }
     ],
     "popularity": 77
   },
@@ -8612,8 +10091,11 @@
       "saitama",
       "saytama"
     ],
-    "iata_codes": [
-      "HND"
+    "airports": [
+      {
+        "iata": "HND",
+        "name": "Tokyo International Airport"
+      }
     ],
     "popularity": 61
   },
@@ -8635,9 +10117,15 @@
       "Kota Salt Lake",
       "Lungsod ng Salt Lake"
     ],
-    "iata_codes": [
-      "OGD",
-      "SLC"
+    "airports": [
+      {
+        "iata": "OGD",
+        "name": "Ogden Hinckley Airport"
+      },
+      {
+        "iata": "SLC",
+        "name": "Salt Lake City International Airport"
+      }
     ],
     "popularity": 63
   },
@@ -8658,8 +10146,11 @@
       "Cidade do Sao Salvador da Bahia de Todos os Santos",
       "SSA"
     ],
-    "iata_codes": [
-      "SSA"
+    "airports": [
+      {
+        "iata": "SSA",
+        "name": "Deputado Luiz Eduardo Magalhaes International Airport"
+      }
     ],
     "popularity": 74
   },
@@ -8681,8 +10172,11 @@
       "San Antonio",
       "San Antonio (Texas)"
     ],
-    "iata_codes": [
-      "SAT"
+    "airports": [
+      {
+        "iata": "SAT",
+        "name": "San Antonio International Airport"
+      }
     ],
     "popularity": 62
   },
@@ -8704,10 +10198,19 @@
       "Graytown",
       "Lungsod ng San Diego"
     ],
-    "iata_codes": [
-      "CLD",
-      "SAN",
-      "TIJ"
+    "airports": [
+      {
+        "iata": "CLD",
+        "name": "Mc Clellan-Palomar Airport"
+      },
+      {
+        "iata": "SAN",
+        "name": "San Diego International Airport"
+      },
+      {
+        "iata": "TIJ",
+        "name": "General Abelardo L. Rodriguez International Airport"
+      }
     ],
     "popularity": 71
   },
@@ -8729,12 +10232,27 @@
       "Kapalakiko",
       "Khiu-kim-san"
     ],
-    "iata_codes": [
-      "CCR",
-      "OAK",
-      "SFO",
-      "SJC",
-      "SQL"
+    "airports": [
+      {
+        "iata": "CCR",
+        "name": "Buchanan Field"
+      },
+      {
+        "iata": "OAK",
+        "name": "Metropolitan Oakland International Airport"
+      },
+      {
+        "iata": "SFO",
+        "name": "San Francisco International Airport"
+      },
+      {
+        "iata": "SJC",
+        "name": "Norman Y. Mineta San Jose International Airport"
+      },
+      {
+        "iata": "SQL",
+        "name": "San Carlos Airport"
+      }
     ],
     "popularity": 79
   },
@@ -8756,11 +10274,23 @@
       "Pueblo De San Jose De Guadalupe",
       "SJC"
     ],
-    "iata_codes": [
-      "OAK",
-      "SFO",
-      "SJC",
-      "SQL"
+    "airports": [
+      {
+        "iata": "OAK",
+        "name": "Metropolitan Oakland International Airport"
+      },
+      {
+        "iata": "SFO",
+        "name": "San Francisco International Airport"
+      },
+      {
+        "iata": "SJC",
+        "name": "Norman Y. Mineta San Jose International Airport"
+      },
+      {
+        "iata": "SQL",
+        "name": "San Carlos Airport"
+      }
     ],
     "popularity": 70
   },
@@ -8781,9 +10311,15 @@
       "San Hose",
       "San Jose"
     ],
-    "iata_codes": [
-      "SJO",
-      "SYQ"
+    "airports": [
+      {
+        "iata": "SJO",
+        "name": "Juan Santamaria International Airport"
+      },
+      {
+        "iata": "SYQ",
+        "name": "Tobias Bolanos International Airport"
+      }
     ],
     "popularity": 65
   },
@@ -8804,8 +10340,11 @@
       "San'a",
       "San'ah"
     ],
-    "iata_codes": [
-      "SAH"
+    "airports": [
+      {
+        "iata": "SAH",
+        "name": "Sana'a International Airport"
+      }
     ],
     "popularity": 63
   },
@@ -8826,9 +10365,15 @@
       "SRZ",
       "Santa Cruz"
     ],
-    "iata_codes": [
-      "SRZ",
-      "VVI"
+    "airports": [
+      {
+        "iata": "SRZ",
+        "name": "El Trompillo Airport"
+      },
+      {
+        "iata": "VVI",
+        "name": "Viru Viru International Airport"
+      }
     ],
     "popularity": 63
   },
@@ -8849,8 +10394,11 @@
       "SCL",
       "Sanctiacobi"
     ],
-    "iata_codes": [
-      "SCL"
+    "airports": [
+      {
+        "iata": "SCL",
+        "name": "Comodoro Arturo Merino Benitez International Airport"
+      }
     ],
     "popularity": 87
   },
@@ -8871,8 +10419,11 @@
       "Keretaro",
       "QRO"
     ],
-    "iata_codes": [
-      "QRO"
+    "airports": [
+      {
+        "iata": "QRO",
+        "name": "Queretaro Intercontinental Airport"
+      }
     ],
     "popularity": 62
   },
@@ -8893,9 +10444,15 @@
       "Saint Domingue",
       "Santa-Daminga"
     ],
-    "iata_codes": [
-      "JBQ",
-      "SDQ"
+    "airports": [
+      {
+        "iata": "JBQ",
+        "name": "La Isabela International Airport"
+      },
+      {
+        "iata": "SDQ",
+        "name": "Las Americas International Airport"
+      }
     ],
     "popularity": 63
   },
@@ -8916,9 +10473,15 @@
       "San Paolo",
       "San Paul ed Brasil"
     ],
-    "iata_codes": [
-      "CGH",
-      "GRU"
+    "airports": [
+      {
+        "iata": "CGH",
+        "name": "Congonhas Airport"
+      },
+      {
+        "iata": "GRU",
+        "name": "Guarulhos - Governador Andre Franco Montoro International Airport"
+      }
     ],
     "popularity": 91
   },
@@ -8939,9 +10502,15 @@
       "Saporas",
       "Saporo"
     ],
-    "iata_codes": [
-      "CTS",
-      "OKD"
+    "airports": [
+      {
+        "iata": "CTS",
+        "name": "New Chitose Airport"
+      },
+      {
+        "iata": "OKD",
+        "name": "Okadama Airport"
+      }
     ],
     "popularity": 73
   },
@@ -8963,11 +10532,23 @@
       "Seatlo",
       "Seattle"
     ],
-    "iata_codes": [
-      "BFI",
-      "PAE",
-      "SEA",
-      "TIW"
+    "airports": [
+      {
+        "iata": "BFI",
+        "name": "Boeing Field King County International Airport"
+      },
+      {
+        "iata": "PAE",
+        "name": "Snohomish County (Paine Field) Airport"
+      },
+      {
+        "iata": "SEA",
+        "name": "Seattle Tacoma International Airport"
+      },
+      {
+        "iata": "TIW",
+        "name": "Tacoma Narrows Airport"
+      }
     ],
     "popularity": 69
   },
@@ -8988,8 +10569,11 @@
       "SRG",
       "Samarang"
     ],
-    "iata_codes": [
-      "SRG"
+    "airports": [
+      {
+        "iata": "SRG",
+        "name": "Achmad Yani Airport"
+      }
     ],
     "popularity": 62
   },
@@ -9010,9 +10594,15 @@
       "Seoel",
       "Seol"
     ],
-    "iata_codes": [
-      "GMP",
-      "ICN"
+    "airports": [
+      {
+        "iata": "GMP",
+        "name": "Gimpo International Airport"
+      },
+      {
+        "iata": "ICN",
+        "name": "Incheon International Airport"
+      }
     ],
     "popularity": 90
   },
@@ -9033,9 +10623,15 @@
       "SHA",
       "San'nkae"
     ],
-    "iata_codes": [
-      "PVG",
-      "SHA"
+    "airports": [
+      {
+        "iata": "PVG",
+        "name": "Shanghai Pudong International Airport"
+      },
+      {
+        "iata": "SHA",
+        "name": "Shanghai Hongqiao International Airport"
+      }
     ],
     "popularity": 94
   },
@@ -9056,7 +10652,7 @@
       "Shang-ch'in",
       "Shang-ch'iu"
     ],
-    "iata_codes": [],
+    "airports": [],
     "popularity": 63
   },
   {
@@ -9076,8 +10672,11 @@
       "Laiwu",
       "SWA"
     ],
-    "iata_codes": [
-      "SWA"
+    "airports": [
+      {
+        "iata": "SWA",
+        "name": "Shantou Waisha Airport"
+      }
     ],
     "popularity": 66
   },
@@ -9098,8 +10697,11 @@
       "Saosing",
       "Shao-hsing"
     ],
-    "iata_codes": [
-      "HGH"
+    "airports": [
+      {
+        "iata": "HGH",
+        "name": "Hangzhou Xiaoshan International Airport"
+      }
     ],
     "popularity": 64
   },
@@ -9120,10 +10722,19 @@
       "Ash Shariqa",
       "Ash Shariqah"
     ],
-    "iata_codes": [
-      "DWC",
-      "DXB",
-      "SHJ"
+    "airports": [
+      {
+        "iata": "DWC",
+        "name": "Al Maktoum International Airport"
+      },
+      {
+        "iata": "DXB",
+        "name": "Dubai International Airport"
+      },
+      {
+        "iata": "SHJ",
+        "name": "Sharjah International Airport"
+      }
     ],
     "popularity": 63
   },
@@ -9144,8 +10755,11 @@
       "Mukden",
       "SHE"
     ],
-    "iata_codes": [
-      "SHE"
+    "airports": [
+      {
+        "iata": "SHE",
+        "name": "Taoxian Airport"
+      }
     ],
     "popularity": 68
   },
@@ -9166,8 +10780,11 @@
       "Pao-an",
       "Pao-an-hsien"
     ],
-    "iata_codes": [
-      "SZX"
+    "airports": [
+      {
+        "iata": "SZX",
+        "name": "Shenzhen Bao'an International Airport"
+      }
     ],
     "popularity": 82
   },
@@ -9188,8 +10805,11 @@
       "Chioh-ka-chng-chhi",
       "S'-tia-cuang"
     ],
-    "iata_codes": [
-      "SJW"
+    "airports": [
+      {
+        "iata": "SJW",
+        "name": "Shijiazhuang Daguocun International Airport"
+      }
     ],
     "popularity": 66
   },
@@ -9210,7 +10830,7 @@
       "Sek-ieng",
       "Shih-yen"
     ],
-    "iata_codes": [],
+    "airports": [],
     "popularity": 65
   },
   {
@@ -9230,8 +10850,11 @@
       "Little Red Dot",
       "SG"
     ],
-    "iata_codes": [
-      "SIN"
+    "airports": [
+      {
+        "iata": "SIN",
+        "name": "Singapore Changi International Airport"
+      }
     ],
     "popularity": 88
   },
@@ -9252,8 +10875,11 @@
       "Serdica",
       "Sofi"
     ],
-    "iata_codes": [
-      "SOF"
+    "airports": [
+      {
+        "iata": "SOF",
+        "name": "Sofia Airport"
+      }
     ],
     "popularity": 71
   },
@@ -9274,8 +10900,11 @@
       "Sunchiang",
       "Sung-chiang"
     ],
-    "iata_codes": [
-      "SHA"
+    "airports": [
+      {
+        "iata": "SHA",
+        "name": "Shanghai Hongqiao International Airport"
+      }
     ],
     "popularity": 63
   },
@@ -9295,9 +10924,15 @@
       "South Tangerang City",
       "Tangerang Selatan"
     ],
-    "iata_codes": [
-      "CGK",
-      "HLP"
+    "airports": [
+      {
+        "iata": "CGK",
+        "name": "Soekarno-Hatta International Airport"
+      },
+      {
+        "iata": "HLP",
+        "name": "Halim Perdanakusuma International Airport"
+      }
     ],
     "popularity": 61
   },
@@ -9318,9 +10953,15 @@
       "Soueto",
       "Sovetas"
     ],
-    "iata_codes": [
-      "HLA",
-      "JNB"
+    "airports": [
+      {
+        "iata": "HLA",
+        "name": "Lanseria Airport"
+      },
+      {
+        "iata": "JNB",
+        "name": "O. R. Tambo International Airport"
+      }
     ],
     "popularity": 62
   },
@@ -9342,9 +10983,15 @@
       "Mound City",
       "Pain Court"
     ],
-    "iata_codes": [
-      "BLV",
-      "STL"
+    "airports": [
+      {
+        "iata": "BLV",
+        "name": "Scott AFB/Midamerica Airport"
+      },
+      {
+        "iata": "STL",
+        "name": "Lambert St Louis International Airport"
+      }
     ],
     "popularity": 64
   },
@@ -9365,9 +11012,15 @@
       "Estocolmo",
       "Estocolmu"
     ],
-    "iata_codes": [
-      "ARN",
-      "BMA"
+    "airports": [
+      {
+        "iata": "ARN",
+        "name": "Stockholm-Arlanda Airport"
+      },
+      {
+        "iata": "BMA",
+        "name": "Stockholm-Bromma Airport"
+      }
     ],
     "popularity": 82
   },
@@ -9388,8 +11041,11 @@
       "Shhutgart",
       "Shtutgart"
     ],
-    "iata_codes": [
-      "STR"
+    "airports": [
+      {
+        "iata": "STR",
+        "name": "Stuttgart Airport"
+      }
     ],
     "popularity": 68
   },
@@ -9410,7 +11066,7 @@
       "Su-ch'ien",
       "Su-ch'ien-ch'eng"
     ],
-    "iata_codes": [],
+    "airports": [],
     "popularity": 62
   },
   {
@@ -9430,8 +11086,11 @@
       "SUB",
       "Soerabaja"
     ],
-    "iata_codes": [
-      "SUB"
+    "airports": [
+      {
+        "iata": "SUB",
+        "name": "Juanda International Airport"
+      }
     ],
     "popularity": 75
   },
@@ -9452,8 +11111,11 @@
       "Suratas",
       "Surate"
     ],
-    "iata_codes": [
-      "STV"
+    "airports": [
+      {
+        "iata": "STV",
+        "name": "Surat Airport"
+      }
     ],
     "popularity": 67
   },
@@ -9474,8 +11136,11 @@
       "Souva",
       "Sufa"
     ],
-    "iata_codes": [
-      "SUV"
+    "airports": [
+      {
+        "iata": "SUV",
+        "name": "Nausori International Airport"
+      }
     ],
     "popularity": 59
   },
@@ -9496,8 +11161,11 @@
       "Soochow",
       "Soutsoou"
     ],
-    "iata_codes": [
-      "WUX"
+    "airports": [
+      {
+        "iata": "WUX",
+        "name": "Sunan Shuofang International Airport"
+      }
     ],
     "popularity": 68
   },
@@ -9518,7 +11186,7 @@
       "Suchzhou",
       "Suxian"
     ],
-    "iata_codes": [],
+    "airports": [],
     "popularity": 62
   },
   {
@@ -9538,8 +11206,11 @@
       "Sedniejos",
       "Sek-na"
     ],
-    "iata_codes": [
-      "SYD"
+    "airports": [
+      {
+        "iata": "SYD",
+        "name": "Sydney Kingsford Smith International Airport"
+      }
     ],
     "popularity": 87
   },
@@ -9560,8 +11231,11 @@
       "Tabris",
       "Tabriz"
     ],
-    "iata_codes": [
-      "TBZ"
+    "airports": [
+      {
+        "iata": "TBZ",
+        "name": "Tabriz International Airport"
+      }
     ],
     "popularity": 62
   },
@@ -9583,8 +11257,11 @@
       "Tagig",
       "Taguig"
     ],
-    "iata_codes": [
-      "MNL"
+    "airports": [
+      {
+        "iata": "MNL",
+        "name": "Ninoy Aquino International Airport"
+      }
     ],
     "popularity": 61
   },
@@ -9605,7 +11282,7 @@
       "Tai'an",
       "Taianfu"
     ],
-    "iata_codes": [],
+    "airports": [],
     "popularity": 62
   },
   {
@@ -9625,8 +11302,11 @@
       "RMQ",
       "Tai-tiong-chhi"
     ],
-    "iata_codes": [
-      "RMQ"
+    "airports": [
+      {
+        "iata": "RMQ",
+        "name": "Taichung Ching Chuang Kang Airport"
+      }
     ],
     "popularity": 65
   },
@@ -9647,9 +11327,15 @@
       "Kota Tainan",
       "T'ai-nan"
     ],
-    "iata_codes": [
-      "KHH",
-      "TNN"
+    "airports": [
+      {
+        "iata": "KHH",
+        "name": "Kaohsiung International Airport"
+      },
+      {
+        "iata": "TNN",
+        "name": "Tainan Airport"
+      }
     ],
     "popularity": 63
   },
@@ -9670,9 +11356,15 @@
       "Pan Kiao",
       "Pan-ch'iao"
     ],
-    "iata_codes": [
-      "TPE",
-      "TSA"
+    "airports": [
+      {
+        "iata": "TPE",
+        "name": "Taiwan Taoyuan International Airport"
+      },
+      {
+        "iata": "TSA",
+        "name": "Taipei Songshan Airport"
+      }
     ],
     "popularity": 79
   },
@@ -9693,8 +11385,11 @@
       "TYN",
       "Tai-nguong"
     ],
-    "iata_codes": [
-      "TYN"
+    "airports": [
+      {
+        "iata": "TYN",
+        "name": "Taiyuan Wusu Airport"
+      }
     ],
     "popularity": 66
   },
@@ -9715,8 +11410,11 @@
       "T'ai-chou-shih",
       "T'ai-hsien"
     ],
-    "iata_codes": [
-      "YTY"
+    "airports": [
+      {
+        "iata": "YTY",
+        "name": "Yangzhou Taizhou Airport"
+      }
     ],
     "popularity": 62
   },
@@ -9737,8 +11435,11 @@
       "Taizhou",
       "Taizhou Shi"
     ],
-    "iata_codes": [
-      "HYN"
+    "airports": [
+      {
+        "iata": "HYN",
+        "name": "Huangyan Luqiao Airport"
+      }
     ],
     "popularity": 62
   },
@@ -9760,10 +11461,19 @@
       "Tampo",
       "taempa"
     ],
-    "iata_codes": [
-      "LAL",
-      "PIE",
-      "TPA"
+    "airports": [
+      {
+        "iata": "LAL",
+        "name": "Lakeland Linder Regional Airport"
+      },
+      {
+        "iata": "PIE",
+        "name": "St Petersburg Clearwater International Airport"
+      },
+      {
+        "iata": "TPA",
+        "name": "Tampa International Airport"
+      }
     ],
     "popularity": 66
   },
@@ -9784,9 +11494,15 @@
       "Kutha Tangerang",
       "RTO"
     ],
-    "iata_codes": [
-      "CGK",
-      "HLP"
+    "airports": [
+      {
+        "iata": "CGK",
+        "name": "Soekarno-Hatta International Airport"
+      },
+      {
+        "iata": "HLP",
+        "name": "Halim Perdanakusuma International Airport"
+      }
     ],
     "popularity": 63
   },
@@ -9807,7 +11523,7 @@
       "T'ang-shan-shih",
       "TVS"
     ],
-    "iata_codes": [],
+    "airports": [],
     "popularity": 65
   },
   {
@@ -9827,8 +11543,11 @@
       "TAS",
       "Tachkent"
     ],
-    "iata_codes": [
-      "TAS"
+    "airports": [
+      {
+        "iata": "TAS",
+        "name": "Tashkent International Airport"
+      }
     ],
     "popularity": 63
   },
@@ -9849,9 +11568,15 @@
       "Tahran",
       "Techerane"
     ],
-    "iata_codes": [
-      "IKA",
-      "THR"
+    "airports": [
+      {
+        "iata": "IKA",
+        "name": "Imam Khomeini International Airport"
+      },
+      {
+        "iata": "THR",
+        "name": "Mehrabad International Airport"
+      }
     ],
     "popularity": 79
   },
@@ -9872,8 +11597,11 @@
       "Tehl'-Aviu",
       "Tel Avevs"
     ],
-    "iata_codes": [
-      "TLV"
+    "airports": [
+      {
+        "iata": "TLV",
+        "name": "Ben Gurion International Airport"
+      }
     ],
     "popularity": 76
   },
@@ -9894,9 +11622,15 @@
       "Thana",
       "Thane"
     ],
-    "iata_codes": [
-      "BOM",
-      "NMI"
+    "airports": [
+      {
+        "iata": "BOM",
+        "name": "Chhatrapati Shivaji International Airport"
+      },
+      {
+        "iata": "NMI",
+        "name": "Navi Mumbai International Airport"
+      }
     ],
     "popularity": 63
   },
@@ -9918,12 +11652,27 @@
       "Bronkso",
       "Bronx"
     ],
-    "iata_codes": [
-      "EWR",
-      "HPN",
-      "JFK",
-      "LGA",
-      "TEB"
+    "airports": [
+      {
+        "iata": "EWR",
+        "name": "Newark Liberty International Airport"
+      },
+      {
+        "iata": "HPN",
+        "name": "Westchester County Airport"
+      },
+      {
+        "iata": "JFK",
+        "name": "John F Kennedy International Airport"
+      },
+      {
+        "iata": "LGA",
+        "name": "La Guardia Airport"
+      },
+      {
+        "iata": "TEB",
+        "name": "Teterboro Airport"
+      }
     ],
     "popularity": 61
   },
@@ -9944,8 +11693,11 @@
       "T'ien-ching-shih",
       "TSN"
     ],
-    "iata_codes": [
-      "TSN"
+    "airports": [
+      {
+        "iata": "TSN",
+        "name": "Tianjin Binhai International Airport"
+      }
     ],
     "popularity": 70
   },
@@ -9966,7 +11718,7 @@
       "Tichouana",
       "Tichuana"
     ],
-    "iata_codes": [],
+    "airports": [],
     "popularity": 63
   },
   {
@@ -9986,7 +11738,7 @@
       "Tinnevelly",
       "Tinnevelly Junction"
     ],
-    "iata_codes": [],
+    "airports": [],
     "popularity": 62
   },
   {
@@ -10006,9 +11758,15 @@
       "Tochiu",
       "Tocio"
     ],
-    "iata_codes": [
-      "HND",
-      "NRT"
+    "airports": [
+      {
+        "iata": "HND",
+        "name": "Tokyo International Airport"
+      },
+      {
+        "iata": "NRT",
+        "name": "Narita International Airport"
+      }
     ],
     "popularity": 90
   },
@@ -10029,9 +11787,15 @@
       "Toronto",
       "Torontu"
     ],
-    "iata_codes": [
-      "YTZ",
-      "YYZ"
+    "airports": [
+      {
+        "iata": "YTZ",
+        "name": "Billy Bishop Toronto City Centre Airport"
+      },
+      {
+        "iata": "YYZ",
+        "name": "Lester B. Pearson International Airport"
+      }
     ],
     "popularity": 84
   },
@@ -10052,8 +11816,11 @@
       "Oea",
       "TIP"
     ],
-    "iata_codes": [
-      "MJI"
+    "airports": [
+      {
+        "iata": "MJI",
+        "name": "Mitiga Airport"
+      }
     ],
     "popularity": 61
   },
@@ -10074,8 +11841,11 @@
       "Tiwnis",
       "Tuenis"
     ],
-    "iata_codes": [
-      "TUN"
+    "airports": [
+      {
+        "iata": "TUN",
+        "name": "Tunis Carthage International Airport"
+      }
     ],
     "popularity": 68
   },
@@ -10096,7 +11866,7 @@
       "O'rumchi",
       "OEremce"
     ],
-    "iata_codes": [],
+    "airports": [],
     "popularity": 65
   },
   {
@@ -10116,8 +11886,11 @@
       "Vadadara",
       "Vadodara"
     ],
-    "iata_codes": [
-      "BDQ"
+    "airports": [
+      {
+        "iata": "BDQ",
+        "name": "Vadodara Airport"
+      }
     ],
     "popularity": 63
   },
@@ -10138,8 +11911,11 @@
       "Valencia",
       "Valencio"
     ],
-    "iata_codes": [
-      "VLN"
+    "airports": [
+      {
+        "iata": "VLN",
+        "name": "Arturo Michelena International Airport"
+      }
     ],
     "popularity": 62
   },
@@ -10160,8 +11936,11 @@
       "Vancouver",
       "Vancover"
     ],
-    "iata_codes": [
-      "YVR"
+    "airports": [
+      {
+        "iata": "YVR",
+        "name": "Vancouver International Airport"
+      }
     ],
     "popularity": 78
   },
@@ -10182,9 +11961,15 @@
       "Benetke",
       "Benezia"
     ],
-    "iata_codes": [
-      "TSF",
-      "VCE"
+    "airports": [
+      {
+        "iata": "TSF",
+        "name": "Treviso / Sant'Angelo Airport"
+      },
+      {
+        "iata": "VCE",
+        "name": "Venezia / Tessera -  Marco Polo Airport"
+      }
     ],
     "popularity": 57
   },
@@ -10205,8 +11990,11 @@
       "Becs",
       "Bienne"
     ],
-    "iata_codes": [
-      "VIE"
+    "airports": [
+      {
+        "iata": "VIE",
+        "name": "Vienna International Airport"
+      }
     ],
     "popularity": 72
   },
@@ -10224,7 +12012,7 @@
     "alt_names": [
       "wan zhou qu"
     ],
-    "iata_codes": [],
+    "airports": [],
     "popularity": 62
   },
   {
@@ -10244,9 +12032,15 @@
       "Varsava",
       "Varsavia"
     ],
-    "iata_codes": [
-      "WAW",
-      "WMI"
+    "airports": [
+      {
+        "iata": "WAW",
+        "name": "Warsaw Chopin Airport"
+      },
+      {
+        "iata": "WMI",
+        "name": "Warsaw Modlin Airport"
+      }
     ],
     "popularity": 72
   },
@@ -10268,10 +12062,19 @@
       "Federal Capital",
       "Federal City"
     ],
-    "iata_codes": [
-      "BWI",
-      "DCA",
-      "IAD"
+    "airports": [
+      {
+        "iata": "BWI",
+        "name": "Baltimore/Washington International Thurgood Marshal Airport"
+      },
+      {
+        "iata": "DCA",
+        "name": "Ronald Reagan Washington National Airport"
+      },
+      {
+        "iata": "IAD",
+        "name": "Washington Dulles International Airport"
+      }
     ],
     "popularity": 78
   },
@@ -10292,8 +12095,11 @@
       "Vehjfan",
       "Vejfan"
     ],
-    "iata_codes": [
-      "WEF"
+    "airports": [
+      {
+        "iata": "WEF",
+        "name": "Weifang Airport"
+      }
     ],
     "popularity": 63
   },
@@ -10315,8 +12121,11 @@
       "Ouellinkton",
       "Te Whanga-nui-a-Tara"
     ],
-    "iata_codes": [
-      "WLG"
+    "airports": [
+      {
+        "iata": "WLG",
+        "name": "Wellington International Airport"
+      }
     ],
     "popularity": 66
   },
@@ -10337,8 +12146,11 @@
       "Ung-ciu",
       "Uundzhou"
     ],
-    "iata_codes": [
-      "WNZ"
+    "airports": [
+      {
+        "iata": "WNZ",
+        "name": "Wenzhou Yongqiang Airport"
+      }
     ],
     "popularity": 64
   },
@@ -10359,8 +12171,11 @@
       "Owhan",
       "U-hang"
     ],
-    "iata_codes": [
-      "WUH"
+    "airports": [
+      {
+        "iata": "WUH",
+        "name": "Wuhan Tianhe International Airport"
+      }
     ],
     "popularity": 80
   },
@@ -10381,9 +12196,15 @@
       "U-hu",
       "Ukhu"
     ],
-    "iata_codes": [
-      "NKG",
-      "WHA"
+    "airports": [
+      {
+        "iata": "NKG",
+        "name": "Nanjing Lukou Airport"
+      },
+      {
+        "iata": "WHA",
+        "name": "Wuhu Xuanzhou Airport"
+      }
     ],
     "popularity": 62
   },
@@ -10404,9 +12225,15 @@
       "Usi",
       "Usis"
     ],
-    "iata_codes": [
-      "CZX",
-      "WUX"
+    "airports": [
+      {
+        "iata": "CZX",
+        "name": "Changzhou Airport"
+      },
+      {
+        "iata": "WUX",
+        "name": "Sunan Shuofang International Airport"
+      }
     ],
     "popularity": 66
   },
@@ -10427,7 +12254,7 @@
       "Wu-chung-p'u",
       "Wu-chung-pao"
     ],
-    "iata_codes": [],
+    "airports": [],
     "popularity": 69
   },
   {
@@ -10447,8 +12274,11 @@
       "Hsi Gnan Fu",
       "Hsi-an"
     ],
-    "iata_codes": [
-      "XIY"
+    "airports": [
+      {
+        "iata": "XIY",
+        "name": "Xi'an Xianyang International Airport"
+      }
     ],
     "popularity": 80
   },
@@ -10469,8 +12299,11 @@
       "E-mng-chhi",
       "Ha Mon"
     ],
-    "iata_codes": [
-      "XMN"
+    "airports": [
+      {
+        "iata": "XMN",
+        "name": "Xiamen Gaoqi International Airport"
+      }
     ],
     "popularity": 67
   },
@@ -10491,8 +12324,11 @@
       "Hsiang-fan",
       "Hsiang-yang"
     ],
-    "iata_codes": [
-      "XFN"
+    "airports": [
+      {
+        "iata": "XFN",
+        "name": "Xiangfan Airport"
+      }
     ],
     "popularity": 61
   },
@@ -10513,8 +12349,11 @@
       "Hszining",
       "Sa-ning"
     ],
-    "iata_codes": [
-      "XNN"
+    "airports": [
+      {
+        "iata": "XNN",
+        "name": "Xining Caojiabu Airport"
+      }
     ],
     "popularity": 62
   },
@@ -10535,7 +12374,7 @@
       "Hsu-ch'ang-shih",
       "Hsu-chou"
     ],
-    "iata_codes": [],
+    "airports": [],
     "popularity": 61
   },
   {
@@ -10555,8 +12394,11 @@
       "Sjujchzhou",
       "XUZ"
     ],
-    "iata_codes": [
-      "XUZ"
+    "airports": [
+      {
+        "iata": "XUZ",
+        "name": "Xuzhou Guanyin Airport"
+      }
     ],
     "popularity": 61
   },
@@ -10577,8 +12419,11 @@
       "Jancengo",
       "Jancheng"
     ],
-    "iata_codes": [
-      "YNZ"
+    "airports": [
+      {
+        "iata": "YNZ",
+        "name": "Yancheng Airport"
+      }
     ],
     "popularity": 62
   },
@@ -10599,7 +12444,7 @@
       "Iong-gong",
       "Iong-kang-chhi"
     ],
-    "iata_codes": [],
+    "airports": [],
     "popularity": 61
   },
   {
@@ -10619,8 +12464,11 @@
       "Jangon",
       "Jangon khot"
     ],
-    "iata_codes": [
-      "RGN"
+    "airports": [
+      {
+        "iata": "RGN",
+        "name": "Yangon International Airport"
+      }
     ],
     "popularity": 77
   },
@@ -10641,8 +12489,11 @@
       "Duong Chau",
       "Han-chiang"
     ],
-    "iata_codes": [
-      "YTY"
+    "airports": [
+      {
+        "iata": "YTY",
+        "name": "Yangzhou Taizhou Airport"
+      }
     ],
     "popularity": 62
   },
@@ -10663,8 +12514,11 @@
       "Ian-tai-chhi",
       "Ieng-dai"
     ],
-    "iata_codes": [
-      "YNT"
+    "airports": [
+      {
+        "iata": "YNT",
+        "name": "Yantai Laishan Airport"
+      }
     ],
     "popularity": 63
   },
@@ -10685,8 +12539,11 @@
       "Jaunde",
       "Jaundeh"
     ],
-    "iata_codes": [
-      "NSI"
+    "airports": [
+      {
+        "iata": "NSI",
+        "name": "Yaounde Nsimalen International Airport"
+      }
     ],
     "popularity": 61
   },
@@ -10707,8 +12564,11 @@
       "Ekaterinbourg",
       "Ekaterinburg"
     ],
-    "iata_codes": [
-      "SVX"
+    "airports": [
+      {
+        "iata": "SVX",
+        "name": "Koltsovo Airport"
+      }
     ],
     "popularity": 62
   },
@@ -10729,8 +12589,11 @@
       "I-cchang",
       "I-ch'ang-hsien"
     ],
-    "iata_codes": [
-      "YIH"
+    "airports": [
+      {
+        "iata": "YIH",
+        "name": "Yichang Airport"
+      }
     ],
     "popularity": 61
   },
@@ -10751,8 +12614,11 @@
       "INC",
       "In'chuan'"
     ],
-    "iata_codes": [
-      "INC"
+    "airports": [
+      {
+        "iata": "INC",
+        "name": "Yinchuan Airport"
+      }
     ],
     "popularity": 62
   },
@@ -10773,8 +12639,11 @@
       "I-wu-hsien",
       "Iu"
     ],
-    "iata_codes": [
-      "YIW"
+    "airports": [
+      {
+        "iata": "YIW",
+        "name": "Yiwu Airport"
+      }
     ],
     "popularity": 62
   },
@@ -10795,7 +12664,7 @@
       "I-hsing-ch'eng",
       "I-hsing-hsien"
     ],
-    "iata_codes": [],
+    "airports": [],
     "popularity": 61
   },
   {
@@ -10815,8 +12684,11 @@
       "Jokohama",
       "Jokohamo"
     ],
-    "iata_codes": [
-      "HND"
+    "airports": [
+      {
+        "iata": "HND",
+        "name": "Tokyo International Airport"
+      }
     ],
     "popularity": 76
   },
@@ -10837,7 +12709,7 @@
       "Juen-fu",
       "Jun'fu"
     ],
-    "iata_codes": [],
+    "airports": [],
     "popularity": 64
   },
   {
@@ -10857,8 +12729,11 @@
       "Lungsod ng Zagreb",
       "Sagrab"
     ],
-    "iata_codes": [
-      "ZAG"
+    "airports": [
+      {
+        "iata": "ZAG",
+        "name": "Zagreb Airport"
+      }
     ],
     "popularity": 68
   },
@@ -10879,8 +12754,11 @@
       "Sapopanas",
       "Sapopano"
     ],
-    "iata_codes": [
-      "GDL"
+    "airports": [
+      {
+        "iata": "GDL",
+        "name": "Don Miguel Hidalgo Y Costilla International Airport"
+      }
     ],
     "popularity": 62
   },
@@ -10901,9 +12779,15 @@
       "Shazhou",
       "Yang-she-chen"
     ],
-    "iata_codes": [
-      "NTG",
-      "WUX"
+    "airports": [
+      {
+        "iata": "NTG",
+        "name": "Nantong Airport"
+      },
+      {
+        "iata": "WUX",
+        "name": "Sunan Shuofang International Airport"
+      }
     ],
     "popularity": 62
   },
@@ -10924,8 +12808,11 @@
       "Chankiang",
       "Chzhan'czjan"
     ],
-    "iata_codes": [
-      "ZHA"
+    "airports": [
+      {
+        "iata": "ZHA",
+        "name": "Zhanjiang Airport"
+      }
     ],
     "popularity": 61
   },
@@ -10946,7 +12833,7 @@
       "Chao-ch'ing-chen",
       "Chao-chou"
     ],
-    "iata_codes": [],
+    "airports": [],
     "popularity": 62
   },
   {
@@ -10966,8 +12853,11 @@
       "Ceng-cou",
       "Cengcou"
     ],
-    "iata_codes": [
-      "CGO"
+    "airports": [
+      {
+        "iata": "CGO",
+        "name": "Xinzheng Airport"
+      }
     ],
     "popularity": 66
   },
@@ -10988,8 +12878,11 @@
       "Cung-san",
       "Dzungshan"
     ],
-    "iata_codes": [
-      "SZX"
+    "airports": [
+      {
+        "iata": "SZX",
+        "name": "Shenzhen Bao'an International Airport"
+      }
     ],
     "popularity": 66
   },
@@ -11010,9 +12903,15 @@
       "Chu Hoi",
       "Chu-hai"
     ],
-    "iata_codes": [
-      "SZX",
-      "ZUH"
+    "airports": [
+      {
+        "iata": "SZX",
+        "name": "Shenzhen Bao'an International Airport"
+      },
+      {
+        "iata": "ZUH",
+        "name": "Zhuhai Airport"
+      }
     ],
     "popularity": 63
   },
@@ -11033,7 +12932,7 @@
       "Chang-tien",
       "Chang-tien-shih"
     ],
-    "iata_codes": [],
+    "airports": [],
     "popularity": 65
   },
   {
@@ -11053,7 +12952,7 @@
       "Chu-kong-chhi",
       "Cigung"
     ],
-    "iata_codes": [],
+    "airports": [],
     "popularity": 61
   },
   {
@@ -11074,8 +12973,11 @@
       "Ciurichas",
       "Cjurikh"
     ],
-    "iata_codes": [
-      "ZRH"
+    "airports": [
+      {
+        "iata": "ZRH",
+        "name": "Zurich Airport"
+      }
     ],
     "popularity": 76
   },
@@ -11096,9 +12998,15 @@
       "Cuenji",
       "Cun-i"
     ],
-    "iata_codes": [
-      "WMT",
-      "ZYI"
+    "airports": [
+      {
+        "iata": "WMT",
+        "name": "Zunyi Maotai Airport"
+      },
+      {
+        "iata": "ZYI",
+        "name": "Zunyi Xinzhou Airport"
+      }
     ],
     "popularity": 63
   }
