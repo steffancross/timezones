@@ -53,7 +53,9 @@ export function OffsetSummary({ pair }: Props) {
           <p className="mt-2 text-sm text-[color:var(--fg-muted)]">
             {fromName} ({fromAbbrev}){' '}
             {absHours === 0 ? (
-              <>is currently the same time as</>
+              <>
+                is currently the same time as {toName} ({toAbbrev})
+              </>
             ) : (
               <>
                 is currently {direction} {toName} ({toAbbrev})

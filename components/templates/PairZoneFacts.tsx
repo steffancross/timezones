@@ -48,7 +48,8 @@ function aliasSentence(zoc: ZoneOrCity): ReactNode {
       {zoc.city.name}
     </Link>
   );
-  const suffix = abbrevs.length === 0 ? '' : ` (${abbrevs.join(', ').replace(/, ([^,]+)$/, ', or $1')})`;
+  const suffix =
+    abbrevs.length === 0 ? '' : ` (${abbrevs.join(', ').replace(/, ([^,]+)$/, ', or $1')})`;
   return (
     <>
       {cityLink} uses {zoneName}
