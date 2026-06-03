@@ -51,7 +51,8 @@ export default function DSTPage() {
       '@context': 'https://schema.org',
       '@type': 'Event',
       name: `${r.displayName} ${r.transition.direction === 'forward' ? 'starts' : 'ends'} daylight saving time`,
-      startDate: r.transition.date.toISO(),
+      startDate: r.transition.date.toISO({ suppressMilliseconds: true }),
+      endDate: r.transition.date.toISO({ suppressMilliseconds: true }),
       eventStatus: 'https://schema.org/EventScheduled',
       eventAttendanceMode: 'https://schema.org/MixedEventAttendanceMode',
       location: {
