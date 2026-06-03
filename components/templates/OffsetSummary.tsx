@@ -41,7 +41,9 @@ export function OffsetSummary({ pair }: Props) {
       <h2 className="text-2xl font-semibold">Offset</h2>
       <p className="mt-2 text-sm leading-relaxed text-[color:var(--fg-muted)]">
         {absHours === 0 ? (
-          <>There is no time difference between {fromName} and {toName}.</>
+          <>
+            There is no time difference between {fromName} and {toName}.
+          </>
         ) : (
           <>
             The time difference between {fromName} and {toName} is {absHours}{' '}

@@ -206,4 +206,3 @@ function RelatedCities({ city }: { city: City }) {
     </section>
   );
 }
-

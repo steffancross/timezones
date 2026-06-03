@@ -1,14 +1,14 @@
 'use client';
 
+import { useConverterStore } from '@/components/converter/store-context';
 import { getZoneById } from '@/data/zones';
-import { zoneDisplayNameForIana } from '@/lib/zones/resolve';
 import { getCityById } from '@/lib/cities/resolve';
 import { useDragSelectionGlobalListener } from '@/lib/converter/drag-selection';
 import { useNow } from '@/lib/hooks/useNow';
 import type { SearchResult } from '@/lib/search/types';
 import type { ZoneRef } from '@/lib/store/converter';
-import { useConverterStore } from '@/components/converter/store-context';
 import { formatDate } from '@/lib/time/format';
+import { zoneDisplayNameForIana } from '@/lib/zones/resolve';
 import { useCallback, useEffect, useState } from 'react';
 import { toast } from 'sonner';
 import { DatePicker } from './DatePicker';
@@ -17,7 +17,6 @@ import { EmptyState } from './EmptyState';
 import { FormatToggle } from './FormatToggle';
 import { RangeActionBar } from './RangeActionBar';
 import { RangeBand } from './RangeBand';
-import { RangePill } from './RangePill';
 import { ResetButton } from './ResetButton';
 import { SearchInput } from './SearchInput';
 import { SettingsMenu } from './SettingsMenu';
@@ -100,11 +99,10 @@ export function Converter({ visitorIana }: ConverterProps = {}) {
   return (
     <div className="space-y-4">
       {/*
-        Heading row — home-zone identity (name + live time + date) on the left,
-        range pill on the right. The page-level H1 above the converter already
-        carries the route's SEO title; this row is contextual data, not a
-        section heading, so it deliberately reads as a status line rather than
-        echoing the H1.
+        Heading row — home-zone identity (name + live time + date). The
+        page-level H1 above the converter already carries the route's SEO title;
+        this row is contextual data, not a section heading, so it deliberately
+        reads as a status line rather than echoing the H1.
       */}
       {headingName && (
         <div className="flex min-h-8 flex-wrap items-center gap-x-4 gap-y-2">
@@ -122,13 +120,6 @@ export function Converter({ visitorIana }: ConverterProps = {}) {
                 {dateStamp}
               </span>
             )}
-          </div>
-          {/* ml-auto pushes the pill right whether it shares a line with the
-              name (single-row layout) or wraps to its own line (mobile when
-              name + pill don't both fit). Without ml-auto, a wrapped pill
-              would left-align under the name. */}
-          <div className="ml-auto md:hidden">
-            <RangePill />
           </div>
         </div>
       )}

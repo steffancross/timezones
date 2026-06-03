@@ -30,7 +30,11 @@ export function QuickReferenceTable({ pair }: Props) {
     const fromText = formatClock(hour, 0, '12');
     const toText = formatClock(e.hour, e.minute, '12');
     const dayText =
-      e.day_delta === 0 ? 'Same day' : e.day_delta > 0 ? `+${e.day_delta} day` : `${e.day_delta} day`;
+      e.day_delta === 0
+        ? 'Same day'
+        : e.day_delta > 0
+          ? `+${e.day_delta} day`
+          : `${e.day_delta} day`;
     return {
       hour,
       fromText,
