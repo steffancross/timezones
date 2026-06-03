@@ -76,10 +76,12 @@ export default async function PairPage({ params }: { params: Promise<{ slug: str
       </Link>
 
       <ConverterStateProvider initialState={initialState}>
-        <Converter />
-      </ConverterStateProvider>
+        <div id="converter-top" className="scroll-mt-4">
+          <Converter />
+        </div>
 
-      <PairContent pair={pair} slug={slug} />
+        <PairContent pair={pair} slug={slug} />
+      </ConverterStateProvider>
     </div>
   );
 }

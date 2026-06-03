@@ -1,4 +1,5 @@
 import { DateTime } from 'luxon';
+import { QuickRefRow } from '@/components/converter/QuickRefRow';
 import type { ParsedPair, ZoneOrCity } from '@/lib/slugs/parse';
 import { formatClock } from '@/lib/time/format';
 import { projectAnchorDay } from '@/lib/time/luxon';
@@ -18,20 +19,33 @@ export function QuickReferenceTable({ pair }: Props) {
   const isoDate = DateTime.now().setZone(pair.fromIana).toISODate() ?? '';
   const proj = projectAnchorDay(isoDate, pair.fromIana, pair.toIana);
 
-  const rows = proj.map((e, hour) => ({
-    hour,
-    fromText: formatClock(hour, 0, '12'),
-    toText: formatClock(e.hour, e.minute, '12'),
-    dayDelta: e.day_delta,
-  }));
-
   const fromName = shortLabel(pair.from);
   const toName = shortLabel(pair.to);
+
+  // Clean data cells under the zone-labelled headers — Google reads cells in
+  // header context (EST→IST), and tidy values snippet better than cells stamped
+  // with a repeated zone token. The contiguous "<time> <zone> in <zone>" phrase
+  // that matches specific-time queries lives in PairFaq instead.
+  const rows = proj.map((e, hour) => {
+    const fromText = formatClock(hour, 0, '12');
+    const toText = formatClock(e.hour, e.minute, '12');
+    const dayText =
+      e.day_delta === 0 ? 'Same day' : e.day_delta > 0 ? `+${e.day_delta} day` : `${e.day_delta} day`;
+    return {
+      hour,
+      fromText,
+      toText,
+      dayText,
+      ariaLabel: `Show ${fromText} ${fromName} in the converter`,
+    };
+  });
 
   return (
     <section>
       <h2 className="text-2xl font-semibold">Quick reference</h2>
-      <p className="mt-2 text-sm text-[color:var(--fg-muted)]">Full 24-hour conversion table.</p>
+      <p className="mt-2 text-sm text-[color:var(--fg-muted)]">
+        Full 24-hour conversion table — tap any time to open it in the converter.
+      </p>
 
       <div className="mt-4 overflow-x-auto rounded-[var(--radius)] border border-[color:var(--border)]">
         <table className="w-full text-sm">
@@ -44,20 +58,14 @@ export function QuickReferenceTable({ pair }: Props) {
           </thead>
           <tbody>
             {rows.map((row) => (
-              <tr
+              <QuickRefRow
                 key={`row-${row.hour}`}
-                className="border-t border-[color:var(--border)] tabular-nums"
-              >
-                <td className="px-4 py-1.5">{row.fromText}</td>
-                <td className="px-4 py-1.5">{row.toText}</td>
-                <td className="px-4 py-1.5 text-[color:var(--fg-muted)]">
-                  {row.dayDelta === 0
-                    ? 'Same day'
-                    : row.dayDelta > 0
-                      ? `+${row.dayDelta} day`
-                      : `${row.dayDelta} day`}
-                </td>
-              </tr>
+                hour={row.hour}
+                fromText={row.fromText}
+                toText={row.toText}
+                dayText={row.dayText}
+                ariaLabel={row.ariaLabel}
+              />
             ))}
           </tbody>
         </table>
