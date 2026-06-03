@@ -92,6 +92,15 @@ export function Footer() {
               <li>
                 <Link
                   prefetch={false}
+                  href="/timezones"
+                  className="text-muted-foreground hover:text-foreground"
+                >
+                  Timezones
+                </Link>
+              </li>
+              <li>
+                <Link
+                  prefetch={false}
                   href="/articles"
                   className="text-muted-foreground hover:text-foreground"
                 >

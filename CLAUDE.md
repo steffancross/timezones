@@ -84,6 +84,8 @@ The store auto-derives `anchorDate` from the home zone's local today when zones 
 
 All time arithmetic goes through Luxon (`lib/time/luxon.ts`). Sun position via suncalc (`lib/time/sun.ts`) with a daylight/polar fallback. Working-hours, weekend, and DST helpers are pure functions in `lib/time/`. The strip's BandOverlay computes night/work columns per-row using these.
 
+**FOLLOW-UP — zone pages render DST from two sources of truth.** On the `/timezone/[id]` reference pages, `ZoneOffsetFacts` prints "Observes DST: Yes/No" from the **static** `observes_dst` boolean in `data/zones.ts`, while `ZoneDst` and `ZoneFaq` derive the actual transition from Luxon's `getNextTransition()` (live tz database). They agree today (the static data is internally consistent), but they can **drift**: a zone hand-marked `observes_dst: true` whose IANA rules Luxon later reports as DST-free would show "Observes DST: Yes" next to a "does not observe daylight saving time" paragraph on the same page. Not a bug now — but when refreshing zone data, treat Luxon/tzdb as the source of truth and reconcile the boolean (or, better, derive `observes_dst` from `getNextTransition()` so there's only one source).
+
 ### Search
 
 MiniSearch index built at `scripts/build-search-index.ts` → `public/search-index.json`. Loaded lazily on input focus via `lib/search/runtime.ts` (deduplicated in-flight promise, retries on error). Search is debounced 80ms in `SearchInput.tsx`.

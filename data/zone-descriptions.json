@@ -1,0 +1,204 @@
+{
+  "pst": {
+    "summary": "Pacific Time (PT) is UTC−8, shifting to UTC−7 in summer — the clock for the US West Coast, western Canada, and Baja California.",
+    "body": "The three-hour gap to Eastern is the single most scheduled-around distance in American business.  The same clock runs the length of the continent's west edge, from British Columbia down through Washington, Oregon, and California to Tijuana and Baja California."
+  },
+  "mst": {
+    "summary": "Mountain Time (MT) is UTC−7, shifting to UTC−6 in summer — covering the US Rockies, parts of western Canada, and northwest Mexico.",
+    "body": "Mountain Time is the least populous of the four main US zones, spanning Denver, Salt Lake City, Phoenix, and the high desert between the coasts.\n\nIt's the zone with the most internal disagreement about daylight saving: most of it observes DST and switches to UTC−6 in summer, but a large chunk does not, which means part of \"Mountain Time\" lines up with its neighbors differently depending on the season.",
+    "quirk": "Arizona (except the Navajo Nation) skips daylight saving entirely, so for half the year Phoenix matches California rather than Denver."
+  },
+  "cst": {
+    "summary": "Central Time (CT) is UTC−6, shifting to UTC−5 in summer — the widest US zone, from the Great Lakes down through Texas and into Mexico.",
+    "body": "Central Time covers more of the US population than any zone except Eastern, stretching from Chicago and the industrial Midwest down through the South to the Gulf Coast."
+  },
+  "est": {
+    "summary": "Eastern Time (ET) is UTC−5, shifting to UTC−4 in summer — the dominant US business clock, from New York and DC up through eastern Canada.",
+    "body": "Eastern Time is the default clock of American finance, government, and broadcast media — the New York Stock Exchange, network primetime, and most national deadlines all run on it, so it functions as the country's de facto reference even for people who don't live in it."
+  },
+  "akst": {
+    "summary": "Alaska Time (AKST) is UTC−9, shifting to UTC−8 in summer — a single zone covering nearly all of the largest US state.",
+    "body": "Alaska is wide enough to justify several time zones, but runs almost entirely on one. The clock sits an hour behind the Pacific coast.",
+    "quirk": "Until 1983 Alaska sprawled across four time zones. The state consolidated nearly all of them into one so that residents, however far apart, would share a workday."
+  },
+  "hst": {
+    "summary": "Hawaii Time (HST) is UTC−10 year-round — no daylight saving, making it one of the most stable zones to schedule against.",
+    "body": "Hawaii sits far enough south that the seasonal daylight swing barely matters, so the islands never change their clocks. That makes the offset to the mainland predictable in winter but a moving target in summer, when the rest of the country springs forward.",
+    "quirk": "Hawaii and most of Arizona are the only two US states that ignore daylight saving."
+  },
+  "ast-atlantic": {
+    "summary": "Atlantic Time (AST) is UTC−4, shifting to UTC−3 in summer — the clock of Canada's Maritime provinces, one hour ahead of New York.",
+    "body": "Atlantic Time covers Nova Scotia, New Brunswick, Prince Edward Island, and most of Labrador — the part of Canada that's an hour ahead of the Eastern Seaboard."
+  },
+  "nst": {
+    "summary": "Newfoundland Time (NST) is UTC−3:30, shifting to UTC−2:30 in summer — North America's only half-hour offset zone.",
+    "body": "Newfoundland keeps a clock unlike anywhere else on the continent: thirty minutes ahead of Atlantic Time, an hour and a half ahead of New York. The half-hour offset is a quirk of geography and history that the island has held onto since the era of locally-set time, long after its neighbors rounded to whole hours.",
+    "quirk": "It is the only place in North America on a half-hour offset."
+  },
+  "cst-cuba": {
+    "summary": "Cuba Standard Time (CST) is UTC−5, shifting to UTC−4 in summer — the same offset as the US East Coast but on Cuba's own schedule.",
+    "body": "Cuba and the U.S. Eastern Time zone usually show the same clock time. Cuba sets its own daylight-saving rules, so the schedules could diverge, and historically they sometimes have. In recent years, however, Cuba's DST transition dates have largely matched those used in the United States, so Havana and Miami have generally remained on the same time year-round."
+  },
+  "gmt": {
+    "summary": "Greenwich Mean Time (GMT) is UTC+0, shifting to UTC+1 in summer — the historic reference clock for Britain, Ireland, and Portugal.",
+    "body": "GMT is the zero point from which the whole grid of world time was originally measured, set by the Royal Observatory at Greenwich.",
+    "quirk": "GMT and UTC are not the same thing. GMT is a time zone; UTC is the atomic-clock standard the whole world syncs to. They usually read identically, but only one of them is what software actually runs on."
+  },
+  "cet": {
+    "summary": "Central European Time (CET) is UTC+1, the working clock for most of mainland Western Europe, shifting to CEST (UTC+2) in summer.",
+    "body": "CET covers a dozen countries from Spain to Poland — the single largest block of the European economy on one clock. The EU has repeatedly debated abolishing the seasonal switch, but no change has been enacted, so CET/CEST remains the default for scheduling across the bloc."
+  },
+  "eet": {
+    "summary": "Eastern European Time (EET) is UTC+2, shifting to UTC+3 in summer — the clock for Finland, Greece, Romania, Ukraine, and the eastern Baltic.",
+    "body": "Eastern European Time ties together a stretch of the continent with little else in common: Arctic Finland, the Baltic states, Greece and its islands, Romania and Bulgaria on the Black Sea, and Ukraine. From Helsinki's white nights to a late Athenian summer, about the only thing these places reliably share is the meridian.",
+    "quirk": "EET's eastern edge is a contested line: after Russia annexed Crimea in 2014, the peninsula's clocks were switched from Ukrainian EET to Moscow Time — the same move was later imposed on other occupied areas, so here the time-zone boundary tracks the front rather than geography."
+  },
+  "msk": {
+    "summary": "Moscow Time (MSK) is UTC+3 year-round — no daylight saving — and serves as the reference clock for European Russia.",
+    "body": "Moscow Time covers the capital and the densely populated western third of Russia, and acts as the anchor the country's other zones are numbered against. Russia stretches across eleven time zones, but the official clock everywhere is defined relative to Moscow."
+  },
+  "ast": {
+    "summary": "Arabia Standard Time (AST) is UTC+3 year-round — no daylight saving — across Saudi Arabia, Kuwait, Qatar, and Bahrain.",
+    "body": "Arabia Standard Time is the clock of the Gulf states: Riyadh, Kuwait City, Doha, and Manama, and the oil and finance hubs built around them. The bigger adjustment for outsiders isn't the offset but the week: the weekend here falls on Friday and Saturday, so the working week runs Sunday through Thursday, and the overlap with a Monday-to-Friday office is two days shorter than it looks.",
+    "quirk": "When the giant Makkah Clock Tower rose over Mecca in 2010, some in Saudi Arabia pushed for Mecca, not Greenwich, as the world's prime meridian."
+  },
+  "gst": {
+    "summary": "Gulf Standard Time (GST) is UTC+4 year-round — no daylight saving — the fixed clock for the UAE and Oman, an hour ahead of Arabia.",
+    "body": "Gulf Standard Time is the clock of the UAE and Oman, sitting an hour ahead of the rest of Arabia. In 2022 the UAE broke with its neighbors and moved the national weekend to Saturday and Sunday, with only a half-day on Friday, becoming the first Gulf state to line its working week up with the West. The aim was explicit: make it easier for its financial centers to trade with London and New York in real time."
+  },
+  "irst": {
+    "summary": "Iran Standard Time (IRST) is UTC+3:30 year-round — a half-hour offset that no longer observes daylight saving.",
+    "body": "Iran keeps a half-hour offset that sets it apart from every one of its neighbors. A deliberate marking-out of Iranian time, pinned to a meridian running through the country's interior rather than borrowed from anyone next door.",
+    "quirk": "Iran dropped daylight saving in 2022 after decades of switching, so IRST is now a fixed UTC+3:30, but plenty of calendar apps still apply the old spring and autumn change."
+  },
+  "trt": {
+    "summary": "Turkey Time (TRT) is UTC+3 year-round — no daylight saving — keeping Istanbul on a fixed offset to Europe and the Gulf.",
+    "body": "Turkey Time runs across a country that straddles two continents. Istanbul is split down the middle by the Bosphorus, Europe on one bank and Asia on the other, yet both sides keep the same clock and the same workday.",
+    "quirk": "Turkey scrapped the seasonal clock change in 2016 and made summer time permanent, so the country has sat unmoved at UTC+3 ever since."
+  },
+  "ist-israel": {
+    "summary": "Israel Standard Time (IST) is UTC+2, shifting to UTC+3 in summer — the clock for Israel and the Palestinian territories.",
+    "body": "Israel Standard Time covers Israel and the Palestinian territories, but the two don't always agree on when to change it. The Palestinian Authority sets its own daylight-saving dates, and they have at times fallen days or even weeks apart from Israel's. For short stretches, the clock can jump by an hour as you cross between Jerusalem and the West Bank.",
+    "quirk": "For years Israel's own daylight-saving dates were a political flashpoint, tied at times to the Hebrew calendar and the timing of religious fasts, until a 2013 law finally fixed them to a standard European-style schedule."
+  },
+  "ist": {
+    "summary": "India Standard Time (IST) is UTC+5:30 — a half-hour offset shared by 1.4 billion people across a single nationwide zone.",
+    "body": "India runs on a single clock from Gujarat in the west to Arunachal Pradesh in the east. Nearly 2,000 miles and wide enough to justify two zones, but held to one as a deliberate act of national unity after independence in 1947."
+  },
+  "pkt": {
+    "summary": "Pakistan Standard Time (PKT) is UTC+5 year-round — no daylight saving — keeping the country a clean five hours ahead of UTC."
+  },
+  "bst-bangladesh": {
+    "summary": "Bangladesh Standard Time (BST) is UTC+6 year-round — no daylight saving — placing Dhaka six hours ahead of UTC."
+  },
+  "npt": {
+    "summary": "Nepal Time (NPT) is UTC+5:45 year-round — a rare quarter-hour offset, set 15 minutes off neighboring India to keep a clock of its own.",
+    "body": "Nepal keeps perhaps the most unusual mainstream clock in the world: not a whole hour, not even a half, but forty-five minutes past the hour. The offset was chosen to line the national clock up with the meridian over Gauri Shankar, a Himalayan peak northeast of Kathmandu, setting Nepali time deliberately fifteen minutes apart from India's and giving the country a clock unmistakably its own."
+  },
+  "aft": {
+    "summary": "Afghanistan Time (AFT) is UTC+4:30 year-round — a half-hour offset that sits between its Iranian and Pakistani neighbors."
+  },
+  "ict": {
+    "summary": "Indochina Time (ICT) is UTC+7 year-round — no daylight saving — shared by Thailand, Vietnam, Cambodia, and Laos.",
+    "body": "Indochina Time is the clock of mainland Southeast Asia: Bangkok, Hanoi, Ho Chi Minh City, Phnom Penh. The shared offset is a relic of French Indochina, which set the region's clocks together; Thailand, never colonized, later settled on the same hour.",
+    "quirk": "During the Vietnam War the country was split across two clocks, the South ran an hour ahead of the North, until reunification put all of Vietnam on UTC+7 in 1975."
+  },
+  "wib": {
+    "summary": "Western Indonesia Time (WIB) is UTC+7 year-round — the clock for Jakarta and the most populous part of Indonesia.",
+    "body": "Western Indonesia Time covers Jakarta, Sumatra, Java, and the islands around them. Although it is only the westernmost of Indonesia's three zones, it is the clock the great majority of Indonesians actually live by."
+  },
+  "mmt": {
+    "summary": "Myanmar Time (MMT) is UTC+6:30 year-round — a half-hour offset sitting between Bangladesh and Thailand, with no seasonal change."
+  },
+  "hkt": {
+    "summary": "Hong Kong Time (HKT) is UTC+8 year-round — no daylight saving — anchoring one of Asia's main financial hubs, in step with mainland China."
+  },
+  "sgt": {
+    "summary": "Singapore Time (SGT) is UTC+8 year-round — a fixed offset that's actually an hour ahead of Singapore's natural sun time."
+  },
+  "pht": {
+    "summary": "Philippine Time (PHT) is UTC+8 year-round — no daylight saving — keeping Manila in step with the wider East Asian clock.",
+    "body": "The Philippines runs on the main East Asian clock, shared with China, Hong Kong, and Singapore.",
+    "quirk": "When the Philippines switched from the American to the Asian side of the date line in 1844, it skipped a day outright — going to sleep on December 30 and waking on January 1, with December 31 simply erased from the calendar."
+  },
+  "cst-china": {
+    "summary": "China Standard Time (CST) is UTC+8 year-round — a single clock for the entire country, from the coast to the far west.",
+    "body": "China spans five geographic time zones but runs the whole country on one, set to Beijing. The offset is fixed all year, convenient for national coordination, strange for daily life at the edges.\n\nIn the far western regions the official clock is wildly out of step with the sun: by Beijing time, the sun can rise close to 10:00 AM and set near midnight.",
+    "quirk": "Many people in Xinjiang quietly keep an unofficial \"Ürümqi time\" two hours behind the national clock, so daily life there runs on a schedule the calendar doesn't officially recognize."
+  },
+  "jst": {
+    "summary": "Japan Standard Time (JST) is UTC+9 year-round — no daylight saving — a single fixed clock for the whole country.",
+    "body": "Japan runs on a single clock for the whole archipelago, from Hokkaido down to Okinawa, and shares its offset with Korea.",
+    "quirk": "Japan tried daylight saving under American occupation from 1948, but it proved so unpopular, tied to the occupation and longer working days, that the country abolished it in 1951."
+  },
+  "kst": {
+    "summary": "Korea Standard Time (KST) is UTC+9 year-round — no daylight saving — keeping Seoul on the same clock as Tokyo.",
+    "body": "South Korea shares Japan's clock, a fact with a tangled history: the +9 offset dates to the Japanese colonial period, and South Korea briefly pulled back to +8:30 in the 1950s to assert its independence before returning to +9.",
+    "quirk": "North Korea broke away in 2015, turning its clocks back to a UTC+8:30 \"Pyongyang Time\" of its own — then reversed course and rejoined +9 in 2018."
+  },
+  "awst": {
+    "summary": "Australian Western Time (AWST) is UTC+8 year-round — no daylight saving — the clock for Perth and Western Australia.",
+    "body": "Western Australia is a single zone covering a third of the continent, anchored by Perth and closer to Jakarta than to Sydney. It shares its offset with Singapore and Beijing rather than with the rest of Australia."
+  },
+  "acst": {
+    "summary": "Australian Central Time (ACST) is UTC+9:30, shifting to UTC+10:30 in summer — a half-hour offset for South Australia and the Northern Territory.",
+    "body": "Central Australia keeps a half-hour clock, thirty minutes behind the eastern seaboard. The \"Central\" label hides a split, South Australia springs forward for summer while the Northern Territory never does, so the two halves of the zone drift an hour apart for part of the year.",
+    "quirk": "Broken Hill sits inside New South Wales but keeps Central time rather than its own state's Eastern clock, a holdover from the mining town's century-old ties to Adelaide instead of Sydney."
+  },
+  "aest": {
+    "summary": "Australian Eastern Time (AEST) is UTC+10, shifting to UTC+11 in summer — the clock for Sydney, Melbourne, and Brisbane.",
+    "body": "Eastern Australia holds most of the country's people and its largest cities: Sydney, Melbourne, Brisbane. It is also where Australia's daylight-saving patchwork shows most plainly: New South Wales, Victoria, and Tasmania shift to summer time, while Queensland, in the very same zone, refuses to."
+  },
+  "lhst": {
+    "summary": "Lord Howe Time (LHST) is UTC+10:30, shifting to UTC+11 in summer — home to the only half-hour daylight-saving change on Earth.",
+    "body": "Lord Howe Island is a tiny crescent of land in the Tasman Sea, home to fewer than 400 people, with a clock found nowhere else on Earth. When it shifts to summer time the island moves its clocks forward just thirty minutes instead of the usual full hour. It is the only place in the world that does daylight saving in half-hour steps."
+  },
+  "nzst": {
+    "summary": "New Zealand Time (NZST) is UTC+12, shifting to UTC+13 in summer — among the first clocks on Earth to enter each new day.",
+    "body": "New Zealand sits hard against the International Date Line, which keeps it perpetually among the first inhabited places to enter each new day, date, and year."
+  },
+  "brt": {
+    "summary": "Brasília Time (BRT) is UTC−3 year-round — no daylight saving — the clock for Brazil's populous coast and capital.",
+    "body": "Brasília Time is the clock of Brazil's populous Atlantic side: São Paulo, Rio de Janeiro, and the capital."
+  },
+  "art": {
+    "summary": "Argentina Time (ART) is UTC−3 year-round — no daylight saving — keeping Buenos Aires on a fixed offset all year.",
+    "body": "Argentina runs about an hour ahead of where the sun would put it: most of the country lies in the −4 longitude band but keeps −3, the residue of decades of on-again, off-again daylight-saving experiments."
+  },
+  "clt": {
+    "summary": "Chile Time (CLT) is UTC−4, shifting to UTC−3 in summer — the clock for mainland Chile, one of the region's few that still changes.",
+    "body": "Chile is one of the last countries in South America that still changes its clocks, moving to UTC−3 over the southern summer while neighbors like Argentina and Brazil hold a fixed offset.",
+    "quirk": "Chile's deep-south Magallanes region opted out of the switching in 2017 and now stays on UTC−3 all year, leaving it an hour ahead of Santiago through the winter."
+  },
+  "cot": {
+    "summary": "Colombia Time (COT) is UTC−5 year-round — no daylight saving — the same standard offset as the US East Coast in winter.",
+    "body": "Unlike countries farther from the equator, Colombia experiences almost no seasonal swing in daylight. Days stay close to twelve hours long throughout the year, with sunrise and sunset moving only modestly from month to month."
+  },
+  "pet": {
+    "summary": "Peru Time (PET) is UTC−5 year-round — no daylight saving — matching the US East Coast's winter clock and neighboring Colombia all year."
+  },
+  "uyt": {
+    "summary": "Uruguay Time (UYT) is UTC−3 year-round — no daylight saving — the clock for Montevideo, shared with neighboring Argentina and Brazil."
+  },
+  "vet": {
+    "summary": "Venezuela Time (VET) is UTC−4 year-round — no daylight saving — placing Caracas an hour ahead of the US East Coast in winter."
+  },
+  "sast": {
+    "summary": "South Africa Time (SAST) is UTC+2 year-round — no daylight saving — a single fixed clock for the whole country."
+  },
+  "eat": {
+    "summary": "East Africa Time (EAT) is UTC+3 year-round — no daylight saving — across Kenya, Tanzania, Uganda, and Ethiopia.",
+    "body": "East Africa Time covers a broad equatorial band: Nairobi, Dar es Salaam, Kampala, Addis Ababa, where the sun rises and sets at almost the same hour every day of the year."
+  },
+  "wat": {
+    "summary": "West Africa Time (WAT) is UTC+1 year-round — no daylight saving — the clock for Nigeria and much of west-central Africa."
+  },
+  "cat": {
+    "summary": "Central Africa Time (CAT) is UTC+2 year-round — no daylight saving — across Zambia, Zimbabwe, Malawi, and Botswana."
+  },
+  "utc": {
+    "summary": "Coordinated Universal Time (UTC) is the world's reference standard at UTC+0 — the zero point every other zone is measured from.",
+    "body": "UTC isn't really a place's clock, it's the standard the entire world synchronizes to. Every other zone on this site is expressed as an offset from it. It's maintained by a global network of atomic clocks rather than by the sun over any one location, which is what makes it precise enough to run the internet, aviation, and financial markets on.\n\nUnlike GMT, which is a time zone tied to Britain, UTC never changes for daylight saving and belongs to no country, it's purely a measurement.",
+    "quirk": "To keep atomic time aligned with the Earth's slightly irregular rotation, UTC has occasionally added a \"leap second.\" The practice has caused enough trouble for computer systems that the world has agreed to phase it out by 2035."
+  }
+}
