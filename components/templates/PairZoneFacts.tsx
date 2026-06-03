@@ -1,6 +1,8 @@
 import { greatCircleMiles, roundMiles } from '@/lib/geo/distance';
 import type { ParsedPair, ZoneOrCity } from '@/lib/slugs/parse';
 import { resolveZoneForIana, zoneDisplayNameForIana } from '@/lib/zones/resolve';
+import Link from 'next/link';
+import type { ReactNode } from 'react';
 
 interface Props {
   pair: ParsedPair;
@@ -25,7 +27,7 @@ function zoneDisplayName(zoc: ZoneOrCity): string {
   return zoneDisplayNameForIana(zoc.city.iana);
 }
 
-function aliasSentence(zoc: ZoneOrCity): string {
+function aliasSentence(zoc: ZoneOrCity): ReactNode {
   const abbrevs = zoneAbbreviations(zoc);
   const zoneName = zoneDisplayName(zoc);
   if (zoc.kind === 'zone') {
@@ -34,10 +36,25 @@ function aliasSentence(zoc: ZoneOrCity): string {
     const list = abbrevs.join(', ').replace(/, ([^,]+)$/, ', or $1');
     return `${zoneName} is also known as ${list}.`;
   }
-  // City ref: ground it in the city → zone relationship.
-  if (abbrevs.length === 0) return `${zoc.city.name} uses ${zoneName}.`;
-  const list = abbrevs.join(', ').replace(/, ([^,]+)$/, ', or $1');
-  return `${zoc.city.name} uses ${zoneName} (${list}).`;
+  // City ref: ground it in the city → zone relationship, and link the city to
+  // its own /time-in page (every city ref resolves from the dataset, so the
+  // page is always statically generated).
+  const cityLink = (
+    <Link
+      prefetch={false}
+      href={`/time-in/${zoc.city.id}`}
+      className="underline underline-offset-2 hover:text-[color:var(--fg)]"
+    >
+      {zoc.city.name}
+    </Link>
+  );
+  const suffix = abbrevs.length === 0 ? '' : ` (${abbrevs.join(', ').replace(/, ([^,]+)$/, ', or $1')})`;
+  return (
+    <>
+      {cityLink} uses {zoneName}
+      {suffix}.
+    </>
+  );
 }
 
 export function PairZoneFacts({ pair }: Props) {
