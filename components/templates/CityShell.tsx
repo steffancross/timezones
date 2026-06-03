@@ -36,12 +36,12 @@ export async function CityShell({ city }: Props) {
 
       <section className="mt-6 text-center">
         <h1 className="text-3xl font-semibold">{city.name}</h1>
-        <p className="mt-1 text-[color:var(--fg-muted)]">
+        <p className="mt-1 text-[color:var(--fg-muted)] text-lg">
           {city.admin1 ? `${city.admin1}, ` : ''}
           {city.country}
         </p>
 
-        <p className="mt-1 text-[color:var(--fg-muted)] text-sm">
+        <p className="mt-1 text-[color:var(--fg-muted)] text-xs">
           The current local time in {city.name} is
         </p>
         <div className="mt-4">

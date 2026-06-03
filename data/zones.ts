@@ -826,3 +826,13 @@ export function getZoneById(id: string): Zone {
 export function getZoneByIana(iana: string): Zone | null {
   return zones.find((z) => z.iana === iana) ?? null;
 }
+
+/** All curated zones, in declaration order. */
+export function getAllZones(): readonly Zone[] {
+  return zones;
+}
+
+/** Every curated zone id — the finite route set for /timezone/[id]. */
+export function getAllZoneSlugs(): string[] {
+  return zones.map((z) => z.id);
+}

@@ -1,5 +1,6 @@
 import { getZoneByIana, getZoneById, zones } from '@/data/zones';
-import { getCitiesByIana } from '@/lib/cities/resolve';
+import { getAllCities, getCitiesByIana } from '@/lib/cities/resolve';
+import type { City } from '@/lib/cities/types';
 import { DateTime } from 'luxon';
 import type { Zone } from './types';
 
@@ -172,6 +173,41 @@ function computeZoneForIana(iana: string): Zone | null {
   }
 
   return null;
+}
+
+/**
+ * All cities belonging to a curated zone, most-populous first.
+ *
+ * This is the inverse of `resolveZoneForIana`: a curated zone keys on a single
+ * canonical IANA (`pst` → `America/Los_Angeles`), but its real footprint spans
+ * many IANAs (`America/Vancouver`, `America/Tijuana`, …). `getCitiesByIana`
+ * alone would miss those, leaving the zone page's city list sparse and "funky".
+ * Here we group every city under the curated zone its IANA resolves to, so the
+ * list is complete across all member IANAs.
+ *
+ * Memoized: the grouping is a pure function of the (process-stable) city dataset
+ * and offset rules, and the zone index page + 49 zone pages all read it.
+ */
+let zoneCitiesMap: Map<string, City[]> | null = null;
+
+function buildZoneCitiesMap(): Map<string, City[]> {
+  const map = new Map<string, City[]>();
+  for (const city of getAllCities()) {
+    const zone = resolveZoneForIana(city.iana);
+    if (!zone) continue;
+    const list = map.get(zone.id);
+    if (list) list.push(city);
+    else map.set(zone.id, [city]);
+  }
+  for (const list of map.values()) {
+    list.sort((a, b) => b.population - a.population);
+  }
+  return map;
+}
+
+export function getCitiesForZone(zoneId: string): City[] {
+  if (!zoneCitiesMap) zoneCitiesMap = buildZoneCitiesMap();
+  return zoneCitiesMap.get(zoneId) ?? [];
 }
 
 /**

@@ -11,6 +11,7 @@ export function GET() {
   <sitemap><loc>${env.NEXT_PUBLIC_BASE_URL}/sitemap.xml</loc></sitemap>
   <sitemap><loc>${env.NEXT_PUBLIC_BASE_URL}/sitemap-converter.xml</loc></sitemap>
   <sitemap><loc>${env.NEXT_PUBLIC_BASE_URL}/sitemap-cities.xml</loc></sitemap>
+  <sitemap><loc>${env.NEXT_PUBLIC_BASE_URL}/sitemap-zones.xml</loc></sitemap>
   <sitemap><loc>${env.NEXT_PUBLIC_BASE_URL}/sitemap-articles.xml</loc></sitemap>
 </sitemapindex>`;
 

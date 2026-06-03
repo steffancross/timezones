@@ -5,6 +5,7 @@ import { ThemeToggle } from './ThemeToggle';
 const navLinks = [
   { href: '/conversions', label: 'Conversions' },
   { href: '/cities', label: 'Cities' },
+  { href: '/timezones', label: 'Timezones' },
   { href: '/dst', label: 'DST' },
   { href: '/articles', label: 'Articles' },
 ];
