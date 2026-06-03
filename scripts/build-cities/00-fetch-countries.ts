@@ -25,32 +25,62 @@ async function fetchCountryInfo(): Promise<string> {
   return text;
 }
 
-function parse(raw: string): Record<string, string> {
-  // Tab-separated; comments start with '#'. Columns:
-  // ISO, ISO3, ISO-Numeric, fips, Country, Capital, Area, Population, Continent, tld,
-  // CurrencyCode, CurrencyName, Phone, Postal Code Format, Postal Code Regex,
-  // Languages, geonameid, neighbours, EquivalentFipsCode
-  const out: Record<string, string> = {};
+interface CountryInfo {
+  name: string;
+  phone?: string;
+  capital?: string;
+  population?: number;
+}
+
+function parse(raw: string): Record<string, CountryInfo> {
+  // Tab-separated; comments start with '#'. Columns (0-based):
+  // 0 ISO, 1 ISO3, 2 ISO-Numeric, 3 fips, 4 Country, 5 Capital, 6 Area,
+  // 7 Population, 8 Continent, 9 tld, 10 CurrencyCode, 11 CurrencyName,
+  // 12 Phone, 13 Postal Code Format, 14 Postal Code Regex, 15 Languages,
+  // 16 geonameid, 17 neighbours, 18 EquivalentFipsCode
+  const out: Record<string, CountryInfo> = {};
   for (const line of raw.split('\n')) {
     if (!line || line.startsWith('#')) continue;
     const cols = line.split('\t');
     const iso = cols[0];
     const name = cols[4];
-    if (iso && name) out[iso] = name;
+    if (!iso || !name) continue;
+    const capital = cols[5]?.trim();
+    const phone = cols[12]?.trim();
+    const population = Number.parseInt(cols[7]?.trim() ?? '', 10);
+    out[iso] = {
+      name,
+      ...(phone ? { phone } : {}),
+      ...(capital ? { capital } : {}),
+      ...(Number.isFinite(population) && population > 0 ? { population } : {}),
+    };
   }
   return out;
 }
 
-function emit(map: Record<string, string>): string {
+function emit(map: Record<string, CountryInfo>): string {
   const entries = Object.entries(map).sort(([a], [b]) => a.localeCompare(b));
-  const body = entries.map(([code, name]) => `  ${code}: ${JSON.stringify(name)},`).join('\n');
+  const body = entries.map(([code, info]) => `  ${code}: ${JSON.stringify(info)},`).join('\n');
   return `/**
- * ISO 3166-1 alpha-2 country code → English name.
+ * ISO 3166-1 alpha-2 country metadata.
  * Generated from GeoNames countryInfo.txt by scripts/build-cities/00-fetch-countries.ts.
  */
-export const COUNTRIES: Record<string, string> = {
+export interface CountryInfo {
+  name: string;
+  /** International dialing code, e.g. '49' or '1-242' (no leading '+'). */
+  phone?: string;
+  capital?: string;
+  population?: number;
+}
+
+export const COUNTRY_INFO: Record<string, CountryInfo> = {
 ${body}
 };
+
+/** ISO 3166-1 alpha-2 country code → English name (derived from COUNTRY_INFO). */
+export const COUNTRIES: Record<string, string> = Object.fromEntries(
+  Object.entries(COUNTRY_INFO).map(([code, info]) => [code, info.name]),
+);
 `;
 }
 

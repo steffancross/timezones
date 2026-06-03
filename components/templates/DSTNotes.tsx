@@ -11,6 +11,10 @@ function displayName(zoc: ZoneOrCity): string {
   return zoc.kind === 'zone' ? zoc.zone.display_name : zoc.city.name;
 }
 
+function latOf(zoc: ZoneOrCity): number {
+  return zoc.kind === 'zone' ? zoc.zone.lat : zoc.city.lat;
+}
+
 type Transition = NonNullable<ReturnType<typeof getNextTransition>>;
 
 export function DSTNotes({ pair }: Props) {
@@ -20,11 +24,16 @@ export function DSTNotes({ pair }: Props) {
   const fromNext = getNextTransition(pair.fromIana);
   const toNext = getNextTransition(pair.toIana);
 
+  // Opposite hemispheres ⇒ DST runs in opposite directions ~6 months apart, so
+  // the offset swings more widely across the year. Only meaningful copy when
+  // both sides actually observe DST (Case 4 below).
+  const oppositeHemisphere = Math.sign(latOf(pair.from)) === -Math.sign(latOf(pair.to));
+
   return (
     <section>
       <h2 className="text-2xl font-semibold">Daylight saving time</h2>
       <div className="mt-3 space-y-3 text-sm">
-        {renderDSTBehavior(fromName, toName, fromNext, toNext)}
+        {renderDSTBehavior(fromName, toName, fromNext, toNext, oppositeHemisphere)}
         <p className="text-[color:var(--fg-muted)]">
           See the{' '}
           <Link
@@ -46,6 +55,7 @@ function renderDSTBehavior(
   toName: string,
   fromNext: Transition | null,
   toNext: Transition | null,
+  oppositeHemisphere: boolean,
 ) {
   // Case 1: neither observes DST → offset is constant year-round.
   if (!fromNext && !toNext) {
@@ -111,11 +121,21 @@ function renderDSTBehavior(
         <p>
           {toName}: next transition on {formatTransitionDate(toNext.date)}.
         </p>
-        <p className="text-[color:var(--fg-muted)]">
-          For approximately {gapDays(fromNext.date, toNext.date)} days between transitions, the
-          offset between {fromName} and {toName} differs from its typical value. Recurring meetings
-          during this window will shift by one hour.
-        </p>
+        {oppositeHemisphere ? (
+          <p className="text-[color:var(--fg-muted)]">
+            {fromName} and {toName} are in opposite hemispheres, so their clocks change in opposite
+            directions about six months apart — one springs forward while the other falls back. The
+            offset between them therefore shifts twice a year and can swing by up to two hours
+            across the seasons, more than a typical same-hemisphere pair. Recurring meetings will
+            need re-checking after each transition.
+          </p>
+        ) : (
+          <p className="text-[color:var(--fg-muted)]">
+            For approximately {gapDays(fromNext.date, toNext.date)} days between transitions, the
+            offset between {fromName} and {toName} differs from its typical value. Recurring
+            meetings during this window will shift by one hour.
+          </p>
+        )}
       </>
     );
   }

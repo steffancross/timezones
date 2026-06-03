@@ -1,8 +1,9 @@
-import { greatCircleMiles, roundMiles } from '@/lib/geo/distance';
-import type { ParsedPair, ZoneOrCity } from '@/lib/slugs/parse';
-import { resolveZoneForIana, zoneDisplayNameForIana } from '@/lib/zones/resolve';
 import Link from 'next/link';
 import type { ReactNode } from 'react';
+import { COUNTRY_INFO } from '@/lib/cities/countries';
+import { bearing, cardinalDirection, greatCircleMiles, roundMiles } from '@/lib/geo/distance';
+import { type ParsedPair, representativeCountry, type ZoneOrCity } from '@/lib/slugs/parse';
+import { resolveZoneForIana, zoneDisplayNameForIana } from '@/lib/zones/resolve';
 
 interface Props {
   pair: ParsedPair;
@@ -58,6 +59,25 @@ function aliasSentence(zoc: ZoneOrCity): ReactNode {
   );
 }
 
+/**
+ * Trailing " To call {country}, dial {+code}." clause appended to a side's
+ * alias sentence — folds the (minor) calling-code fact into the prose instead
+ * of giving it its own section. Null when the side has no country or no code.
+ */
+function callingClause(zoc: ZoneOrCity): ReactNode {
+  const country = representativeCountry(zoc);
+  const phone = country ? COUNTRY_INFO[country.code]?.phone : undefined;
+  if (!country || !phone) return null;
+  // GeoNames stores some codes with a leading '+' and some without — normalize.
+  const dial = `+${phone.replace(/^\+/, '')}`;
+  return (
+    <>
+      {' '}
+      To call {country.name}, dial <span className="tabular-nums">{dial}</span>.
+    </>
+  );
+}
+
 export function PairZoneFacts({ pair }: Props) {
   const fromCoords = coords(pair.from);
   const toCoords = coords(pair.to);
@@ -70,14 +90,36 @@ export function PairZoneFacts({ pair }: Props) {
   const fromName = displayName(pair.from);
   const toName = displayName(pair.to);
 
+  // Direction adds per-pair uniqueness ("east of" / "northwest of"). Skip it
+  // when the two points round to the same spot — "0 miles north of" is nonsense,
+  // so fall back to the undirected wording.
+  const direction =
+    rounded === 0
+      ? null
+      : cardinalDirection(bearing(fromCoords.lat, fromCoords.lng, toCoords.lat, toCoords.lng));
+
   return (
     <section>
       <h2 className="text-2xl font-semibold">About these zones</h2>
       <div className="mt-4 space-y-3 text-sm">
-        <p>{aliasSentence(pair.from)}</p>
-        <p>{aliasSentence(pair.to)}</p>
+        <p>
+          {aliasSentence(pair.from)}
+          {callingClause(pair.from)}
+        </p>
+        <p>
+          {aliasSentence(pair.to)}
+          {callingClause(pair.to)}
+        </p>
         <p className="text-[color:var(--fg-muted)]">
-          {fromName} and {toName} are approximately {rounded.toLocaleString()} miles apart.
+          {direction ? (
+            <>
+              {toName} is approximately {rounded.toLocaleString()} miles {direction} of {fromName}.
+            </>
+          ) : (
+            <>
+              {fromName} and {toName} are approximately {rounded.toLocaleString()} miles apart.
+            </>
+          )}
         </p>
       </div>
     </section>

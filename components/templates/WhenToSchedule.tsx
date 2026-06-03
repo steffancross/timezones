@@ -1,5 +1,7 @@
+import { CircleHelp } from 'lucide-react';
 import { DateTime } from 'luxon';
-import type { ParsedPair, ZoneOrCity } from '@/lib/slugs/parse';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import { type ParsedPair, representativeCountry, type ZoneOrCity } from '@/lib/slugs/parse';
 import { zoneObservesDst } from '@/lib/time/luxon';
 import {
   type BusinessOverlapWindow,
@@ -7,6 +9,7 @@ import {
   DEFAULT_WORKING_HOURS,
   EXTENDED_WORKING_HOURS,
 } from '@/lib/time/working-hours';
+import { getNonStandardWorkweek, type WorkweekPattern } from '@/lib/time/workweek';
 
 interface Props {
   pair: ParsedPair;
@@ -62,9 +65,32 @@ export function WhenToSchedule({ pair }: Props) {
   const windows = computeBusinessOverlap(pair.fromIana, pair.toIana, DEFAULT_WORKING_HOURS);
   const eitherObservesDst = zoneObservesDst(pair.fromIana) || zoneObservesDst(pair.toIana);
 
+  // Per-country workweek notes: only for sides whose working week isn't Mon–Fri.
+  // Dedupe by country code so a pair of two same-country cities shows it once.
+  const workweekNotes = collectWorkweekNotes(pair);
+
   return (
     <section>
-      <h2 className="text-2xl font-semibold">When to schedule</h2>
+      <h2 className="flex items-center gap-1.5 text-2xl font-semibold">
+        When to schedule
+        <TooltipProvider>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <button
+                type="button"
+                aria-label="How these times are calculated"
+                className="text-[color:var(--fg-subtle)] transition-colors hover:text-[color:var(--fg)]"
+              >
+                <CircleHelp className="size-4" />
+              </button>
+            </TooltipTrigger>
+            <TooltipContent className="max-w-xs">
+              Times assume a standard 9 AM–5 PM, Monday–Friday working week; some regions differ.
+              Use the converter above to set your own hours and days.
+            </TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
+      </h2>
 
       {windows.length === 0 ? (
         <NoOverlap pair={pair} fromName={fromName} toName={toName} />
@@ -83,8 +109,31 @@ export function WhenToSchedule({ pair }: Props) {
           This window may shift by an hour during daylight saving time.
         </p>
       )}
+
+      {workweekNotes.map((note) => (
+        <p key={note.code} className="mt-3 text-sm text-[color:var(--fg-muted)]">
+          <strong>Note:</strong> the working week in {note.name} runs {note.pattern.workweek};{' '}
+          {note.pattern.weekend} is the weekend, so overlap on those days is limited.
+        </p>
+      ))}
     </section>
   );
+}
+
+function collectWorkweekNotes(
+  pair: ParsedPair,
+): { code: string; name: string; pattern: WorkweekPattern }[] {
+  const notes: { code: string; name: string; pattern: WorkweekPattern }[] = [];
+  const seen = new Set<string>();
+  for (const side of [pair.from, pair.to]) {
+    const country = representativeCountry(side);
+    if (!country || seen.has(country.code)) continue;
+    const pattern = getNonStandardWorkweek(country.code);
+    if (!pattern) continue;
+    seen.add(country.code);
+    notes.push({ code: country.code, name: country.name, pattern });
+  }
+  return notes;
 }
 
 function OverlapDetail({

@@ -40,7 +40,9 @@ Run a single Vitest file: `pnpm vitest run tests/unit/store/converter.test.ts`. 
 
 ### Data files are checked in, not built in CI
 
-`data/cities.json`, `data/disambiguation.json`, and `public/search-index.json` are committed. `pnpm build` runs `next build` only — it does **not** invoke `data:build`. This keeps deploys fast (CSS-only push doesn't pay the GeoNames fetch) and removes GeoNames as a deploy-time dependency. Refresh manually with `pnpm data:build`, then commit the diff. World cities don't churn — quarterly is fine.
+`data/cities.json`, `data/disambiguation.json`, `data/holidays.json`, and `public/search-index.json` are committed. `pnpm build` runs `next build` only — it does **not** invoke `data:build`. This keeps deploys fast (CSS-only push doesn't pay the GeoNames fetch) and removes GeoNames as a deploy-time dependency. Refresh manually with `pnpm data:build`, then commit the diff. World cities don't churn — quarterly is fine.
+
+`data/holidays.json` is fetched from the free **Nager.Date** API by `scripts/build-cities/04-fetch-holidays.ts` (`pnpm data:holidays`, also part of `data:build`) for the current year, only for country codes that appear in our data (city `country_code` ∪ zone `countries`). It's deliberately **build-time + committed**, not a runtime call — pages are static, so it's rendered as a *current-year calendar* (`HOLIDAYS_YEAR`), never an "upcoming" list that would bake build-time "now" and go stale. Nager returns **204** for countries it has no data for (much of Africa/Middle East/Asia — ~46 of 122 skip cleanly) and **404** for invalid codes; the loader and components just render nothing for a missing country. **Refresh annually** (and at the year rollover) by re-running `pnpm data:holidays`. `lib/cities/countries.ts` likewise now emits `COUNTRY_INFO` (name + phone/capital/population) with a derived name-only `COUNTRIES`; regenerate via the one-shot `scripts/build-cities/00-fetch-countries.ts`.
 
 ### Build spec lives in `markdowns/`
 

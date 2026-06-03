@@ -5,6 +5,7 @@ import { PairAirports } from './PairAirports';
 import { PairCities } from './PairCities';
 import { PairDaylight } from './PairDaylight';
 import { PairFaq } from './PairFaq';
+import { PairHolidays } from './PairHolidays';
 import { PairZoneFacts } from './PairZoneFacts';
 import { QuickReferenceTable } from './QuickReferenceTable';
 import { RelatedPairs } from './RelatedPairs';
@@ -25,6 +26,7 @@ export function PairContent({ pair, slug }: Props) {
     <article className="mt-10 space-y-12">
       <OffsetSummary pair={pair} />
       <WhenToSchedule pair={pair} />
+      <PairHolidays pair={pair} />
       <PairZoneFacts pair={pair} />
       <QuickReferenceTable pair={pair} />
       <DSTNotes pair={pair} />
