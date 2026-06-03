@@ -3,6 +3,7 @@ import type { City } from '@/lib/cities/types';
 import { getNextTransition } from '@/lib/time/dst';
 import { resolveZoneForIana, zoneDisplayNameForIana } from '@/lib/zones/resolve';
 import Link from 'next/link';
+import { AirportChip, CityChip } from './chips';
 
 interface Props {
   city: City;
@@ -18,7 +19,7 @@ export function CityContent({ city }: Props) {
   return (
     <article className="mt-12 space-y-10">
       <GeographicContext city={city} />
-      {city.iata_codes.length > 0 && <Airports city={city} />}
+      {city.airports.length > 0 && <Airports city={city} />}
       <ConversionLinks city={city} />
       <RelatedCities city={city} />
     </article>
@@ -95,19 +96,15 @@ function Airports({ city }: { city: City }) {
   return (
     <section>
       <h2 className="text-2xl font-semibold">Airports</h2>
-      <p className="mt-2 text-sm text-[color:var(--fg-muted)]">
-        Major airports serving {city.name}:
-      </p>
       <ul className="mt-3 flex flex-wrap gap-2">
-        {city.iata_codes.map((code) => (
-          <li
-            key={code}
-            className="rounded-[var(--radius)] border border-[color:var(--border)] bg-card px-3 py-1 font-mono text-sm"
-          >
-            {code}
-          </li>
+        {city.airports.map((airport) => (
+          <AirportChip key={airport.iata} iata={airport.iata} name={airport.name} />
         ))}
       </ul>
+      <p className="mt-2 text-sm text-[color:var(--fg-muted)]">
+        The current local time at {city.name}'s airports (
+        {city.airports.map((a) => a.iata).join(', ')}) is the same as the city time shown above.
+      </p>
     </section>
   );
 }
@@ -210,19 +207,3 @@ function RelatedCities({ city }: { city: City }) {
   );
 }
 
-function CityChip({ city }: { city: City }) {
-  return (
-    <li>
-      <Link
-        prefetch={false}
-        href={`/time-in/${city.id}`}
-        className="inline-flex items-center gap-2 rounded-[var(--radius)] border border-[color:var(--border)] px-3 py-1 text-sm hover:bg-[var(--hover)]"
-      >
-        <span>{city.name}</span>
-        <span className="font-mono text-[10px] uppercase text-[color:var(--fg-muted)]">
-          {city.country_code}
-        </span>
-      </Link>
-    </li>
-  );
-}

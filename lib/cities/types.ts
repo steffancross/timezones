@@ -1,3 +1,11 @@
+/** A commercial airport serving a city. */
+export interface Airport {
+  /** IATA code. e.g., 'ICN' */
+  iata: string;
+  /** Full airport name. e.g., 'Incheon International Airport' */
+  name: string;
+}
+
 export interface City {
   /** URL slug, lowercase, hyphenated, globally unique. e.g., 'new-york' or 'paris-texas' */
   id: string;
@@ -30,8 +38,8 @@ export interface City {
   /** Alternate names users might search. English/Latin script only + curated transliterations */
   alt_names: string[];
 
-  /** IATA airport codes serving this city. e.g., ['JFK', 'LGA', 'EWR'] */
-  iata_codes: string[];
+  /** Commercial airports serving this city, with IATA code + full name. */
+  airports: Airport[];
 
   /** 0-100, derived from population + curation */
   popularity: number;
@@ -65,5 +73,5 @@ export interface RawAirport {
 }
 
 export interface EnrichedCity extends RawCity {
-  iata_codes: string[];
+  airports: Airport[];
 }

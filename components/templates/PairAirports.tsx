@@ -1,13 +1,14 @@
 import { getCitiesByIana } from '@/lib/cities/resolve';
 import type { ParsedPair, ZoneOrCity } from '@/lib/slugs/parse';
 import { zoneDisplayNameForIana } from '@/lib/zones/resolve';
+import { AirportChip } from './chips';
 
 interface Props {
   pair: ParsedPair;
 }
 
 interface Airport {
-  code: string;
+  iata: string;
   cityName: string;
 }
 
@@ -20,10 +21,10 @@ function airportsForSide(zoc: ZoneOrCity): Airport[] {
   const out: Airport[] = [];
   const seen = new Set<string>();
   for (const city of sorted) {
-    for (const code of city.iata_codes) {
-      if (seen.has(code)) continue;
-      seen.add(code);
-      out.push({ code, cityName: city.name });
+    for (const airport of city.airports) {
+      if (seen.has(airport.iata)) continue;
+      seen.add(airport.iata);
+      out.push({ iata: airport.iata, cityName: city.name });
       if (out.length >= MAX_PER_SIDE) return out;
     }
   }
@@ -61,13 +62,7 @@ function AirportColumn({ title, airports }: { title: string; airports: Airport[]
       <h3 className="text-sm font-semibold">{title}</h3>
       <ul className="mt-3 flex flex-wrap gap-2">
         {airports.map((a) => (
-          <li
-            key={a.code}
-            title={a.cityName}
-            className="rounded-[var(--radius)] border border-[color:var(--border)] bg-card px-2.5 py-1 font-mono text-sm"
-          >
-            {a.code}
-          </li>
+          <AirportChip key={a.iata} iata={a.iata} title={a.cityName} />
         ))}
       </ul>
     </div>

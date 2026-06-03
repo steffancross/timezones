@@ -98,7 +98,7 @@ function toCity(raw: EnrichedCity, id: string): City {
     population: raw.population,
     tier: getTier(raw.geonameid),
     alt_names: altNames,
-    iata_codes: raw.iata_codes,
+    airports: raw.airports,
     popularity: computePopularity(raw),
   };
 }

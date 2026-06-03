@@ -1,7 +1,7 @@
-import { DateTime } from 'luxon';
 import type { ParsedPair, ZoneOrCity } from '@/lib/slugs/parse';
-import { currentAbbreviation } from '@/lib/zones/abbreviation';
 import { formatOffset } from '@/lib/time/format';
+import { currentAbbreviation } from '@/lib/zones/abbreviation';
+import { DateTime } from 'luxon';
 
 interface Props {
   pair: ParsedPair;
@@ -39,6 +39,16 @@ export function OffsetSummary({ pair }: Props) {
   return (
     <section>
       <h2 className="text-2xl font-semibold">Offset</h2>
+      <p className="mt-2 text-sm leading-relaxed text-[color:var(--fg-muted)]">
+        {absHours === 0 ? (
+          <>There is no time difference between {fromName} and {toName}.</>
+        ) : (
+          <>
+            The time difference between {fromName} and {toName} is {absHours}{' '}
+            {absHours === 1 ? 'hour' : 'hours'}.
+          </>
+        )}
+      </p>
       <div className="mt-4 grid gap-4 md:grid-cols-2">
         <div className="rounded-[var(--radius)] border border-[color:var(--border)] p-5">
           <div className="text-4xl font-light tabular-nums">
@@ -58,7 +68,7 @@ export function OffsetSummary({ pair }: Props) {
               </>
             ) : (
               <>
-                is currently {direction} {toName} ({toAbbrev})
+                is {direction} {toName} ({toAbbrev})
               </>
             )}
             .

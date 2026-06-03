@@ -40,7 +40,7 @@ export function getDisambiguation(slug: string): string[] | null {
 export function getCityByIata(iata: string): City | null {
   const upper = iata.toUpperCase();
   const matches = cities
-    .filter((c) => c.iata_codes.includes(upper))
+    .filter((c) => c.airports.some((a) => a.iata === upper))
     .sort((a, b) => a.tier - b.tier || b.popularity - a.popularity);
   return matches[0] ?? null;
 }
