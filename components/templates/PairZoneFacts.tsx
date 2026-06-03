@@ -1,6 +1,6 @@
 import { greatCircleMiles, roundMiles } from '@/lib/geo/distance';
 import type { ParsedPair, ZoneOrCity } from '@/lib/slugs/parse';
-import { getZoneByIana } from '@/lib/zones/resolve';
+import { resolveZoneForIana, zoneDisplayNameForIana } from '@/lib/zones/resolve';
 
 interface Props {
   pair: ParsedPair;
@@ -17,12 +17,12 @@ function displayName(zoc: ZoneOrCity): string {
 
 function zoneAbbreviations(zoc: ZoneOrCity): string[] {
   if (zoc.kind === 'zone') return zoc.zone.abbreviations;
-  return getZoneByIana(zoc.city.iana)?.abbreviations ?? [];
+  return resolveZoneForIana(zoc.city.iana)?.abbreviations ?? [];
 }
 
 function zoneDisplayName(zoc: ZoneOrCity): string {
   if (zoc.kind === 'zone') return zoc.zone.display_name;
-  return getZoneByIana(zoc.city.iana)?.display_name ?? zoc.city.iana;
+  return zoneDisplayNameForIana(zoc.city.iana);
 }
 
 function aliasSentence(zoc: ZoneOrCity): string {

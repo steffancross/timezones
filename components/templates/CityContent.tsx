@@ -1,7 +1,7 @@
 import { getAllCities, getCitiesByIana, getCitiesInCountry } from '@/lib/cities/resolve';
 import type { City } from '@/lib/cities/types';
 import { getNextTransition } from '@/lib/time/dst';
-import { getZoneByIana } from '@/lib/zones/resolve';
+import { resolveZoneForIana, zoneDisplayNameForIana } from '@/lib/zones/resolve';
 import Link from 'next/link';
 
 interface Props {
@@ -26,8 +26,8 @@ export function CityContent({ city }: Props) {
 }
 
 function GeographicContext({ city }: { city: City }) {
-  const zone = getZoneByIana(city.iana);
-  const zoneName = zone?.display_name ?? city.iana;
+  const zone = resolveZoneForIana(city.iana);
+  const zoneName = zoneDisplayNameForIana(city.iana);
   const abbrevList =
     zone && zone.abbreviations.length > 0 ? ` (${zone.abbreviations.join(', ')})` : '';
   const nextTx = getNextTransition(city.iana);
