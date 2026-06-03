@@ -1,3 +1,7 @@
+import { getCitiesByIana } from '@/lib/cities/resolve';
+import { getZoneByIana } from '@/data/zones';
+import type { ZoneRef } from '@/lib/store/converter';
+
 /**
  * Default zone triples per country, keyed by ISO 3166-1 alpha-2.
  *
@@ -77,4 +81,37 @@ export function pickContextualZones(detected: string | null, country: string | n
 
   const countryDefaults = country ? REGIONAL_DEFAULTS[country] : undefined;
   return countryDefaults ?? FALLBACK;
+}
+
+/**
+ * Resolve an IANA zone to a home-row ref, preferring the friendlier
+ * representative CITY (the most-populous city in that zone — "Berlin", "Los
+ * Angeles") and falling back to the curated zone ("Pacific Time") when no city
+ * exists. null if neither does, so the caller drops it.
+ *
+ * This is also what fixes the old homepage 500: an uncurated zone (e.g.
+ * `Europe/Berlin`) used to fabricate a bogus `kind:'zone'` slug ("europe-berlin")
+ * that `getZoneById` then threw on. Now it resolves to the Berlin *city*, which
+ * exists in the 500-city dataset.
+ */
+function ianaToHomeRef(iana: string): ZoneRef | null {
+  const cities = getCitiesByIana(iana);
+  if (cities.length > 0) {
+    const top = cities.reduce((best, c) => (c.popularity > best.popularity ? c : best));
+    return { kind: 'city', slug: top.id, iana: top.iana };
+  }
+  const z = getZoneByIana(iana);
+  return z ? { kind: 'zone', slug: z.id, iana: z.iana } : null;
+}
+
+/**
+ * Contextual home rows for the landing page as friendly CITY refs (zone
+ * fallback), picked from the curated `pickContextualZones` map. Rendered
+ * server-side on the `force-dynamic` homepage (cf-headers are available there),
+ * so the visitor lands on their relevant cities with NO client reorientation.
+ */
+export function pickContextualHomeRefs(detected: string | null, country: string | null): ZoneRef[] {
+  return pickContextualZones(detected, country)
+    .map(ianaToHomeRef)
+    .filter((r): r is ZoneRef => r !== null);
 }

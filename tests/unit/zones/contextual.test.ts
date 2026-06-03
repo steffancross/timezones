@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { pickContextualZones } from '@/lib/zones/contextual';
+import { pickContextualHomeRefs, pickContextualZones } from '@/lib/zones/contextual';
 
 describe('pickContextualZones', () => {
   it('returns the global fallback when both inputs are null', () => {
@@ -66,5 +66,32 @@ describe('pickContextualZones', () => {
     expect(pickContextualZones(null, 'US')).toHaveLength(3);
     expect(pickContextualZones('Asia/Tokyo', null)).toHaveLength(3);
     expect(pickContextualZones('Asia/Tokyo', 'US')).toHaveLength(3);
+  });
+});
+
+describe('pickContextualHomeRefs', () => {
+  it('resolves the curated picks to friendly CITY refs (server-rendered home rows)', () => {
+    const refs = pickContextualHomeRefs('America/Los_Angeles', 'US');
+    expect(refs[0]).toEqual({ kind: 'city', slug: 'los-angeles', iana: 'America/Los_Angeles' });
+    expect(refs.every((r) => r.kind === 'city')).toBe(true);
+    expect(refs).toHaveLength(3);
+  });
+
+  it('leads with the visitor city even for a zone the zone-dataset never had (Berlin)', () => {
+    // Europe/Berlin isn't a curated zone — the old code fabricated a bogus
+    // `kind:'zone'` slug here and 500'd. Now it resolves to the Berlin city.
+    expect(pickContextualHomeRefs('Europe/Berlin', 'DE')[0]).toEqual({
+      kind: 'city',
+      slug: 'berlin',
+      iana: 'Europe/Berlin',
+    });
+  });
+
+  it('falls back to the default trio (as cities) with no detection', () => {
+    expect(pickContextualHomeRefs(null, null).map((r) => r.slug)).toEqual([
+      'new-york',
+      'london',
+      'tokyo',
+    ]);
   });
 });
