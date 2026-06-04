@@ -2,7 +2,7 @@
 
 import { ArrowRight, ArrowRightLeft } from 'lucide-react';
 import Link from 'next/link';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useState } from 'react';
 import type { CuratedSelections, Selection } from '@/lib/conversions/selection';
 import { cn } from '@/lib/utils';
 import { PairSelector } from './PairSelector';
@@ -23,27 +23,6 @@ export function PairBuilder({ initialFrom, initialTo, curated }: Props) {
   }, [from, to]);
 
   const href = `/convert/${from.id}-to-${to.id}`;
-
-  // Enter (when no input/textarea is focused) navigates to Convert.
-  useEffect(() => {
-    function onKey(e: KeyboardEvent) {
-      if (e.key !== 'Enter') return;
-      const el = document.activeElement;
-      const tag = el?.tagName.toLowerCase();
-      if (
-        tag === 'input' ||
-        tag === 'textarea' ||
-        tag === 'button' ||
-        tag === 'select' ||
-        (el as HTMLElement | null)?.isContentEditable
-      ) {
-        return;
-      }
-      window.location.href = href;
-    }
-    window.addEventListener('keydown', onKey);
-    return () => window.removeEventListener('keydown', onKey);
-  }, [href]);
 
   return (
     <div className="grid grid-cols-1 items-stretch gap-3 md:grid-cols-[1fr_auto_1fr_auto] md:gap-2">
