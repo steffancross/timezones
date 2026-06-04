@@ -1,6 +1,7 @@
 import { DateTime } from 'luxon';
 import { createStore } from 'zustand/vanilla';
 import { subscribeWithSelector } from 'zustand/middleware';
+import { MINUTES_PER_DAY, RANGE_STEP_MIN } from '@/lib/converter/range';
 import type { TimeFormat } from '@/lib/time/format';
 import { DEFAULT_WORKING_HOURS, type WorkingHours } from '@/lib/time/working-hours';
 
@@ -34,16 +35,18 @@ export interface ConverterState {
    */
   defaultAnchorDate: string;
   /**
-   * Range selected on the strip, expressed as the home zone's local-hour
-   * column indices (both inclusive). `rangeStart` and `rangeEnd` define the
-   * leftmost and rightmost columns covered; a 1-tile click sets them equal.
+   * Range selected on the strip, as home-zone minutes-of-day — a half-open
+   * interval `[rangeStartMin, rangeEndMin)`, both `null` when no range. Always
+   * multiples of `RANGE_STEP_MIN` (15). The start is inclusive, the end
+   * exclusive, so a full-hour 14:00–15:00 block is `{840, 900}`; `rangeEndMin`
+   * can reach 1440 (next-day midnight). Invariant when set: `rangeEndMin >=
+   * rangeStartMin + RANGE_STEP_MIN`.
    *
-   * When `rangeEnd` is null, the block is treated as 1 tile wide at
-   * `rangeStart` — keeps URL-sync paths that only know the start working
-   * without a separate width field.
+   * The hour strip stays coarse — the columns it highlights are derived from
+   * this interval via `rangeColumns` (lib/converter/range.ts), never stored.
    */
-  rangeStart: number | null;
-  rangeEnd: number | null;
+  rangeStartMin: number | null;
+  rangeEndMin: number | null;
   previewHour: number | null;
 
   format: TimeFormat;
@@ -79,11 +82,20 @@ export interface ConverterActions {
 
   setAnchorDate: (date: string) => void;
   /**
-   * Set both range endpoints in one update. `start` and `end` may be passed
-   * in any order; the action normalizes so `rangeStart` is the leftmost
-   * column.
+   * Set the range from two hour-column indices (the drag/resize callers speak
+   * columns). May be passed in any order; stored as the half-open minute
+   * interval `[lo*60, (hi+1)*60)`. SNAPS any prior fine-tuned 15-min endpoints
+   * back to full hours — the intended behavior for a strip drag.
    */
-  setRange: (start: number, end: number) => void;
+  setRange: (startCol: number, endCol: number) => void;
+  /**
+   * Set the precise range endpoints in minutes-of-day (the action-bar selects).
+   * Pass only the side that changed; the other is read from current state.
+   * Snaps each to RANGE_STEP_MIN, clamps to the day, and enforces a minimum
+   * RANGE_STEP_MIN span by pushing the side the caller did NOT change. No-op if
+   * the result can't form a range (no existing range and only one side given).
+   */
+  setRangeMinutes: (next: { startMin?: number; endMin?: number }) => void;
   setPreviewHour: (hour: number | null) => void;
   /** Clear the range and resync the date to today — used by the range pill's ×. */
   clearRange: () => void;
@@ -160,8 +172,8 @@ function buildDefaults(): ConverterState {
     homeZoneIndex: null,
     anchorDate: initialToday,
     defaultAnchorDate: initialToday,
-    rangeStart: null,
-    rangeEnd: null,
+    rangeStartMin: null,
+    rangeEndMin: null,
     previewHour: null,
     format: '12',
     overlay: {
@@ -299,19 +311,42 @@ export function createConverterStore(initialPartial: Partial<ConverterState> = {
       setHomeZoneIndex: (index) => set({ homeZoneIndex: index }),
 
       setAnchorDate: (date) => set({ anchorDate: date }),
-      setRange: (start, end) => {
-        const lo = Math.min(start, end);
-        const hi = Math.max(start, end);
-        set({ rangeStart: lo, rangeEnd: hi });
+      setRange: (startCol, endCol) => {
+        const lo = Math.min(startCol, endCol);
+        const hi = Math.max(startCol, endCol);
+        set({ rangeStartMin: lo * 60, rangeEndMin: (hi + 1) * 60 });
       },
+      setRangeMinutes: (next) =>
+        set((state) => {
+          const rawStart = next.startMin ?? state.rangeStartMin;
+          const rawEnd = next.endMin ?? state.rangeEndMin;
+          if (rawStart === null || rawEnd === null) return state;
+          const snap = (m: number) => Math.round(m / RANGE_STEP_MIN) * RANGE_STEP_MIN;
+          const clamp = (v: number, lo: number, hi: number) => Math.max(lo, Math.min(hi, v));
+          let s = clamp(snap(rawStart), 0, MINUTES_PER_DAY - RANGE_STEP_MIN);
+          let e = clamp(snap(rawEnd), RANGE_STEP_MIN, MINUTES_PER_DAY);
+          // Enforce the minimum span by pushing the endpoint the caller did NOT
+          // set (when only one side changed); otherwise push the end.
+          if (e - s < RANGE_STEP_MIN) {
+            if (next.endMin === undefined && next.startMin !== undefined) {
+              e = Math.min(MINUTES_PER_DAY, s + RANGE_STEP_MIN);
+            } else if (next.startMin === undefined && next.endMin !== undefined) {
+              s = Math.max(0, e - RANGE_STEP_MIN);
+            } else {
+              e = Math.min(MINUTES_PER_DAY, s + RANGE_STEP_MIN);
+              s = Math.min(s, e - RANGE_STEP_MIN);
+            }
+          }
+          return { rangeStartMin: s, rangeEndMin: e };
+        }),
       setPreviewHour: (hour) => set({ previewHour: hour }),
 
       clearRange: () =>
         set((state) => {
           const homeToday = todayInZone(resolveHomeIana(state.zones, state.homeZoneIndex));
           return {
-            rangeStart: null,
-            rangeEnd: null,
+            rangeStartMin: null,
+            rangeEndMin: null,
             previewHour: null,
             anchorDate: homeToday,
             defaultAnchorDate: homeToday,
@@ -323,8 +358,8 @@ export function createConverterStore(initialPartial: Partial<ConverterState> = {
           const homeToday = todayInZone(resolveHomeIana(state.zones, state.homeZoneIndex));
           const defaults = buildDefaults();
           return {
-            rangeStart: null,
-            rangeEnd: null,
+            rangeStartMin: null,
+            rangeEndMin: null,
             previewHour: null,
             anchorDate: homeToday,
             defaultAnchorDate: homeToday,

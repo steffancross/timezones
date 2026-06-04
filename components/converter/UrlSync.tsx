@@ -28,16 +28,16 @@ export function UrlSync() {
 
   const anchorDate = useConverterStore((s) => s.anchorDate);
   const defaultAnchorDate = useConverterStore((s) => s.defaultAnchorDate);
-  const rangeStart = useConverterStore((s) => s.rangeStart);
-  const rangeEnd = useConverterStore((s) => s.rangeEnd);
+  const rangeStartMin = useConverterStore((s) => s.rangeStartMin);
+  const rangeEndMin = useConverterStore((s) => s.rangeEndMin);
   const format = useConverterStore((s) => s.format);
 
   useEffect(() => {
     const qs = stateToQueryString({
       anchorDate,
       defaultAnchorDate,
-      rangeStart,
-      rangeEnd,
+      rangeStartMin,
+      rangeEndMin,
       format,
     });
     const next = qs ? `${pathname}?${qs}` : pathname;
@@ -54,7 +54,7 @@ export function UrlSync() {
     }, 100);
 
     return () => clearTimeout(t);
-  }, [pathname, anchorDate, defaultAnchorDate, rangeStart, rangeEnd, format]);
+  }, [pathname, anchorDate, defaultAnchorDate, rangeStartMin, rangeEndMin, format]);
 
   return null;
 }

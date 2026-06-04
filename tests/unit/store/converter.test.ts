@@ -191,6 +191,71 @@ describe('initialize', () => {
   });
 });
 
+describe('setRange (column → minute interval)', () => {
+  beforeEach(freshStore);
+
+  it.each([
+    [14, 14, 840, 900],
+    [3, 5, 180, 360],
+    [5, 3, 180, 360], // reversed args normalize
+    [23, 23, 1380, 1440], // last column ends at next-day midnight
+    [0, 0, 0, 60],
+  ])('setRange(%i, %i) → {%i, %i}', (startCol, endCol, startMin, endMin) => {
+    store.getState().setRange(startCol, endCol);
+    const s = store.getState();
+    expect(s.rangeStartMin).toBe(startMin);
+    expect(s.rangeEndMin).toBe(endMin);
+  });
+});
+
+describe('setRangeMinutes (action-bar selects)', () => {
+  beforeEach(freshStore);
+
+  it('snaps each endpoint to the 15-min step', () => {
+    store.getState().setRange(3, 4); // {180, 300}
+    store.getState().setRangeMinutes({ endMin: 308 }); // 308 rounds to 315
+    expect(store.getState().rangeEndMin).toBe(315);
+    store.getState().setRangeMinutes({ startMin: 187 }); // 187 rounds to 180
+    expect(store.getState().rangeStartMin).toBe(180);
+  });
+
+  it('clamps the start to [0, 1425] and the end to [15, 1440]', () => {
+    store.getState().setRange(3, 5);
+    store.getState().setRangeMinutes({ startMin: -90 });
+    expect(store.getState().rangeStartMin).toBe(0);
+    store.getState().setRangeMinutes({ endMin: 9999 });
+    expect(store.getState().rangeEndMin).toBe(1440);
+  });
+
+  it('enforces a minimum 15-min span by pushing the end when the start advances', () => {
+    store.getState().setRange(3, 5); // {180, 360}
+    store.getState().setRangeMinutes({ startMin: 360 }); // would collide with end
+    const s = store.getState();
+    expect(s.rangeStartMin).toBe(360);
+    expect(s.rangeEndMin).toBe(375);
+  });
+
+  it('enforces a minimum 15-min span by pushing the start when the end retreats', () => {
+    store.getState().setRange(3, 5); // {180, 360}
+    store.getState().setRangeMinutes({ endMin: 180 }); // would collide with start
+    const s = store.getState();
+    expect(s.rangeEndMin).toBe(180);
+    expect(s.rangeStartMin).toBe(165);
+  });
+
+  it('seeds both endpoints when no range exists yet (URL-hydrate path)', () => {
+    store.getState().setRangeMinutes({ startMin: 180, endMin: 315 });
+    const s = store.getState();
+    expect(s.rangeStartMin).toBe(180);
+    expect(s.rangeEndMin).toBe(315);
+  });
+
+  it('is a no-op when no range exists and only one side is given', () => {
+    store.getState().setRangeMinutes({ startMin: 180 });
+    expect(store.getState().rangeStartMin).toBeNull();
+  });
+});
+
 describe('clearRange', () => {
   beforeEach(freshStore);
 
@@ -202,7 +267,8 @@ describe('clearRange', () => {
     s.setAnchorDate('2026-01-01');
     s.clearRange();
     const next = store.getState();
-    expect(next.rangeStart).toBeNull();
+    expect(next.rangeStartMin).toBeNull();
+    expect(next.rangeEndMin).toBeNull();
     expect(next.previewHour).toBeNull();
     expect(next.anchorDate).not.toBe('2026-01-01');
   });
@@ -236,7 +302,8 @@ describe('resetAll', () => {
     s.resetAll();
     const next = store.getState();
     expect(next.zones).toHaveLength(2);
-    expect(next.rangeStart).toBeNull();
+    expect(next.rangeStartMin).toBeNull();
+    expect(next.rangeEndMin).toBeNull();
     expect(next.previewHour).toBeNull();
     expect(next.anchorDate).not.toBe('2026-01-01');
     expect(next.format).toBe('12');

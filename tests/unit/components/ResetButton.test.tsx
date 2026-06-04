@@ -19,7 +19,8 @@ function freshStoreAtDefaults() {
     homeZoneIndex: null,
     anchorDate: TODAY,
     defaultAnchorDate: TODAY,
-    rangeStart: null,
+    rangeStartMin: null,
+    rangeEndMin: null,
     previewHour: null,
     format: '12',
     overlay: { dayNight: true, workHours: false, weekend: false },
@@ -43,9 +44,9 @@ describe('ResetButton', () => {
     await expect.element(screen.getByRole('button')).toBeDisabled();
   });
 
-  it('enables when rangeStart is set', async () => {
+  it('enables when a range is set', async () => {
     const screen = await renderWithStore();
-    store.setState({ rangeStart: 14 });
+    store.setState({ rangeStartMin: 840, rangeEndMin: 900 });
     await expect.element(screen.getByRole('button')).toBeEnabled();
   });
 
@@ -102,7 +103,8 @@ describe('ResetButton', () => {
   it('click calls resetAll: store returns to defaults', async () => {
     const screen = await renderWithStore();
     store.setState({
-      rangeStart: 14,
+      rangeStartMin: 840,
+      rangeEndMin: 900,
       format: '24',
       overlay: { dayNight: false, workHours: true, weekend: true },
       workingHours: { start: 8, end: 18, days: [1, 2, 3, 4, 5, 6] },
@@ -112,7 +114,7 @@ describe('ResetButton', () => {
     await screen.getByRole('button').click();
 
     const after = store.getState();
-    expect(after.rangeStart).toBeNull();
+    expect(after.rangeStartMin).toBeNull();
     expect(after.format).toBe('12');
     expect(after.overlay).toEqual({ dayNight: true, workHours: false, weekend: false });
     expect(after.workingHours).toEqual(DEFAULT_WORKING_HOURS);

@@ -10,7 +10,8 @@ let store: ReturnType<typeof createConverterStore>;
 function freshStore() {
   store = createConverterStore();
   store.setState({
-    rangeStart: null,
+    rangeStartMin: null,
+    rangeEndMin: null,
     previewHour: null,
   });
 }
@@ -117,7 +118,7 @@ describe('HourTile className state matrix', () => {
     // The range used to fill each tile with bg-[var(--brand)]; now the tile
     // stays transparent and the overlay band sits on top. Asserting the absence
     // is what guards against accidentally re-introducing the per-tile fill.
-    store.setState({ rangeStart: 14 });
+    store.setState({ rangeStartMin: 840, rangeEndMin: 900 });
     const screen = await renderTile({
       column: column(14),
       columnIndex: 14,
@@ -145,7 +146,7 @@ describe('HourTile className state matrix', () => {
   it('does not show preview band when anchor is set to the same column (avoid double-emphasis)', async () => {
     // The brand-soft preview tint would compound with the RangeBand overlay
     // already covering the column. Keep them mutually exclusive.
-    store.setState({ rangeStart: 14, previewHour: 14 });
+    store.setState({ rangeStartMin: 840, rangeEndMin: 900, previewHour: 14 });
     const screen = await renderTile({
       column: column(14),
       columnIndex: 14,
@@ -184,7 +185,7 @@ describe('HourTile className state matrix', () => {
   });
 
   it('renders the +Nd day-delta badge when anchor-aligned and column.dayDelta > 0', async () => {
-    store.setState({ rangeStart: 23 });
+    store.setState({ rangeStartMin: 1380, rangeEndMin: 1440 });
     const screen = await renderTile({
       column: { homeHour: 23, localHour: 1, localDate: '2026-05-21', dayDelta: 1 },
       columnIndex: 23,
@@ -197,7 +198,7 @@ describe('HourTile className state matrix', () => {
   });
 
   it('renders the -Nd day-delta badge when column.dayDelta < 0', async () => {
-    store.setState({ rangeStart: 0 });
+    store.setState({ rangeStartMin: 0, rangeEndMin: 60 });
     const screen = await renderTile({
       column: { homeHour: 0, localHour: 22, localDate: '2026-05-19', dayDelta: -1 },
       columnIndex: 0,
@@ -251,7 +252,7 @@ describe('HourTile className state matrix', () => {
   });
 
   it('keeps the label visible on mobile when the column is anchor-aligned', async () => {
-    store.setState({ rangeStart: 7 });
+    store.setState({ rangeStartMin: 420, rangeEndMin: 480 });
     const screen = await renderTile({
       column: column(7),
       columnIndex: 7,
@@ -262,6 +263,38 @@ describe('HourTile className state matrix', () => {
     });
     const label = screen.container.querySelector('span');
     expect(label?.className).not.toContain('max-md:invisible');
+  });
+
+  it('lights the final column when the range ends partway into it (3:00–5:15 → col 5)', async () => {
+    // 5:15 ends inside the 5:00–6:00 column, so column 5 is in range. Observed
+    // via off-day opacity: in-range tiles drop the dimming.
+    store.setState({ rangeStartMin: 180, rangeEndMin: 315 });
+    const screen = await renderTile({
+      column: column(5),
+      columnIndex: 5,
+      format: '12',
+      isOffDay: true,
+      isCurrentHour: false,
+      isWeekend: false,
+    });
+    const label = screen.container.querySelector('span');
+    expect(label?.className).not.toContain('opacity-[0.55]');
+  });
+
+  it('does not light the column past an exact-hour end (3:00–5:00 → col 5 excluded)', async () => {
+    // 5:00 stops on the boundary, so column 5 (5:00–6:00) is NOT in range and
+    // keeps its off-day dimming.
+    store.setState({ rangeStartMin: 180, rangeEndMin: 300 });
+    const screen = await renderTile({
+      column: column(5),
+      columnIndex: 5,
+      format: '12',
+      isOffDay: true,
+      isCurrentHour: false,
+      isWeekend: false,
+    });
+    const label = screen.container.querySelector('span');
+    expect(label?.className).toContain('opacity-[0.55]');
   });
 });
 

@@ -27,30 +27,32 @@ describe('urlToState', () => {
     expect(r.anchorDate).toBeUndefined();
   });
 
-  it('accepts valid rangeStart and mirrors it as rangeEnd when not provided', () => {
-    const r = urlToState({ pair: pstToEst, rangeStart: 15 });
-    expect(r.rangeStart).toBe(15);
-    expect(r.rangeEnd).toBe(15);
+  it('accepts a valid minute range', () => {
+    const r = urlToState({ pair: pstToEst, rangeStartMin: 180, rangeEndMin: 315 });
+    expect(r.rangeStartMin).toBe(180);
+    expect(r.rangeEndMin).toBe(315);
   });
 
-  it('accepts a multi-tile rangeStart..rangeEnd', () => {
-    const r = urlToState({ pair: pstToEst, rangeStart: 9, rangeEnd: 11 });
-    expect(r.rangeStart).toBe(9);
-    expect(r.rangeEnd).toBe(11);
+  it('rejects an inverted range (end <= start)', () => {
+    const r = urlToState({ pair: pstToEst, rangeStartMin: 600, rangeEndMin: 300 });
+    expect(r.rangeStartMin).toBeUndefined();
+    expect(r.rangeEndMin).toBeUndefined();
   });
 
-  it('clamps a rangeEnd less than rangeStart back to rangeStart', () => {
-    // Defensive: keeps a malformed URL from producing a swapped/inverted range
-    // — the parser already normalizes start <= end via min/max in the store.
-    const r = urlToState({ pair: pstToEst, rangeStart: 10, rangeEnd: 5 });
-    expect(r.rangeStart).toBe(10);
-    expect(r.rangeEnd).toBe(10);
+  it('rejects endpoints that are not multiples of 15', () => {
+    const r = urlToState({ pair: pstToEst, rangeStartMin: 187, rangeEndMin: 315 });
+    expect(r.rangeStartMin).toBeUndefined();
   });
 
-  it('rejects out-of-range rangeStart', () => {
-    expect(urlToState({ pair: pstToEst, rangeStart: 99 }).rangeStart).toBeUndefined();
-    expect(urlToState({ pair: pstToEst, rangeStart: -1 }).rangeStart).toBeUndefined();
-    expect(urlToState({ pair: pstToEst, rangeStart: 24 }).rangeStart).toBeUndefined();
+  it('rejects out-of-range endpoints', () => {
+    expect(urlToState({ pair: pstToEst, rangeStartMin: -15, rangeEndMin: 60 }).rangeStartMin).toBeUndefined();
+    expect(urlToState({ pair: pstToEst, rangeStartMin: 1440, rangeEndMin: 1440 }).rangeStartMin).toBeUndefined();
+    expect(urlToState({ pair: pstToEst, rangeStartMin: 1380, rangeEndMin: 1455 }).rangeStartMin).toBeUndefined();
+  });
+
+  it('requires a minimum 15-min span', () => {
+    const r = urlToState({ pair: pstToEst, rangeStartMin: 180, rangeEndMin: 180 });
+    expect(r.rangeStartMin).toBeUndefined();
   });
 
   it('accepts valid format', () => {
@@ -62,42 +64,45 @@ describe('urlToState', () => {
     const r = urlToState({});
     expect(r.zones).toBeUndefined();
     expect(r.anchorDate).toBeUndefined();
-    expect(r.rangeStart).toBeUndefined();
-    expect(r.rangeEnd).toBeUndefined();
+    expect(r.rangeStartMin).toBeUndefined();
+    expect(r.rangeEndMin).toBeUndefined();
     expect(r.format).toBeUndefined();
   });
 });
 
 describe('parseSearchParams', () => {
-  it('parses d/r/f with a single-tile range', () => {
-    expect(parseSearchParams({ d: '2026-05-14', r: '15', f: '24' })).toEqual({
+  it('parses d/r/f with an HHmm-HHmm range', () => {
+    expect(parseSearchParams({ d: '2026-05-14', r: '1500-1600', f: '24' })).toEqual({
       date: '2026-05-14',
-      rangeStart: 15,
-      rangeEnd: 15,
+      rangeStartMin: 900,
+      rangeEndMin: 960,
       format: '24',
       zones: undefined,
     });
   });
 
-  it('parses r=N-M as an inclusive range', () => {
-    const r = parseSearchParams({ r: '9-11' });
-    expect(r.rangeStart).toBe(9);
-    expect(r.rangeEnd).toBe(11);
+  it('parses a 15-minute-precise range', () => {
+    const r = parseSearchParams({ r: '0300-0515' });
+    expect(r.rangeStartMin).toBe(180);
+    expect(r.rangeEndMin).toBe(315);
+  });
+
+  it('parses the 2400 sentinel as next-day midnight', () => {
+    const r = parseSearchParams({ r: '2300-2400' });
+    expect(r.rangeStartMin).toBe(1380);
+    expect(r.rangeEndMin).toBe(1440);
   });
 
   it('takes the first value when a param is an array', () => {
-    expect(parseSearchParams({ r: ['15', '16'] }).rangeStart).toBe(15);
+    expect(parseSearchParams({ r: ['1500-1600', '1600-1700'] }).rangeStartMin).toBe(900);
   });
 
-  it('returns undefined for unparseable range', () => {
-    expect(parseSearchParams({ r: 'abc' }).rangeStart).toBeUndefined();
-  });
-
-  it('falls back to single-tile when only the start side parses', () => {
-    const r = parseSearchParams({ r: '9-xyz' });
-    expect(r.rangeStart).toBe(9);
-    expect(r.rangeEnd).toBe(9);
-  });
+  it.each(['abc', '1500', '15-16', '1500-', '1560-1600', '2401-2400'])(
+    'returns undefined for malformed range %s',
+    (raw) => {
+      expect(parseSearchParams({ r: raw }).rangeStartMin).toBeUndefined();
+    },
+  );
 
   it('returns undefined for unknown format', () => {
     expect(parseSearchParams({ f: '36' }).format).toBeUndefined();
@@ -106,8 +111,8 @@ describe('parseSearchParams', () => {
   it('returns all-undefined for empty input', () => {
     expect(parseSearchParams({})).toEqual({
       date: undefined,
-      rangeStart: undefined,
-      rangeEnd: undefined,
+      rangeStartMin: undefined,
+      rangeEndMin: undefined,
       format: undefined,
       zones: undefined,
     });

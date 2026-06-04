@@ -49,8 +49,8 @@ export function SearchParamsHydrator() {
     const overrides = urlToState({
       zones: parsed.zones,
       date: parsed.date,
-      rangeStart: parsed.rangeStart,
-      rangeEnd: parsed.rangeEnd,
+      rangeStartMin: parsed.rangeStartMin,
+      rangeEndMin: parsed.rangeEndMin,
       format: parsed.format,
     });
 
@@ -66,9 +66,8 @@ export function SearchParamsHydrator() {
       state.setAnchorDate(overrides.anchorDate);
     }
 
-    if (typeof overrides.rangeStart === 'number') {
-      const end = overrides.rangeEnd ?? overrides.rangeStart;
-      state.setRange(overrides.rangeStart, end);
+    if (typeof overrides.rangeStartMin === 'number') {
+      state.setRangeMinutes({ startMin: overrides.rangeStartMin, endMin: overrides.rangeEndMin });
     }
 
     if (overrides.format) {

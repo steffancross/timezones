@@ -36,6 +36,18 @@ export function formatHourTile(hour: number, format: TimeFormat): string {
 }
 
 /**
+ * Format a duration in minutes to a compact label.
+ * 60 → '1h'  135 → '2h 15m'  45 → '45m'  1440 → '24h'
+ */
+export function formatDuration(totalMin: number): string {
+  const h = Math.floor(totalMin / 60);
+  const m = totalMin % 60;
+  if (h === 0) return `${m}m`;
+  if (m === 0) return `${h}h`;
+  return `${h}h ${m}m`;
+}
+
+/**
  * Format a date in human-readable form. e.g., 'Wed, May 14'
  */
 export function formatDate(dt: DateTime): string {

@@ -181,7 +181,8 @@ describe('ConverterStateProvider bootstrap', () => {
           ],
           homeZoneIndex: 0,
           anchorDate: '2026-12-25',
-          rangeStart: 15,
+          rangeStartMin: 900,
+          rangeEndMin: 960,
           format: '24',
         }}
       >
@@ -194,7 +195,7 @@ describe('ConverterStateProvider bootstrap', () => {
     expect(s.zones).toHaveLength(2);
     expect(s.zones[0]?.iana).toBe('America/Los_Angeles');
     expect(s.anchorDate).toBe('2026-12-25');
-    expect(s.rangeStart).toBe(15);
+    expect(s.rangeStartMin).toBe(900);
     expect(s.format).toBe('24');
   });
 

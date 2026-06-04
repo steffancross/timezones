@@ -12,7 +12,7 @@ import type { ConverterState } from './converter';
 export function stateToQueryString(
   state: Pick<
     ConverterState,
-    'anchorDate' | 'defaultAnchorDate' | 'rangeStart' | 'rangeEnd' | 'format'
+    'anchorDate' | 'defaultAnchorDate' | 'rangeStartMin' | 'rangeEndMin' | 'format'
   > & {
     zones?: ConverterState['zones'];
     includeZones?: boolean;
@@ -28,14 +28,12 @@ export function stateToQueryString(
     params.set('d', state.anchorDate);
   }
 
-  if (state.rangeStart !== null) {
-    // Compact form: `r=14` when the block is 1-tile, `r=14-15` when wider.
-    // rangeEnd is left null by URL-only callers, so we fall back to rangeStart.
-    const end = state.rangeEnd ?? state.rangeStart;
-    params.set(
-      'r',
-      end === state.rangeStart ? String(state.rangeStart) : `${state.rangeStart}-${end}`,
-    );
+  if (state.rangeStartMin !== null) {
+    // `r=HHmm-HHmm`, zero-padded 24h, half-open. The end is exclusive; 1440
+    // (next-day midnight) serializes as the `2400` sentinel. rangeEndMin is
+    // left null by URL-only callers, so we fall back to a 1-hour block.
+    const end = state.rangeEndMin ?? state.rangeStartMin + 60;
+    params.set('r', `${minToHHmm(state.rangeStartMin)}-${minToHHmm(end)}`);
   }
 
   if (state.format !== '12') {
@@ -43,4 +41,10 @@ export function stateToQueryString(
   }
 
   return params.toString();
+}
+
+/** Minutes-of-day → `HHmm` (24h, zero-padded). 1440 → `2400` (next-day midnight). */
+function minToHHmm(min: number): string {
+  if (min >= 1440) return '2400';
+  return `${String(Math.floor(min / 60)).padStart(2, '0')}${String(min % 60).padStart(2, '0')}`;
 }

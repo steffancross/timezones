@@ -48,7 +48,7 @@ describe('SearchParamsHydrator', () => {
     const after = store.getState();
     expect(after.zones).toEqual(before.zones);
     expect(after.anchorDate).toBe(before.anchorDate);
-    expect(after.rangeStart).toBeNull();
+    expect(after.rangeStartMin).toBeNull();
     expect(after.format).toBe('12');
   });
 
@@ -65,20 +65,28 @@ describe('SearchParamsHydrator', () => {
     expect(store.getState().anchorDate).toBe(before);
   });
 
-  it('applies ?r=N as a 1-tile range', async () => {
-    mockedParams = new URLSearchParams('r=14');
+  it('applies ?r=HHmm-HHmm as a one-hour range', async () => {
+    mockedParams = new URLSearchParams('r=1400-1500');
     await renderHydrator();
     const s = store.getState();
-    expect(s.rangeStart).toBe(14);
-    expect(s.rangeEnd).toBe(14);
+    expect(s.rangeStartMin).toBe(840);
+    expect(s.rangeEndMin).toBe(900);
   });
 
-  it('applies ?r=N-M as a wider range', async () => {
-    mockedParams = new URLSearchParams('r=14-17');
+  it('applies a wider range', async () => {
+    mockedParams = new URLSearchParams('r=1400-1700');
     await renderHydrator();
     const s = store.getState();
-    expect(s.rangeStart).toBe(14);
-    expect(s.rangeEnd).toBe(17);
+    expect(s.rangeStartMin).toBe(840);
+    expect(s.rangeEndMin).toBe(1020);
+  });
+
+  it('applies a 15-minute-precise range', async () => {
+    mockedParams = new URLSearchParams('r=0300-0515');
+    await renderHydrator();
+    const s = store.getState();
+    expect(s.rangeStartMin).toBe(180);
+    expect(s.rangeEndMin).toBe(315);
   });
 
   it('applies ?f=24', async () => {
@@ -105,12 +113,12 @@ describe('SearchParamsHydrator', () => {
   });
 
   it('applies multiple params in one mount (d + r + f)', async () => {
-    mockedParams = new URLSearchParams('d=2026-12-25&r=9-17&f=24');
+    mockedParams = new URLSearchParams('d=2026-12-25&r=0900-1700&f=24');
     await renderHydrator();
     const s = store.getState();
     expect(s.anchorDate).toBe('2026-12-25');
-    expect(s.rangeStart).toBe(9);
-    expect(s.rangeEnd).toBe(17);
+    expect(s.rangeStartMin).toBe(540);
+    expect(s.rangeEndMin).toBe(1020);
     expect(s.format).toBe('24');
   });
 });

@@ -1,13 +1,21 @@
 'use client';
 
+import { useConverterStore } from '@/components/converter/store-context';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
+import { MINUTES_PER_DAY, RANGE_STEP_MIN } from '@/lib/converter/range';
+import { stateToQueryString } from '@/lib/store/to-url';
+import { formatClock, formatDate, formatDuration, formatTime, type TimeFormat } from '@/lib/time/format';
+import { currentAbbreviation } from '@/lib/zones/abbreviation';
 import { Calendar, Copy, Link2, Mail, X } from 'lucide-react';
 import { DateTime } from 'luxon';
-import type { ReactNode } from 'react';
+import { type ReactNode, useCallback, useRef } from 'react';
 import { toast } from 'sonner';
-import { useConverterStore } from '@/components/converter/store-context';
-import { stateToQueryString } from '@/lib/store/to-url';
-import { formatDate, formatTime } from '@/lib/time/format';
-import { currentAbbreviation } from '@/lib/zones/abbreviation';
 
 /**
  * Action bar that appears below the zones card whenever a range is selected.
@@ -29,26 +37,29 @@ import { currentAbbreviation } from '@/lib/zones/abbreviation';
  */
 export function RangeActionBar() {
   const zones = useConverterStore((s) => s.zones);
-  const rangeStart = useConverterStore((s) => s.rangeStart);
-  const rangeEnd = useConverterStore((s) => s.rangeEnd);
+  const rangeStartMin = useConverterStore((s) => s.rangeStartMin);
+  const rangeEndMin = useConverterStore((s) => s.rangeEndMin);
   const anchorDate = useConverterStore((s) => s.anchorDate);
   const defaultAnchorDate = useConverterStore((s) => s.defaultAnchorDate);
   const format = useConverterStore((s) => s.format);
+  const setRangeMinutes = useConverterStore((s) => s.setRangeMinutes);
   const clearRange = useConverterStore((s) => s.clearRange);
 
   const homeIana = zones[0]?.iana;
-  if (rangeStart === null || !homeIana) return null;
+  if (rangeStartMin === null || rangeEndMin === null || !homeIana) return null;
 
-  const end = rangeEnd ?? rangeStart;
-  // The range is column-inclusive: [rangeStart..rangeEnd] covers the time
-  // from rangeStart:00 to (rangeEnd + 1):00 in the home zone.
-  const homeStart = DateTime.fromISO(anchorDate, { zone: homeIana }).set({ hour: rangeStart });
-  const homeEnd = DateTime.fromISO(anchorDate, { zone: homeIana }).set({ hour: end + 1 });
+  // Half-open minute interval. `.startOf('day').plus({minutes})` is DST-safe and
+  // rolls a 1440 end into next-day 00:00 correctly (unlike `.set({hour})`).
+  const homeStart = DateTime.fromISO(anchorDate, { zone: homeIana })
+    .startOf('day')
+    .plus({ minutes: rangeStartMin });
+  const homeEnd = DateTime.fromISO(anchorDate, { zone: homeIana })
+    .startOf('day')
+    .plus({ minutes: rangeEndMin });
 
-  const timeLabel = `${formatTime(homeStart, format)} – ${formatTime(homeEnd, format)}`;
   const abbreviation = currentAbbreviation(homeIana, homeStart);
   const dateLabel = formatDate(homeStart);
-  const durationLabel = `${end - rangeStart + 1}h`;
+  const durationLabel = formatDuration(rangeEndMin - rangeStartMin);
 
   const buildTimesText = (): string =>
     zones
@@ -64,8 +75,8 @@ export function RangeActionBar() {
       zones,
       anchorDate,
       defaultAnchorDate,
-      rangeStart,
-      rangeEnd,
+      rangeStartMin,
+      rangeEndMin,
       format,
       includeZones: true,
     });
@@ -109,10 +120,26 @@ export function RangeActionBar() {
 
   return (
     <div className="flex flex-wrap items-center gap-2.5 rounded-lg border border-[color:color-mix(in_oklab,var(--brand)_30%,transparent)] bg-card px-3 py-2.5 shadow-[0_1px_0_oklch(0_0_0/0.02),0_8px_24px_-20px_oklch(0_0_0/0.10)]">
-      <div className="flex min-w-0 flex-1 flex-wrap items-baseline gap-2.5">
-        <span className="font-mono text-[13.5px] font-semibold tracking-[-0.005em] text-[color:var(--fg)]">
-          {timeLabel}
-        </span>
+      <div className="flex min-w-0 flex-1 flex-wrap items-center gap-2.5">
+        <div className="flex items-center gap-1.5">
+          <RangeTimeSelect
+            kind="start"
+            value={rangeStartMin}
+            otherValue={rangeEndMin}
+            format={format}
+            onChange={(startMin) => setRangeMinutes({ startMin })}
+          />
+          <span aria-hidden="true" className="font-mono text-[13px] text-[color:var(--fg-muted)]">
+            –
+          </span>
+          <RangeTimeSelect
+            kind="end"
+            value={rangeEndMin}
+            otherValue={rangeStartMin}
+            format={format}
+            onChange={(endMin) => setRangeMinutes({ endMin })}
+          />
+        </div>
         <span className="font-mono text-[11.5px] text-[color:var(--fg-muted)]">
           {abbreviation} · {dateLabel}
         </span>
@@ -148,6 +175,92 @@ export function RangeActionBar() {
       </button>
     </div>
   );
+}
+
+/**
+ * A 15-minute-granularity time picker for one endpoint of the range. Radix
+ * Select (via the shadcn primitive) so the option list is height-bounded and
+ * scrollable rather than a full-screen native popup — it also auto-scrolls to
+ * the selected time on open and supports type-ahead. Start lists 00:00–23:45;
+ * end lists 00:15–24:00 (the 24:00 = next-day midnight option is tagged +1d).
+ * Options that would invert the range are disabled; the store clamp is the
+ * backstop.
+ */
+function RangeTimeSelect({
+  kind,
+  value,
+  otherValue,
+  format,
+  onChange,
+}: {
+  kind: 'start' | 'end';
+  value: number;
+  otherValue: number;
+  format: TimeFormat;
+  onChange: (min: number) => void;
+}) {
+  const lo = kind === 'start' ? 0 : RANGE_STEP_MIN;
+  const hi = kind === 'start' ? MINUTES_PER_DAY - RANGE_STEP_MIN : MINUTES_PER_DAY;
+  const options: number[] = [];
+  for (let m = lo; m <= hi; m += RANGE_STEP_MIN) options.push(m);
+
+  const selectedItemRef = useRef<HTMLDivElement>(null);
+
+  // popper only scrolls the selected item just into view (it lands at the bottom
+  // edge). On open, recenter it within the viewport — scroll the Radix viewport
+  // directly rather than scrollIntoView, which can also jog the page. rAF lets
+  // Radix's own open-scroll settle first.
+  const centerSelected = useCallback(() => {
+    requestAnimationFrame(() => {
+      const item = selectedItemRef.current;
+      const viewport = item?.closest<HTMLElement>('[data-radix-select-viewport]');
+      if (!item || !viewport) return;
+      const itemRect = item.getBoundingClientRect();
+      const vpRect = viewport.getBoundingClientRect();
+      viewport.scrollTop += itemRect.top - vpRect.top - (vpRect.height - itemRect.height) / 2;
+    });
+  }, []);
+
+  return (
+    <Select
+      value={String(value)}
+      onValueChange={(v) => onChange(Number(v))}
+      onOpenChange={(isOpen) => {
+        if (isOpen) centerSelected();
+      }}
+    >
+      <SelectTrigger
+        size="sm"
+        aria-label={kind === 'start' ? 'Range start time' : 'Range end time'}
+        className="gap-1 border-[color:var(--border)] bg-[var(--input-bg)] pr-1.5 pl-2 font-mono text-[13px] font-semibold tracking-[-0.005em] text-[color:var(--fg)] hover:border-[color:var(--border-strong)]"
+      >
+        <SelectValue />
+      </SelectTrigger>
+      {/* position=popper makes this a bounded, scrolling popover; item-aligned
+          (the default) grows to fit all 96 items and ignores the height cap. */}
+      <SelectContent position="popper" className="max-h-72">
+        {options.map((m) => (
+          <SelectItem
+            key={m}
+            ref={m === value ? selectedItemRef : null}
+            value={String(m)}
+            disabled={kind === 'start' ? m >= otherValue : m <= otherValue}
+            className="font-mono text-[13px]"
+          >
+            {clockLabel(m, format)}
+          </SelectItem>
+        ))}
+      </SelectContent>
+    </Select>
+  );
+}
+
+/** Option label for a minute-of-day. 1440 = next-day midnight, tagged +1d. */
+function clockLabel(min: number, format: TimeFormat): string {
+  if (min >= MINUTES_PER_DAY) {
+    return `${format === '24' ? '24:00' : '12:00 am'} +1d`;
+  }
+  return formatClock(Math.floor(min / 60), min % 60, format);
 }
 
 /**
