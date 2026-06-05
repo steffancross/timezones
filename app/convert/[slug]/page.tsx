@@ -6,6 +6,7 @@ import { ConverterStateProvider } from '@/components/converter/ConverterStatePro
 import { Breadcrumbs } from '@/components/site/Breadcrumbs';
 import { PairContent } from '@/components/templates/PairContent';
 import { buildMetadata } from '@/lib/seo/metadata';
+import { buildPairDescription, buildPairTitle } from '@/lib/seo/pair-copy';
 import { getCuratedPairSlugs } from '@/lib/sitemap/pair-slugs';
 import { type ParsedPair, parsePairSlug } from '@/lib/slugs/parse';
 import { urlToState } from '@/lib/store/from-url';
@@ -21,12 +22,9 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const pair = parsePairSlug(slug);
   if (!pair) return { title: 'Not found' };
 
-  const fromName = displayName(pair.from);
-  const toName = displayName(pair.to);
-
   return buildMetadata({
-    title: `${fromName} to ${toName} Converter`,
-    description: `Convert ${fromName} to ${toName}. Current time, UTC offset, DST behavior, and the full 24-hour conversion table.`,
+    title: buildPairTitle(pair),
+    description: buildPairDescription(pair),
     path: `/convert/${slug}`,
   });
 }
@@ -84,10 +82,6 @@ export default async function PairPage({ params }: { params: Promise<{ slug: str
       </ConverterStateProvider>
     </div>
   );
-}
-
-function displayName(zoc: ParsedPair['from']): string {
-  return zoc.kind === 'zone' ? zoc.zone.display_name : zoc.city.name;
 }
 
 function shortLabel(zoc: ParsedPair['from']): string {
