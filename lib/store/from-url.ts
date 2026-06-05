@@ -8,10 +8,13 @@ export interface UrlState {
   /** Explicit zone list parsed from the `z=` query param. Overrides `pair`. */
   zones?: ZoneRef[];
   date?: string;
-  rangeStart?: number;
-  rangeEnd?: number;
+  /** Half-open range in home-zone minutes-of-day (multiples of 15). */
+  rangeStartMin?: number;
+  rangeEndMin?: number;
   format?: TimeFormat;
 }
+
+const MIN_DAY = 1440;
 
 export function urlToState(input: UrlState): Partial<ConverterState> {
   const partial: Partial<ConverterState> = {};
@@ -32,17 +35,9 @@ export function urlToState(input: UrlState): Partial<ConverterState> {
     partial.anchorDate = input.date;
   }
 
-  if (typeof input.rangeStart === 'number' && input.rangeStart >= 0 && input.rangeStart <= 23) {
-    partial.rangeStart = input.rangeStart;
-    // Clamp end into [start, 23]; default to start when missing or malformed
-    // so URL callers that only know the start get a 1-tile block.
-    const end =
-      typeof input.rangeEnd === 'number' &&
-      input.rangeEnd >= input.rangeStart &&
-      input.rangeEnd <= 23
-        ? input.rangeEnd
-        : input.rangeStart;
-    partial.rangeEnd = end;
+  if (isValidRangeMinutes(input.rangeStartMin, input.rangeEndMin)) {
+    partial.rangeStartMin = input.rangeStartMin;
+    partial.rangeEndMin = input.rangeEndMin;
   }
 
   if (input.format === '12' || input.format === '24') {
@@ -59,6 +54,19 @@ function zoneOrCityToRef(zoc: ZoneOrCity): ZoneRef {
   return { kind: 'city', slug: zoc.city.id, iana: zoc.city.iana };
 }
 
+/**
+ * Valid half-open range in minutes: both multiples of 15, start in [0, 1425],
+ * end in [start+15, 1440]. Mirrors the store's `setRangeMinutes` clamp so a URL
+ * can't seed an out-of-bounds or inverted range.
+ */
+function isValidRangeMinutes(start: number | undefined, end: number | undefined): boolean {
+  if (typeof start !== 'number' || typeof end !== 'number') return false;
+  if (start % 15 !== 0 || end % 15 !== 0) return false;
+  if (start < 0 || start > MIN_DAY - 15) return false;
+  if (end < start + 15 || end > MIN_DAY) return false;
+  return true;
+}
+
 function isValidIsoDate(s: string): boolean {
   if (!/^\d{4}-\d{2}-\d{2}$/.test(s)) return false;
   const d = new Date(`${s}T00:00:00Z`);
@@ -73,36 +81,47 @@ export function parseSearchParams(
   const formatRaw = single(searchParams.f);
   const zonesRaw = single(searchParams.z);
 
-  const { rangeStart, rangeEnd } = parseRangeParam(rangeRaw);
+  const { rangeStartMin, rangeEndMin } = parseRangeParam(rangeRaw);
   const format = formatRaw === '12' || formatRaw === '24' ? formatRaw : undefined;
   const zones = zonesRaw ? parseZonesParam(zonesRaw) : undefined;
 
   return {
     date,
-    rangeStart,
-    rangeEnd,
+    rangeStartMin,
+    rangeEndMin,
     format,
     zones,
   };
 }
 
 /**
- * Parse the `r=` query param. Accepts `r=14` (single tile) or `r=14-15`
- * (inclusive range). Returns undefined for malformed input — the caller drops
- * the partial state rather than half-applying it.
+ * Parse the `r=HHmm-HHmm` query param (zero-padded 24h, half-open). The `2400`
+ * sentinel means next-day midnight (1440 min). Returns undefined for anything
+ * malformed — the caller drops the partial rather than half-applying it. Bounds
+ * and step are re-checked downstream by `isValidRangeMinutes`.
  */
 function parseRangeParam(raw: string | undefined): {
-  rangeStart: number | undefined;
-  rangeEnd: number | undefined;
+  rangeStartMin: number | undefined;
+  rangeEndMin: number | undefined;
 } {
-  if (!raw) return { rangeStart: undefined, rangeEnd: undefined };
-  const parts = raw.split('-');
-  const start = Number.parseInt(parts[0] ?? '', 10);
-  if (!Number.isFinite(start)) return { rangeStart: undefined, rangeEnd: undefined };
-  if (parts.length === 1) return { rangeStart: start, rangeEnd: start };
-  const end = Number.parseInt(parts[1] ?? '', 10);
-  if (!Number.isFinite(end)) return { rangeStart: start, rangeEnd: start };
-  return { rangeStart: start, rangeEnd: end };
+  const none = { rangeStartMin: undefined, rangeEndMin: undefined };
+  if (!raw) return none;
+  const m = raw.match(/^(\d{4})-(\d{4})$/);
+  if (!m) return none;
+  const start = hhmmToMin(m[1] as string);
+  const end = hhmmToMin(m[2] as string);
+  if (start === null || end === null) return none;
+  return { rangeStartMin: start, rangeEndMin: end };
+}
+
+/** `HHmm` → minutes-of-day. `2400` → 1440. Rejects HH>24, the 24xx range, mm>59. */
+function hhmmToMin(s: string): number | null {
+  const hh = Number.parseInt(s.slice(0, 2), 10);
+  const mm = Number.parseInt(s.slice(2), 10);
+  if (!Number.isFinite(hh) || !Number.isFinite(mm)) return null;
+  if (hh === 24) return mm === 0 ? 1440 : null;
+  if (hh > 23 || mm > 59) return null;
+  return hh * 60 + mm;
 }
 
 function parseZonesParam(raw: string): ZoneRef[] | undefined {

@@ -2,6 +2,7 @@
 
 import { useCallback, useRef } from 'react';
 import { useDragSelection } from '@/lib/converter/drag-selection';
+import { rangeColumns } from '@/lib/converter/range';
 import { useConverterStore } from '@/components/converter/store-context';
 import { cn } from '@/lib/utils';
 
@@ -25,12 +26,12 @@ interface Props {
  * invisible strip centered on each visible bracket. No pill grip handles.
  */
 export function RangeBand({ className }: Props) {
-  const rangeStart = useConverterStore((s) => s.rangeStart);
-  const rangeEnd = useConverterStore((s) => s.rangeEnd);
+  const rangeStartMin = useConverterStore((s) => s.rangeStartMin);
+  const rangeEndMin = useConverterStore((s) => s.rangeEndMin);
   const bandRef = useRef<HTMLDivElement>(null);
-  if (rangeStart === null) return null;
-  const start = rangeStart;
-  const end = rangeEnd ?? rangeStart;
+  const cols = rangeColumns(rangeStartMin, rangeEndMin);
+  if (cols === null) return null;
+  const { startCol: start, endCol: end } = cols;
   const span = end - start + 1;
   const leftPercent = (start / 24) * 100;
   const widthPercent = (span / 24) * 100;

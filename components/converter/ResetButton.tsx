@@ -15,14 +15,14 @@ import { cn } from '@/lib/utils';
  */
 export function ResetButton() {
   const resetAll = useConverterStore((s) => s.resetAll);
-  const rangeStart = useConverterStore((s) => s.rangeStart);
+  const rangeStartMin = useConverterStore((s) => s.rangeStartMin);
   const anchorDate = useConverterStore((s) => s.anchorDate);
   const defaultAnchorDate = useConverterStore((s) => s.defaultAnchorDate);
   const format = useConverterStore((s) => s.format);
   const overlay = useConverterStore((s) => s.overlay);
   const workingHours = useConverterStore((s) => s.workingHours);
 
-  const isRangeSet = rangeStart !== null;
+  const isRangeSet = rangeStartMin !== null;
   const isDateChanged = anchorDate !== defaultAnchorDate;
   const isFormatChanged = format !== '12';
   const isOverlayChanged =

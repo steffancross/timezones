@@ -2,6 +2,7 @@
 
 import { useCallback } from 'react';
 import { useDragSelection } from '@/lib/converter/drag-selection';
+import { rangeColumns } from '@/lib/converter/range';
 import { useConverterStore } from '@/components/converter/store-context';
 import { formatHourTile, type TimeFormat } from '@/lib/time/format';
 import { cn } from '@/lib/utils';
@@ -39,20 +40,18 @@ export function HourTile({
   isCurrentHour,
   isWeekend,
 }: Props) {
-  const storeRangeStart = useConverterStore((s) => s.rangeStart);
-  const storeRangeEnd = useConverterStore((s) => s.rangeEnd);
+  const rangeStartMin = useConverterStore((s) => s.rangeStartMin);
+  const rangeEndMin = useConverterStore((s) => s.rangeEndMin);
   const previewHour = useConverterStore((s) => s.previewHour);
   const setPreviewHour = useConverterStore((s) => s.setPreviewHour);
   const { startNewDrag, extendDrag, isDragging } = useDragSelection();
 
-  // Normalize the range: when rangeEnd is null, the block is 1 tile wide at
-  // rangeStart. URL/tests that only know the start get the single-tile
-  // behavior for free.
-  const start = storeRangeStart;
-  const end = storeRangeStart === null ? null : (storeRangeEnd ?? storeRangeStart);
+  // The strip stays coarse: derive which hour columns the minute range overlaps.
+  // A range ending at e.g. 5:15 lights the 5:00–6:00 column (see rangeColumns).
+  const cols = rangeColumns(rangeStartMin, rangeEndMin);
   const isInRange =
-    start !== null && end !== null && column.homeHour >= start && column.homeHour <= end;
-  const isRangeStart = isInRange && column.homeHour === start;
+    cols !== null && column.homeHour >= cols.startCol && column.homeHour <= cols.endCol;
+  const isRangeStart = isInRange && column.homeHour === cols?.startCol;
   const isPreviewAligned = previewHour !== null && !isInRange && previewHour === column.homeHour;
   const isMajorTick = columnIndex % 6 === 0;
 

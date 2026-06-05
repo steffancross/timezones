@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo } from 'react';
 import { useConverterStoreApi } from '@/components/converter/store-context';
+import { rangeColumns } from '@/lib/converter/range';
 
 /**
  * Range drag controller.
@@ -46,10 +47,13 @@ export function useDragSelection() {
         store.getState().setRange(hour, hour);
       },
       startResizeDrag(side: 'start' | 'end') {
-        const { rangeStart, rangeEnd } = store.getState();
-        if (rangeStart === null) return;
-        const end = rangeEnd ?? rangeStart;
-        pivotHour = side === 'start' ? end : rangeStart;
+        // Re-derive the current full-hour columns from the minute interval.
+        // Grabbing an edge therefore snaps any fine-tuned 15-min endpoint back
+        // to whole hours, which is the intended behavior for a strip resize.
+        const { rangeStartMin, rangeEndMin } = store.getState();
+        const cols = rangeColumns(rangeStartMin, rangeEndMin);
+        if (!cols) return;
+        pivotHour = side === 'start' ? cols.endCol : cols.startCol;
         dragMode = 'resize';
       },
       extendDrag(hour: number) {

@@ -4,10 +4,24 @@ import {
   formatClock,
   formatDate,
   formatDayDelta,
+  formatDuration,
   formatHourTile,
   formatOffset,
   formatTime,
 } from '@/lib/time/format';
+
+describe('formatDuration', () => {
+  it.each([
+    [15, '15m'],
+    [45, '45m'],
+    [60, '1h'],
+    [90, '1h 30m'],
+    [135, '2h 15m'],
+    [1440, '24h'],
+  ])('formats %i min as %s', (min, expected) => {
+    expect(formatDuration(min)).toBe(expected);
+  });
+});
 
 describe('formatClock', () => {
   it('12-hour: midnight, noon, and pm with minutes', () => {

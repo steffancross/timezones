@@ -20,14 +20,14 @@ interface Props {
 export function ZoneLabel({ zone, isHome }: Props) {
   const now = useNow('minute');
   const format = useConverterStore((s) => s.format);
-  const rangeStart = useConverterStore((s) => s.rangeStart);
+  const rangeStartMin = useConverterStore((s) => s.rangeStartMin);
   const anchorDate = useConverterStore((s) => s.anchorDate);
   const zones = useConverterStore((s) => s.zones);
 
   const displayTime = computeDisplayTime({
     now,
     zoneIana: zone.iana,
-    rangeStart,
+    rangeStartMin,
     anchorDate,
     homeIana: zones[0]?.iana,
   });
@@ -39,7 +39,7 @@ export function ZoneLabel({ zone, isHome }: Props) {
   // "Next day" indicator: when a range is set and the projected date in this
   // zone differs from the anchor date in the home zone, the date reads in brand
   // color to draw the eye.
-  const isNextDay = rangeStart !== null && displayTime.toISODate() !== anchorDate;
+  const isNextDay = rangeStartMin !== null && displayTime.toISODate() !== anchorDate;
 
   return (
     <div className="min-w-0">
@@ -82,20 +82,17 @@ export function ZoneLabel({ zone, isHome }: Props) {
 function computeDisplayTime(args: {
   now: DateTime;
   zoneIana: string;
-  rangeStart: number | null;
+  rangeStartMin: number | null;
   anchorDate: string;
   homeIana: string | undefined;
 }): DateTime {
-  const { now, zoneIana, rangeStart, anchorDate, homeIana } = args;
-  if (rangeStart === null || !homeIana) {
+  const { now, zoneIana, rangeStartMin, anchorDate, homeIana } = args;
+  if (rangeStartMin === null || !homeIana) {
     return now.setZone(zoneIana);
   }
-  const anchored = DateTime.fromISO(anchorDate, { zone: homeIana }).set({
-    hour: rangeStart,
-    minute: 0,
-    second: 0,
-    millisecond: 0,
-  });
+  const anchored = DateTime.fromISO(anchorDate, { zone: homeIana })
+    .startOf('day')
+    .plus({ minutes: rangeStartMin });
   return anchored.setZone(zoneIana);
 }
 
