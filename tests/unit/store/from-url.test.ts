@@ -45,9 +45,15 @@ describe('urlToState', () => {
   });
 
   it('rejects out-of-range endpoints', () => {
-    expect(urlToState({ pair: pstToEst, rangeStartMin: -15, rangeEndMin: 60 }).rangeStartMin).toBeUndefined();
-    expect(urlToState({ pair: pstToEst, rangeStartMin: 1440, rangeEndMin: 1440 }).rangeStartMin).toBeUndefined();
-    expect(urlToState({ pair: pstToEst, rangeStartMin: 1380, rangeEndMin: 1455 }).rangeStartMin).toBeUndefined();
+    expect(
+      urlToState({ pair: pstToEst, rangeStartMin: -15, rangeEndMin: 60 }).rangeStartMin,
+    ).toBeUndefined();
+    expect(
+      urlToState({ pair: pstToEst, rangeStartMin: 1440, rangeEndMin: 1440 }).rangeStartMin,
+    ).toBeUndefined();
+    expect(
+      urlToState({ pair: pstToEst, rangeStartMin: 1380, rangeEndMin: 1455 }).rangeStartMin,
+    ).toBeUndefined();
   });
 
   it('requires a minimum 15-min span', () => {
@@ -97,12 +103,16 @@ describe('parseSearchParams', () => {
     expect(parseSearchParams({ r: ['1500-1600', '1600-1700'] }).rangeStartMin).toBe(900);
   });
 
-  it.each(['abc', '1500', '15-16', '1500-', '1560-1600', '2401-2400'])(
-    'returns undefined for malformed range %s',
-    (raw) => {
-      expect(parseSearchParams({ r: raw }).rangeStartMin).toBeUndefined();
-    },
-  );
+  it.each([
+    'abc',
+    '1500',
+    '15-16',
+    '1500-',
+    '1560-1600',
+    '2401-2400',
+  ])('returns undefined for malformed range %s', (raw) => {
+    expect(parseSearchParams({ r: raw }).rangeStartMin).toBeUndefined();
+  });
 
   it('returns undefined for unknown format', () => {
     expect(parseSearchParams({ f: '36' }).format).toBeUndefined();

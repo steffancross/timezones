@@ -1,9 +1,9 @@
 'use client';
 
-import { useSearchParams } from 'next/navigation';
-import { useEffect, useRef } from 'react';
 import { useConverterStoreApi } from '@/components/converter/store-context';
 import { parseSearchParams, urlToState } from '@/lib/store/from-url';
+import { useSearchParams } from 'next/navigation';
+import { useEffect, useRef } from 'react';
 
 /**
  * Reads URL search params (`?d`, `?r`, `?f`, `?z`) once on mount and applies
@@ -66,7 +66,7 @@ export function SearchParamsHydrator() {
       state.setAnchorDate(overrides.anchorDate);
     }
 
-    if (typeof overrides.rangeStartMin === 'number') {
+    if (typeof overrides.rangeStartMin === 'number' && typeof overrides.rangeEndMin === 'number') {
       state.setRangeMinutes({ startMin: overrides.rangeStartMin, endMin: overrides.rangeEndMin });
     }
 

@@ -10,7 +10,13 @@ import {
 } from '@/components/ui/select';
 import { MINUTES_PER_DAY, RANGE_STEP_MIN } from '@/lib/converter/range';
 import { stateToQueryString } from '@/lib/store/to-url';
-import { formatClock, formatDate, formatDuration, formatTime, type TimeFormat } from '@/lib/time/format';
+import {
+  formatClock,
+  formatDate,
+  formatDuration,
+  formatTime,
+  type TimeFormat,
+} from '@/lib/time/format';
 import { currentAbbreviation } from '@/lib/zones/abbreviation';
 import { Calendar, Copy, Link2, Mail, X } from 'lucide-react';
 import { DateTime } from 'luxon';
@@ -147,7 +153,11 @@ export function RangeActionBar() {
           {durationLabel}
         </span>
       </div>
-      <div className="flex flex-wrap gap-1.5">
+      {/* On mobile the selects are wider than the old text label, so the button
+          row goes full-width below the summary (order-last) instead of letting
+          the selects overflow under it. The dismiss × keeps order-0, so it stays
+          on the top row with the selects rather than stranded on its own line. */}
+      <div className="flex flex-wrap gap-1.5 max-md:order-last max-md:w-full max-md:justify-end">
         <ActionBtn
           icon={<Link2 className="size-3.5" />}
           label="Copy link"

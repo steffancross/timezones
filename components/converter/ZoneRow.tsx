@@ -1,7 +1,7 @@
 'use client';
 
-import type { ZoneRef } from '@/lib/store/converter';
 import { useConverterStore } from '@/components/converter/store-context';
+import type { ZoneRef } from '@/lib/store/converter';
 import { cn } from '@/lib/utils';
 import { HourStrip } from './HourStrip';
 import { ZoneLabel } from './ZoneLabel';
