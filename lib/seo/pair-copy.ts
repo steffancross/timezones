@@ -1,6 +1,6 @@
+import { humanizeOffset, seasonalOffsets } from '@/lib/seo/zone-facts';
 import type { ParsedPair, ZoneOrCity } from '@/lib/slugs/parse';
 import { resolveZoneForIana } from '@/lib/zones/resolve';
-import { DateTime } from 'luxon';
 
 /**
  * Title + meta-description generators for the `/convert/[slug]` pair pages.
@@ -34,28 +34,6 @@ function shortName(zoc: ZoneOrCity): string {
 function daylightAbbrev(zoc: ZoneOrCity): string | null {
   const zone = zoc.kind === 'zone' ? zoc.zone : resolveZoneForIana(zoc.city.iana);
   return zone?.abbreviations[1] ?? null;
-}
-
-/**
- * Standard- and daylight-season UTC offsets (minutes) for an IANA, sampled at a
- * winter and a summer reference instant. Season-independent and works for both
- * hemispheres; `jan !== jul` ⇒ the zone observes DST.
- */
-function seasonalOffsets(iana: string): { jan: number; jul: number } {
-  const year = DateTime.now().year;
-  const jan = DateTime.fromObject({ year, month: 1, day: 15 }, { zone: iana }).offset;
-  const jul = DateTime.fromObject({ year, month: 7, day: 15 }, { zone: iana }).offset;
-  return { jan, jul };
-}
-
-/** "10 hours", "10 hours 30 minutes", "1 hour". Input is an absolute minute count. */
-function humanizeOffset(min: number): string {
-  const h = Math.floor(min / 60);
-  const m = min % 60;
-  const hPart = h > 0 ? `${h} hour${h === 1 ? '' : 's'}` : '';
-  const mPart = m > 0 ? `${m} minute${m === 1 ? '' : 's'}` : '';
-  if (hPart && mPart) return `${hPart} ${mPart}`;
-  return hPart || mPart || '0 hours';
 }
 
 /** Compact decimal for clean half-hour offsets ("9.5 hours", "10 hours"), else falls back to the natural form. */

@@ -14,7 +14,7 @@ export const dynamic = 'force-dynamic';
 export const metadata = buildMetadata({
   title: 'Time Zone Converter',
   description:
-    'Compare time across cities and zones. Day/night and working-hour overlays, sharable permanent links.',
+    'Free time zone converter — compare time across cities and zones with day/night and working-hour overlays. Shareable permanent links, no signup.',
   path: '/',
 });
 
