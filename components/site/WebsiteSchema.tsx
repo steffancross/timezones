@@ -1,8 +1,13 @@
 import env from '@/lib/env';
 
 /**
- * WebSite schema with a SearchAction that surfaces the Google sitelinks
- * search box. Rendered on the home page only.
+ * WebSite schema (name + url) — feeds Google's "site name" feature in results.
+ * Rendered on the home page only.
+ *
+ * Previously carried a SearchAction for the sitelinks search box, but Google
+ * deprecated that feature (removed globally 2024-11-21), so the markup was inert
+ * and pointed at a non-functional `/cities?q=` endpoint. Dropped. The remaining
+ * WebSite name/url is still supported.
  */
 export function WebsiteSchema() {
   const schema = {
@@ -10,14 +15,6 @@ export function WebsiteSchema() {
     '@type': 'WebSite',
     name: env.NEXT_PUBLIC_SITE_NAME,
     url: env.NEXT_PUBLIC_BASE_URL,
-    potentialAction: {
-      '@type': 'SearchAction',
-      target: {
-        '@type': 'EntryPoint',
-        urlTemplate: `${env.NEXT_PUBLIC_BASE_URL}/cities?q={search_term_string}`,
-      },
-      'query-input': 'required name=search_term_string',
-    },
   };
 
   return (

@@ -7,6 +7,7 @@ import {
   getDisambiguation,
   getDisambiguationSlugs,
 } from '@/lib/cities/resolve';
+import { buildCityDescription } from '@/lib/seo/city-copy';
 import { buildMetadata } from '@/lib/seo/metadata';
 
 // Finite set: every valid city slug + every disambiguation slug. Anything
@@ -45,7 +46,7 @@ export async function generateMetadata({ params }: { params: Promise<{ city: str
 
   return buildMetadata({
     title: `Current time in ${c.name}, ${c.country}`,
-    description: `Current local time in ${c.name}, ${c.country}. Time zone: ${c.iana}. Includes sunrise, sunset, and conversions to other zones.`,
+    description: buildCityDescription(c),
     path: `/time-in/${city}`,
   });
 }
