@@ -77,8 +77,8 @@ export default async function HomePage({
                 to plan meetings on a specific day.
               </li>
               <li>
-                <span className="font-medium text-[color:var(--fg)]">4.</span> Open Settings to
-                highlight working hours and weekends across every row.
+                <span className="font-medium text-[color:var(--fg)]">4.</span> Bands show each
+                place's night, working hours, and weekends — fine-tune or turn them off in Settings.
               </li>
             </ol>
           </section>

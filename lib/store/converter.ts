@@ -165,6 +165,19 @@ function rederiveAnchorOnHomeChange(
   patch.defaultAnchorDate = homeToday;
 }
 
+/**
+ * Default strip overlays. All three ship ON so first-time visitors see the
+ * working-hours and weekend highlighting without hunting through Settings;
+ * anyone who finds it busy toggles them off and the choice persists. Exported
+ * as the single source of truth — ResetButton compares against this so the
+ * "is overlay changed?" check can't drift from the actual default.
+ */
+export const DEFAULT_OVERLAY: ConverterState['overlay'] = Object.freeze({
+  dayNight: true,
+  workHours: true,
+  weekend: true,
+});
+
 function buildDefaults(): ConverterState {
   const initialToday = todayInZone();
   return {
@@ -176,11 +189,7 @@ function buildDefaults(): ConverterState {
     rangeEndMin: null,
     previewHour: null,
     format: '12',
-    overlay: {
-      dayNight: true,
-      workHours: false,
-      weekend: false,
-    },
+    overlay: { ...DEFAULT_OVERLAY },
     workingHours: DEFAULT_WORKING_HOURS,
   };
 }

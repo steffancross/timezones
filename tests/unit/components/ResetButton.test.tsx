@@ -2,7 +2,7 @@ import { beforeEach, describe, expect, it } from 'vitest';
 import { render } from 'vitest-browser-react';
 import { ResetButton } from '@/components/converter/ResetButton';
 import { ConverterStoreProvider } from '@/components/converter/store-context';
-import { createConverterStore } from '@/lib/store/converter';
+import { createConverterStore, DEFAULT_OVERLAY } from '@/lib/store/converter';
 import { DEFAULT_WORKING_HOURS } from '@/lib/time/working-hours';
 
 const TODAY = '2026-05-20';
@@ -23,7 +23,7 @@ function freshStoreAtDefaults() {
     rangeEndMin: null,
     previewHour: null,
     format: '12',
-    overlay: { dayNight: true, workHours: false, weekend: false },
+    overlay: { ...DEFAULT_OVERLAY },
     workingHours: DEFAULT_WORKING_HOURS,
   });
 }
@@ -64,19 +64,19 @@ describe('ResetButton', () => {
 
   it('enables when dayNight overlay is toggled off', async () => {
     const screen = await renderWithStore();
-    store.setState({ overlay: { dayNight: false, workHours: false, weekend: false } });
+    store.setState({ overlay: { dayNight: false, workHours: true, weekend: true } });
     await expect.element(screen.getByRole('button')).toBeEnabled();
   });
 
-  it('enables when workHours overlay is toggled on', async () => {
-    const screen = await renderWithStore();
-    store.setState({ overlay: { dayNight: true, workHours: true, weekend: false } });
-    await expect.element(screen.getByRole('button')).toBeEnabled();
-  });
-
-  it('enables when weekend overlay is toggled on', async () => {
+  it('enables when workHours overlay is toggled off', async () => {
     const screen = await renderWithStore();
     store.setState({ overlay: { dayNight: true, workHours: false, weekend: true } });
+    await expect.element(screen.getByRole('button')).toBeEnabled();
+  });
+
+  it('enables when weekend overlay is toggled off', async () => {
+    const screen = await renderWithStore();
+    store.setState({ overlay: { dayNight: true, workHours: true, weekend: false } });
     await expect.element(screen.getByRole('button')).toBeEnabled();
   });
 
@@ -106,7 +106,7 @@ describe('ResetButton', () => {
       rangeStartMin: 840,
       rangeEndMin: 900,
       format: '24',
-      overlay: { dayNight: false, workHours: true, weekend: true },
+      overlay: { dayNight: false, workHours: false, weekend: false },
       workingHours: { start: 8, end: 18, days: [1, 2, 3, 4, 5, 6] },
     });
     await expect.element(screen.getByRole('button')).toBeEnabled();
@@ -116,7 +116,7 @@ describe('ResetButton', () => {
     const after = store.getState();
     expect(after.rangeStartMin).toBeNull();
     expect(after.format).toBe('12');
-    expect(after.overlay).toEqual({ dayNight: true, workHours: false, weekend: false });
+    expect(after.overlay).toEqual({ dayNight: true, workHours: true, weekend: true });
     expect(after.workingHours).toEqual(DEFAULT_WORKING_HOURS);
     expect(after.anchorDate).toBe(after.defaultAnchorDate);
   });

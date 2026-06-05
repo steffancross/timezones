@@ -17,6 +17,7 @@ import { EmptyState } from './EmptyState';
 import { FormatToggle } from './FormatToggle';
 import { RangeActionBar } from './RangeActionBar';
 import { RangeBand } from './RangeBand';
+import { RangeHint } from './RangeHint';
 import { ResetButton } from './ResetButton';
 import { SearchInput } from './SearchInput';
 import { SettingsMenu } from './SettingsMenu';
@@ -166,6 +167,7 @@ export function Converter({ visitorIana }: ConverterProps = {}) {
               <RangeBand className="inset-y-0" />
             </div>
           </div>
+          <RangeHint />
         </div>
       )}
 
