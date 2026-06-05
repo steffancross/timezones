@@ -282,7 +282,8 @@ describe('clearRange', () => {
     const next = store.getState();
     expect(next.zones).toHaveLength(1);
     expect(next.format).toBe('24');
-    expect(next.overlay.weekend).toBe(true);
+    // weekend defaults ON; the toggle flips it OFF, and clearRange must not touch it.
+    expect(next.overlay.weekend).toBe(false);
   });
 });
 
@@ -307,7 +308,7 @@ describe('resetAll', () => {
     expect(next.previewHour).toBeNull();
     expect(next.anchorDate).not.toBe('2026-01-01');
     expect(next.format).toBe('12');
-    expect(next.overlay).toEqual({ dayNight: true, workHours: false, weekend: false });
+    expect(next.overlay).toEqual({ dayNight: true, workHours: true, weekend: true });
     expect(next.workingHours).toEqual({ start: 9, end: 17, days: [1, 2, 3, 4, 5] });
   });
 });

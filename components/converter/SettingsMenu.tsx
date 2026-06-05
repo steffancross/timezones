@@ -1,9 +1,12 @@
 'use client';
 
 import { Settings } from 'lucide-react';
+import { useEffect, useState } from 'react';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { useConverterStore } from '@/components/converter/store-context';
+import { isFirstVisit, markVisited, SETTINGS_HINT_KEY } from '@/lib/first-visit';
 import { cn } from '@/lib/utils';
+import { HintBubble } from './HintBubble';
 import { WorkingHoursEditor } from './WorkingHoursEditor';
 
 type OverlayKind = 'dayNight' | 'workHours' | 'weekend';
@@ -27,46 +30,78 @@ export function SettingsMenu() {
   const toggleFor = (k: OverlayKind) =>
     k === 'dayNight' ? toggleDayNight : k === 'workHours' ? toggleWorkHours : toggleWeekend;
 
-  return (
-    <Popover>
-      <PopoverTrigger
-        className={cn(
-          'inline-flex size-8 items-center justify-center rounded-[var(--radius)]',
-          'border border-[color:var(--border)] bg-card',
-          'text-[color:var(--fg-muted)] transition-colors',
-          'hover:bg-[var(--hover)] hover:text-[color:var(--fg)]',
-        )}
-        aria-label="Settings"
-      >
-        <Settings className="size-4" />
-      </PopoverTrigger>
+  // One-time first-visit nudge pointing at the gear. Owned here (not in a
+  // sibling) so opening the menu can hide the live bubble, not just set the
+  // localStorage flag. Renders nothing on the server + first client render to
+  // avoid a hydration mismatch, then flips on in the mount effect.
+  const [showHint, setShowHint] = useState(false);
+  useEffect(() => {
+    if (isFirstVisit(SETTINGS_HINT_KEY)) setShowHint(true);
+  }, []);
+  const dismissHint = () => {
+    markVisited(SETTINGS_HINT_KEY);
+    setShowHint(false);
+  };
 
-      <PopoverContent align="end" className="w-[300px] p-3.5">
-        <section>
-          <h4 className="mb-2 font-mono text-[11px] font-semibold uppercase tracking-[0.06em] text-[color:var(--fg-subtle)]">
-            Overlays
-          </h4>
-          <div className="space-y-1.5">
-            {OVERLAY_OPTIONS.map((opt) => (
-              <div key={opt.key}>
-                <label className="flex cursor-pointer items-center gap-2.5 text-[13px]">
-                  <CheckSquare checked={checkedFor(opt.key)} />
-                  <input
-                    type="checkbox"
-                    checked={checkedFor(opt.key)}
-                    onChange={toggleFor(opt.key)}
-                    className="sr-only"
-                  />
-                  <span className="flex-1">{opt.label}</span>
-                  <Swatch kind={opt.key} />
-                </label>
-                {opt.key === 'workHours' && workHours && <WorkingHoursEditor />}
-              </div>
-            ))}
-          </div>
-        </section>
-      </PopoverContent>
-    </Popover>
+  return (
+    <div className="relative">
+      <Popover
+        onOpenChange={(open) => {
+          // Opening Settings counts as discovering the feature — retire the hint
+          // immediately (both the visible bubble and future visits).
+          if (open) dismissHint();
+        }}
+      >
+        <PopoverTrigger
+          className={cn(
+            'inline-flex size-8 items-center justify-center rounded-[var(--radius)]',
+            'border border-[color:var(--border)] bg-card',
+            'text-[color:var(--fg-muted)] transition-colors',
+            'hover:bg-[var(--hover)] hover:text-[color:var(--fg)]',
+          )}
+          aria-label="Settings"
+        >
+          <Settings className="size-4" />
+        </PopoverTrigger>
+
+        <PopoverContent align="end" className="w-[300px] p-3.5">
+          <section>
+            <h4 className="mb-2 font-mono text-[11px] font-semibold uppercase tracking-[0.06em] text-[color:var(--fg-subtle)]">
+              Overlays
+            </h4>
+            <div className="space-y-1.5">
+              {OVERLAY_OPTIONS.map((opt) => (
+                <div key={opt.key}>
+                  <label className="flex cursor-pointer items-center gap-2.5 text-[13px]">
+                    <CheckSquare checked={checkedFor(opt.key)} />
+                    <input
+                      type="checkbox"
+                      checked={checkedFor(opt.key)}
+                      onChange={toggleFor(opt.key)}
+                      className="sr-only"
+                    />
+                    <span className="flex-1">{opt.label}</span>
+                    <Swatch kind={opt.key} />
+                  </label>
+                  {opt.key === 'workHours' && workHours && <WorkingHoursEditor />}
+                </div>
+              ))}
+            </div>
+          </section>
+        </PopoverContent>
+      </Popover>
+
+      {showHint && (
+        <HintBubble
+          onDismiss={dismissHint}
+          arrow={{ side: 'top', className: 'right-3' }}
+          className="absolute right-0 top-full z-50 mt-2"
+        >
+          Bands show each place's <span className="text-[color:var(--fg)]">working hours</span> and{' '}
+          <span className="text-[color:var(--fg)]">weekends</span> — adjust them in Settings.
+        </HintBubble>
+      )}
+    </div>
   );
 }
 

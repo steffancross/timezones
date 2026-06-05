@@ -2,7 +2,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { render } from 'vitest-browser-react';
 import { ConverterStateProvider } from '@/components/converter/ConverterStateProvider';
 import { useConverterStoreApi } from '@/components/converter/store-context';
-import type { ConverterStoreApi } from '@/lib/store/converter';
+import { type ConverterStoreApi, DEFAULT_OVERLAY } from '@/lib/store/converter';
 
 // UrlSync + SearchParamsHydrator (rendered as children) call next/navigation
 // hooks that require a real App-Router context. Stub them with no-ops — these
@@ -161,11 +161,12 @@ describe('ConverterStateProvider bootstrap', () => {
     // as the signal.
     getStore().getState().toggleWeekendOverlay();
 
-    // The persistence subscribe writes synchronously on change.
+    // The persistence subscribe writes synchronously on change. weekend defaults
+    // ON, so the toggle flips it OFF — the written value reflects that change.
     const raw = localStorage.getItem(STORAGE_KEY);
     if (raw === null) throw new Error('expected persistence to write to localStorage');
     const parsed = JSON.parse(raw);
-    expect(parsed.overlay.weekend).toBe(true);
+    expect(parsed.overlay.weekend).toBe(false);
   });
 
   it('applies a full URL-shaped initialState (zones + anchor fields + format)', async () => {
@@ -237,6 +238,6 @@ describe('ConverterStateProvider bootstrap', () => {
     const s = getStore().getState();
     expect(s.zones).toEqual([]);
     expect(s.format).toBe('12');
-    expect(s.overlay).toEqual({ dayNight: true, workHours: false, weekend: false });
+    expect(s.overlay).toEqual(DEFAULT_OVERLAY);
   });
 });

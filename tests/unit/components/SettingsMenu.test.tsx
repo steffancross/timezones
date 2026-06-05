@@ -75,7 +75,7 @@ describe('SettingsMenu overlay toggles', () => {
     const screen = await renderWithStore();
     await openMenu(screen.container);
 
-    // Default: dayNight=true, others=false. Flip weekend on.
+    // Seeded baseline (above): dayNight=true, others=false. Flip weekend on.
     await clickRow('Weekend');
 
     const state = store.getState();

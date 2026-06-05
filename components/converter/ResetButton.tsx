@@ -2,6 +2,7 @@
 
 import { RotateCcw } from 'lucide-react';
 import { useConverterStore } from '@/components/converter/store-context';
+import { DEFAULT_OVERLAY } from '@/lib/store/converter';
 import { DEFAULT_WORKING_HOURS } from '@/lib/time/working-hours';
 import { cn } from '@/lib/utils';
 
@@ -26,7 +27,9 @@ export function ResetButton() {
   const isDateChanged = anchorDate !== defaultAnchorDate;
   const isFormatChanged = format !== '12';
   const isOverlayChanged =
-    overlay.dayNight !== true || overlay.workHours !== false || overlay.weekend !== false;
+    overlay.dayNight !== DEFAULT_OVERLAY.dayNight ||
+    overlay.workHours !== DEFAULT_OVERLAY.workHours ||
+    overlay.weekend !== DEFAULT_OVERLAY.weekend;
   const isWorkingHoursChanged =
     workingHours.start !== DEFAULT_WORKING_HOURS.start ||
     workingHours.end !== DEFAULT_WORKING_HOURS.end ||
