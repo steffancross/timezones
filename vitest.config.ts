@@ -23,7 +23,7 @@ export default defineConfig({
     // doesn't force a reload (vitest warns: "Vite unexpectedly reloaded a
     // test"). Without this, the per-mount store refactor caused
     // tests/unit/store/persistence.test.ts to fail to import.
-    include: ['zustand', 'zustand/vanilla', 'zustand/middleware'],
+    include: ['zustand', 'zustand/vanilla', 'zustand/middleware', 'sonner'],
   },
   resolve: {
     alias: { '@': new URL('.', import.meta.url).pathname },

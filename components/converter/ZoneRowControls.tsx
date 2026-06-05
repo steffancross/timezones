@@ -1,8 +1,8 @@
 'use client';
 
-import { ChevronDown, ChevronUp, X } from 'lucide-react';
 import { useConverterStore } from '@/components/converter/store-context';
 import { cn } from '@/lib/utils';
+import { ChevronDown, ChevronsUp, X } from 'lucide-react';
 
 interface Props {
   index: number;
@@ -24,10 +24,10 @@ export function ZoneRowControls({ index, isFirst, isLast }: Props) {
     >
       <ControlButton
         disabled={isFirst}
-        onClick={() => moveZone(index, index - 1)}
-        aria-label="Move zone up"
+        onClick={() => moveZone(index, 0)}
+        aria-label="Move zone to top"
       >
-        <ChevronUp className="size-4" />
+        <ChevronsUp className="size-4" />
       </ControlButton>
 
       <ControlButton
