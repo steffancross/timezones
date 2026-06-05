@@ -24,7 +24,9 @@ export function PairSelector({ label, value, onChange, curated }: Props) {
   const [query, setQuery] = useState('');
   const [results, setResults] = useState<SearchResult[]>([]);
   const [loading, setLoading] = useState(false);
+  const [activeIndex, setActiveIndex] = useState(0);
   const inputRef = useRef<HTMLInputElement>(null);
+  const listRef = useRef<HTMLDivElement>(null);
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   // Hover preload — by the time the user clicks, the index is usually warm.
@@ -86,19 +88,65 @@ export function PairSelector({ label, value, onChange, curated }: Props) {
     [pick],
   );
 
-  // Enter selects the first result when typing.
-  const handleInputKey = useCallback(
-    (e: React.KeyboardEvent<HTMLInputElement>) => {
-      if (e.key === 'Enter' && results[0]) {
-        e.preventDefault();
-        pickResult(results[0]);
-      }
-    },
-    [results, pickResult],
-  );
-
   const q = query.trim();
   const showCurated = q === '' && !loading;
+
+  // Flat, ordered list of whatever rows are currently visible — curated
+  // (zones then cities) when idle, search results when typing. This is what
+  // ArrowUp/Down walk and Enter commits.
+  const items: Selection[] | SearchResult[] = showCurated
+    ? [...curated.zones, ...curated.cities]
+    : results;
+
+  const pickIndex = useCallback(
+    (i: number) => {
+      const item = items[i];
+      if (!item) return;
+      if (showCurated) pick(item as Selection);
+      else pickResult(item as SearchResult);
+    },
+    [items, showCurated, pick, pickResult],
+  );
+
+  // When the visible list changes (open, typing, results arrive), highlight the
+  // current selection if it's present, otherwise the first row.
+  useEffect(() => {
+    if (!open) return;
+    const idx = showCurated
+      ? [...curated.zones, ...curated.cities].findIndex((s) => s.id === value.id)
+      : results.findIndex((r) => r.slug === value.id);
+    setActiveIndex(idx >= 0 ? idx : 0);
+  }, [open, showCurated, curated, results, value.id]);
+
+  // Keep the highlighted row scrolled into view as the user arrows through it.
+  useEffect(() => {
+    listRef.current
+      ?.querySelector(`[data-index="${activeIndex}"]`)
+      ?.scrollIntoView({ block: 'nearest' });
+  }, [activeIndex]);
+
+  const handleInputKey = useCallback(
+    (e: React.KeyboardEvent<HTMLInputElement>) => {
+      switch (e.key) {
+        case 'ArrowDown':
+          e.preventDefault();
+          setActiveIndex((i) => Math.min(items.length - 1, i + 1));
+          break;
+        case 'ArrowUp':
+          e.preventDefault();
+          setActiveIndex((i) => Math.max(0, i - 1));
+          break;
+        case 'Enter':
+          e.preventDefault();
+          pickIndex(activeIndex);
+          break;
+        case 'Escape':
+          setOpen(false);
+          break;
+      }
+    },
+    [items.length, activeIndex, pickIndex],
+  );
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
@@ -154,8 +202,15 @@ export function PairSelector({ label, value, onChange, curated }: Props) {
           </div>
         </div>
 
-        <div className="max-h-[320px] overflow-y-auto p-1">
-          {showCurated && <CuratedGroups curated={curated} onPick={pick} activeId={value.id} />}
+        <div ref={listRef} className="max-h-[320px] overflow-y-auto p-1">
+          {showCurated && (
+            <CuratedGroups
+              curated={curated}
+              onPick={pick}
+              activeIndex={activeIndex}
+              onHover={setActiveIndex}
+            />
+          )}
 
           {!showCurated && (
             <FilteredResults
@@ -163,7 +218,8 @@ export function PairSelector({ label, value, onChange, curated }: Props) {
               query={q}
               results={results}
               onPick={pickResult}
-              activeId={value.id}
+              activeIndex={activeIndex}
+              onHover={setActiveIndex}
             />
           )}
         </div>
@@ -175,22 +231,42 @@ export function PairSelector({ label, value, onChange, curated }: Props) {
 function CuratedGroups({
   curated,
   onPick,
-  activeId,
+  activeIndex,
+  onHover,
 }: {
   curated: CuratedSelections;
   onPick: (sel: Selection) => void;
-  activeId: string;
+  activeIndex: number;
+  onHover: (index: number) => void;
 }) {
+  // Zones and cities share one index space so keyboard nav flows across both.
   return (
     <>
       <GroupHeader>Time zones</GroupHeader>
-      {curated.zones.map((s) => (
-        <SelectionRow key={`z:${s.id}`} sel={s} active={s.id === activeId} onPick={onPick} />
+      {curated.zones.map((s, i) => (
+        <SelectionRow
+          key={`z:${s.id}`}
+          sel={s}
+          index={i}
+          active={i === activeIndex}
+          onPick={onPick}
+          onHover={onHover}
+        />
       ))}
       <GroupHeader>Popular cities</GroupHeader>
-      {curated.cities.map((s) => (
-        <SelectionRow key={`c:${s.id}`} sel={s} active={s.id === activeId} onPick={onPick} />
-      ))}
+      {curated.cities.map((s, i) => {
+        const index = curated.zones.length + i;
+        return (
+          <SelectionRow
+            key={`c:${s.id}`}
+            sel={s}
+            index={index}
+            active={index === activeIndex}
+            onPick={onPick}
+            onHover={onHover}
+          />
+        );
+      })}
     </>
   );
 }
@@ -200,13 +276,15 @@ function FilteredResults({
   query,
   results,
   onPick,
-  activeId,
+  activeIndex,
+  onHover,
 }: {
   loading: boolean;
   query: string;
   results: SearchResult[];
   onPick: (r: SearchResult) => void;
-  activeId: string;
+  activeIndex: number;
+  onHover: (index: number) => void;
 }) {
   if (loading && results.length === 0) {
     return <div className="px-3 py-2 text-[13px] text-[color:var(--fg-subtle)]">Searching…</div>;
@@ -228,8 +306,10 @@ function FilteredResults({
           key={r.id}
           result={r}
           query={query}
-          active={r.slug === activeId || (i === 0 && activeId !== r.slug)}
+          index={i}
+          active={i === activeIndex}
           onPick={onPick}
+          onHover={onHover}
         />
       ))}
     </>
@@ -246,12 +326,16 @@ function GroupHeader({ children }: { children: React.ReactNode }) {
 
 function SelectionRow({
   sel,
+  index,
   active,
   onPick,
+  onHover,
 }: {
   sel: Selection;
+  index: number;
   active: boolean;
   onPick: (sel: Selection) => void;
+  onHover: (index: number) => void;
 }) {
   const Icon = sel.kind === 'city' ? Building2 : Globe2;
   return (
@@ -259,7 +343,9 @@ function SelectionRow({
       type="button"
       role="option"
       aria-selected={active}
+      data-index={index}
       onClick={() => onPick(sel)}
+      onMouseEnter={() => onHover(index)}
       onMouseDown={(e) => e.preventDefault()}
       className={cn(
         'flex w-full items-center gap-2.5 rounded-md px-2.5 py-1.5 text-left text-[13px]',
@@ -279,13 +365,17 @@ function SelectionRow({
 function ResultRow({
   result,
   query,
+  index,
   active,
   onPick,
+  onHover,
 }: {
   result: SearchResult;
   query: string;
+  index: number;
   active: boolean;
   onPick: (r: SearchResult) => void;
+  onHover: (index: number) => void;
 }) {
   const Icon = result.type === 'city' ? Building2 : Globe2;
   const offset = useMemo(() => offsetFromSecondary(result.display_secondary), [result]);
@@ -294,7 +384,9 @@ function ResultRow({
       type="button"
       role="option"
       aria-selected={active}
+      data-index={index}
       onClick={() => onPick(result)}
+      onMouseEnter={() => onHover(index)}
       onMouseDown={(e) => e.preventDefault()}
       className={cn(
         'flex w-full items-center gap-2.5 rounded-md px-2.5 py-1.5 text-left text-[13px]',

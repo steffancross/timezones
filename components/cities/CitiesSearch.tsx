@@ -32,7 +32,9 @@ export function CitiesSearch({ popularCities, totalCount }: Props) {
   const [query, setQuery] = useState('');
   const [results, setResults] = useState<SearchResult[]>([]);
   const [loading, setLoading] = useState(false);
+  const [activeIndex, setActiveIndex] = useState(0);
   const inputRef = useRef<HTMLInputElement>(null);
+  const listRef = useRef<HTMLDivElement>(null);
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const handleHover = useCallback(() => {
@@ -83,17 +85,49 @@ export function CitiesSearch({ popularCities, totalCount }: Props) {
     [router],
   );
 
+  const q = query.trim();
+
+  // Flat list of the slugs currently visible — popular cities when idle, search
+  // results when typing. ArrowUp/Down walk it; Enter navigates to the highlight.
+  const slugs = q === '' ? popularCities.map((c) => c.id) : results.map((r) => r.slug);
+
+  // Reset the highlight to the first row whenever the visible list changes.
+  // biome-ignore lint/correctness/useExhaustiveDependencies: reset on list change
+  useEffect(() => {
+    setActiveIndex(0);
+  }, [query, results]);
+
+  // Keep the highlighted row scrolled into view as the user arrows through it.
+  useEffect(() => {
+    listRef.current
+      ?.querySelector(`[data-index="${activeIndex}"]`)
+      ?.scrollIntoView({ block: 'nearest' });
+  }, [activeIndex]);
+
   const handleInputKey = useCallback(
     (e: React.KeyboardEvent<HTMLInputElement>) => {
-      if (e.key === 'Enter' && results[0]) {
-        e.preventDefault();
-        navigate(results[0].slug);
+      switch (e.key) {
+        case 'ArrowDown':
+          e.preventDefault();
+          setActiveIndex((i) => Math.min(slugs.length - 1, i + 1));
+          break;
+        case 'ArrowUp':
+          e.preventDefault();
+          setActiveIndex((i) => Math.max(0, i - 1));
+          break;
+        case 'Enter': {
+          e.preventDefault();
+          const slug = slugs[activeIndex];
+          if (slug) navigate(slug);
+          break;
+        }
+        case 'Escape':
+          setOpen(false);
+          break;
       }
     },
-    [results, navigate],
+    [slugs, activeIndex, navigate],
   );
-
-  const q = query.trim();
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
@@ -149,18 +183,32 @@ export function CitiesSearch({ popularCities, totalCount }: Props) {
           </div>
         </div>
 
-        <div className="max-h-[320px] overflow-y-auto p-1">
+        <div ref={listRef} className="max-h-[320px] overflow-y-auto p-1">
           {q === '' && !loading && (
             <>
               <GroupHeader>Popular cities</GroupHeader>
-              {popularCities.map((c) => (
-                <PopularRow key={c.id} city={c} onPick={navigate} />
+              {popularCities.map((c, i) => (
+                <PopularRow
+                  key={c.id}
+                  city={c}
+                  index={i}
+                  active={i === activeIndex}
+                  onPick={navigate}
+                  onHover={setActiveIndex}
+                />
               ))}
             </>
           )}
 
           {q !== '' && (
-            <FilteredResults loading={loading} query={q} results={results} onPick={navigate} />
+            <FilteredResults
+              loading={loading}
+              query={q}
+              results={results}
+              onPick={navigate}
+              activeIndex={activeIndex}
+              onHover={setActiveIndex}
+            />
           )}
         </div>
       </PopoverContent>
@@ -173,11 +221,15 @@ function FilteredResults({
   query,
   results,
   onPick,
+  activeIndex,
+  onHover,
 }: {
   loading: boolean;
   query: string;
   results: SearchResult[];
   onPick: (slug: string) => void;
+  activeIndex: number;
+  onHover: (index: number) => void;
 }) {
   if (loading && results.length === 0) {
     return <div className="px-3 py-2 text-[13px] text-[color:var(--fg-subtle)]">Searching…</div>;
@@ -194,8 +246,16 @@ function FilteredResults({
       <GroupHeader>
         {results.length} {results.length === 1 ? 'match' : 'matches'}
       </GroupHeader>
-      {results.map((r) => (
-        <ResultRow key={r.id} result={r} query={query} onPick={onPick} />
+      {results.map((r, i) => (
+        <ResultRow
+          key={r.id}
+          result={r}
+          query={query}
+          index={i}
+          active={i === activeIndex}
+          onPick={onPick}
+          onHover={onHover}
+        />
       ))}
     </>
   );
@@ -209,17 +269,32 @@ function GroupHeader({ children }: { children: React.ReactNode }) {
   );
 }
 
-function PopularRow({ city, onPick }: { city: PopularCity; onPick: (slug: string) => void }) {
+function PopularRow({
+  city,
+  index,
+  active,
+  onPick,
+  onHover,
+}: {
+  city: PopularCity;
+  index: number;
+  active: boolean;
+  onPick: (slug: string) => void;
+  onHover: (index: number) => void;
+}) {
   return (
     <button
       type="button"
       role="option"
-      aria-selected={false}
+      aria-selected={active}
+      data-index={index}
       onClick={() => onPick(city.id)}
+      onMouseEnter={() => onHover(index)}
       onMouseDown={(e) => e.preventDefault()}
       className={cn(
         'flex w-full items-center gap-2.5 rounded-md px-2.5 py-1.5 text-left text-[13px]',
-        'text-[color:var(--fg)] transition-colors hover:bg-[var(--hover)]',
+        'text-[color:var(--fg)] transition-colors',
+        active ? 'bg-[var(--brand-soft)]' : 'hover:bg-[var(--hover)]',
       )}
     >
       <Building2 className="size-3.5 shrink-0 text-[color:var(--fg-subtle)]" aria-hidden="true" />
@@ -234,23 +309,32 @@ function PopularRow({ city, onPick }: { city: PopularCity; onPick: (slug: string
 function ResultRow({
   result,
   query,
+  index,
+  active,
   onPick,
+  onHover,
 }: {
   result: SearchResult;
   query: string;
+  index: number;
+  active: boolean;
   onPick: (slug: string) => void;
+  onHover: (index: number) => void;
 }) {
   const offset = useMemo(() => offsetFromSecondary(result.display_secondary), [result]);
   return (
     <button
       type="button"
       role="option"
-      aria-selected={false}
+      aria-selected={active}
+      data-index={index}
       onClick={() => onPick(result.slug)}
+      onMouseEnter={() => onHover(index)}
       onMouseDown={(e) => e.preventDefault()}
       className={cn(
         'flex w-full items-center gap-2.5 rounded-md px-2.5 py-1.5 text-left text-[13px]',
-        'text-[color:var(--fg)] transition-colors hover:bg-[var(--hover)]',
+        'text-[color:var(--fg)] transition-colors',
+        active ? 'bg-[var(--brand-soft)]' : 'hover:bg-[var(--hover)]',
       )}
     >
       <Building2 className="size-3.5 shrink-0 text-[color:var(--fg-subtle)]" aria-hidden="true" />

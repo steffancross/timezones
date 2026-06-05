@@ -1,8 +1,7 @@
-import { Suspense } from 'react';
-import { Breadcrumbs } from '@/components/site/Breadcrumbs';
 import { BrowseMatrix } from '@/components/conversions/BrowseMatrix';
 import { PairBuilder } from '@/components/conversions/PairBuilder';
 import { PopularPairsGrid } from '@/components/conversions/PopularPairsGrid';
+import { Breadcrumbs } from '@/components/site/Breadcrumbs';
 import { getMatrixSources } from '@/lib/conversions/matrix-data';
 import { getPopularCards } from '@/lib/conversions/popular-cards';
 import {
@@ -12,6 +11,7 @@ import {
   selectionFromId,
 } from '@/lib/conversions/selection';
 import { buildMetadata } from '@/lib/seo/metadata';
+import { Suspense } from 'react';
 
 export const metadata = buildMetadata({
   title: 'Time zone conversions',
@@ -55,13 +55,6 @@ export default function ConversionsIndex() {
           Build a pair
         </h2>
         <PairBuilder initialFrom={initialFrom} initialTo={initialTo} curated={curated} />
-        <p className="mt-2.5 text-[12px] text-[color:var(--fg-subtle)]">
-          Tip: press{' '}
-          <kbd className="rounded border border-[color:var(--border)] bg-[var(--card)] px-1.5 py-0.5 font-mono text-[10.5px]">
-            Enter
-          </kbd>{' '}
-          to convert.
-        </p>
       </section>
 
       <section className="mb-16" aria-labelledby="popular-heading">
