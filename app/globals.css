@@ -113,6 +113,8 @@
 
     --radius-tile: 3px;
     --radius-pill: 999px;
+    /* Larger card/paste-box radius for the Smart Converter surface. */
+    --radius-lg: 0.625rem;
   }
 
   [data-theme="dark"] {

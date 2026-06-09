@@ -40,7 +40,8 @@
       "recommended": true,
       "style": {
         "noNonNullAssertion": "warn",
-        "useImportType": "error"
+        "useImportType": "error",
+        "useTemplate": "off"
       },
       "suspicious": {
         "noConsole": { "level": "warn", "options": { "allow": ["warn", "error"] } }
