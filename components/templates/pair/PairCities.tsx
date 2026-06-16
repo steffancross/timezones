@@ -3,7 +3,7 @@ import { getCitiesByIana } from '@/lib/cities/resolve';
 import type { City } from '@/lib/cities/types';
 import type { ParsedPair, ZoneOrCity } from '@/lib/slugs/parse';
 import { zoneDisplayNameForIana } from '@/lib/zones/resolve';
-import { CityChip } from './chips';
+import { CityChip } from '@/components/site/chips';
 
 interface Props {
   pair: ParsedPair;

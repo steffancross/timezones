@@ -1,5 +1,5 @@
 import { notFound } from 'next/navigation';
-import { ArticleShell } from '@/components/templates/ArticleShell';
+import { ArticleShell } from '@/components/templates/article/ArticleShell';
 import { getAllArticleSlugs, getArticleFrontmatter } from '@/lib/articles';
 import { buildMetadata } from '@/lib/seo/metadata';
 

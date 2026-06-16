@@ -6,7 +6,7 @@ import type { City } from '@/lib/cities/types';
 import { getHolidays, HOLIDAYS_YEAR } from '@/lib/holidays/resolve';
 import { getNextTransition } from '@/lib/time/dst';
 import { resolveZoneForIana, zoneDisplayNameForIana } from '@/lib/zones/resolve';
-import { AirportChip, CityChip } from './chips';
+import { AirportChip, CityChip } from '@/components/site/chips';
 
 interface Props {
   city: City;

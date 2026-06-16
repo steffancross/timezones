@@ -1,6 +1,6 @@
 import { notFound } from 'next/navigation';
-import { CityShell } from '@/components/templates/CityShell';
-import { DisambiguationList } from '@/components/templates/DisambiguationList';
+import { CityShell } from '@/components/templates/city/CityShell';
+import { DisambiguationList } from '@/components/templates/city/DisambiguationList';
 import {
   getAllCitySlugs,
   getCityById,
