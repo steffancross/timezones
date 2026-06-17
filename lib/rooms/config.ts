@@ -28,3 +28,11 @@ export const DAYS = 7;
 
 /** Total slots in a recurring-week blob. */
 export const WEEK_SLOTS = DAYS * SLOTS_PER_DAY; // 336
+
+// --- Compute layer (spec 3) ------------------------------------------------
+
+/** A dead time-row run this long (in slots) or longer collapses in the strip — 3h. */
+export const FOLD_MIN = 6;
+
+/** Max ranked meeting windows the Overview surfaces. */
+export const MAX_WINDOWS = 4;
