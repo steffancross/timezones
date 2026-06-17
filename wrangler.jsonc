@@ -39,5 +39,16 @@
       "database_id": "72edecc3-6b56-4700-9a30-6cce15102d8f",
       "migrations_dir": "migrations"
     }
+  ],
+  // Rate limiter for the claim endpoint (spec 2) — the one password-guessing
+  // surface. Keyed per (room, IP) in the handler: 5 attempts / 60s. The native
+  // binding isn't modeled by Miniflare, so integration tests inject a fake
+  // limiter and never touch this. namespace_id is an arbitrary per-account id.
+  "ratelimits": [
+    {
+      "name": "CLAIM_LIMITER",
+      "namespace_id": "1001",
+      "simple": { "limit": 5, "period": 60 }
+    }
   ]
 }
