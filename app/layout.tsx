@@ -1,6 +1,7 @@
 import { AppToaster } from '@/components/site/AppToaster';
 import { Footer } from '@/components/site/Footer';
 import { Header } from '@/components/site/Header';
+import { SiteChrome } from '@/components/site/SiteChrome';
 import env from '@/lib/env';
 import { GeistMono } from 'geist/font/mono';
 import { GeistSans } from 'geist/font/sans';
@@ -41,9 +42,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       </head>
       <body className="flex min-h-screen flex-col">
         <Providers>
-          <Header />
-          <main className="flex-1">{children}</main>
-          <Footer />
+          <SiteChrome header={<Header />} footer={<Footer />}>
+            {children}
+          </SiteChrome>
           <AppToaster />
         </Providers>
       </body>

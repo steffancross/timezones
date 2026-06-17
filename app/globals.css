@@ -115,6 +115,31 @@
     --radius-pill: 999px;
     /* Larger card/paste-box radius for the Smart Converter surface. */
     --radius-lg: 0.625rem;
+
+    /* Availability Room — heatmap grades, availability states, status dots
+       (oklch, used directly: bg-[var(--hm-all)]). Ported from the feature's
+       design mock; ink/line/paper reuse the converter neutrals above. */
+    --hm-all: oklch(0.7 0.11 152); /* everyone available — rich green */
+    --hm-all-ink: oklch(0.38 0.08 152);
+    --av-yes: oklch(0.8 0.075 152);
+    --av-yes-strong: oklch(0.72 0.105 152);
+    --av-yes-ink: oklch(0.4 0.075 152);
+    --av-soft-base: oklch(0.945 0.045 92); /* if-needed hatch base (yellow) */
+    --av-soft-line: oklch(0.8 0.135 92); /* if-needed hatch stroke */
+    --av-soft-fill: oklch(0.87 0.115 92);
+    --av-no: oklch(0.83 0.055 28);
+    --av-no-ink: oklch(0.5 0.11 28);
+    --st-free: oklch(0.66 0.115 152);
+    --st-soft: oklch(0.78 0.105 92);
+    --st-busy: oklch(0.66 0.13 28);
+    /* The "if needed" hatch. var() refs re-resolve per theme automatically. */
+    --hatch-soft: repeating-linear-gradient(
+      45deg,
+      var(--av-soft-base) 0,
+      var(--av-soft-base) 3px,
+      var(--av-soft-line) 3px,
+      var(--av-soft-line) 4.4px
+    );
   }
 
   [data-theme="dark"] {
@@ -172,6 +197,21 @@
 
     --delta-ahead: oklch(0.7 0.13 145);
     --delta-behind: oklch(0.7 0.13 35);
+
+    /* Availability Room — dark variants (--hatch-soft inherits via var()). */
+    --hm-all: oklch(0.62 0.12 152);
+    --hm-all-ink: oklch(0.86 0.06 152);
+    --av-yes: oklch(0.55 0.09 152);
+    --av-yes-strong: oklch(0.62 0.12 152);
+    --av-yes-ink: oklch(0.86 0.07 152);
+    --av-soft-base: oklch(0.42 0.04 92);
+    --av-soft-line: oklch(0.62 0.13 92);
+    --av-soft-fill: oklch(0.55 0.11 92);
+    --av-no: oklch(0.45 0.06 28);
+    --av-no-ink: oklch(0.82 0.1 28);
+    --st-free: oklch(0.7 0.12 152);
+    --st-soft: oklch(0.78 0.11 92);
+    --st-busy: oklch(0.66 0.13 28);
   }
 }
 
