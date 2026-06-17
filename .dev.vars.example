@@ -1,0 +1,7 @@
+# Local-dev Worker secrets for `getCloudflareContext().env` (read by
+# initOpenNextCloudflareForDev when running `CF_DEV=1 pnpm dev`).
+# Copy to `.dev.vars` (gitignored) and fill in. For prod, set the same key with
+# `wrangler secret put ADMIN_JANITOR_TOKEN`.
+
+# Bearer token guarding POST /api/admin/janitor (the inactivity-TTL janitor).
+ADMIN_JANITOR_TOKEN="dev-only-pick-any-string"
