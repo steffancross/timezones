@@ -69,7 +69,7 @@ function toPublicParticipant(r: PublicParticipantRow): PublicParticipant {
   };
 }
 
-async function readPublicParticipant(
+export async function readPublicParticipant(
   db: D1Database,
   roomId: string,
   participantId: string,

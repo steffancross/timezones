@@ -34,5 +34,8 @@ export const WEEK_SLOTS = DAYS * SLOTS_PER_DAY; // 336
 /** A dead time-row run this long (in slots) or longer collapses in the strip — 3h. */
 export const FOLD_MIN = 6;
 
+/** Visible breathing room (in slots) kept between a fold and an adjacent live region — 1h. */
+export const FOLD_PAD = 2;
+
 /** Max ranked meeting windows the Overview surfaces. */
 export const MAX_WINDOWS = 4;

@@ -125,3 +125,15 @@ export function blobDowToLuxonWeekday(dowIndex: number): number {
   }
   return dowIndex + 1;
 }
+
+/**
+ * Sunday-first DISPLAY column (0=Sun … 6=Sat, the convention every view/edit grid
+ * uses) → blob day index (Mon=0 … Sun=6). The bridge between the Sunday-first UI
+ * and the Monday-indexed storage. Sun(0)→6, Mon(1)→0, … Sat(6)→5.
+ */
+export function displayColToDow(col: number): number {
+  if (!Number.isInteger(col) || col < 0 || col > 6) {
+    throw new Error(`displayColToDow: expected a Sunday-first column 0..6, got ${col}`);
+  }
+  return (col + 6) % 7;
+}

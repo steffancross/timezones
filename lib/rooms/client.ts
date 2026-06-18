@@ -63,3 +63,15 @@ export function claimRequest(
 ): Promise<{ you: { participantId: string } }> {
   return postJson(`${base(roomId)}/claim`, input);
 }
+
+export type AvailabilityPatchInput = {
+  generalWeek?: string;
+  overrides?: { set?: Record<string, string>; clear?: string[] };
+};
+
+export function writeAvailabilityRequest(
+  roomId: string,
+  patch: AvailabilityPatchInput,
+): Promise<{ participant: PublicParticipant }> {
+  return patchJson(`${base(roomId)}/me/availability`, patch);
+}

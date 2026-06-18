@@ -129,6 +129,10 @@
     --av-soft-fill: oklch(0.87 0.115 92);
     --av-no: oklch(0.83 0.055 28);
     --av-no-ink: oklch(0.5 0.11 28);
+    /* Vivid paint colors for editing your OWN week (spec 5) — saturated vs the
+       muted aggregate greens, so "this is my edit" reads at a glance. */
+    --paint-yes: oklch(0.7 0.15 152);
+    --paint-soft: oklch(0.81 0.155 92);
     --st-free: oklch(0.66 0.115 152);
     --st-soft: oklch(0.78 0.105 92);
     --st-busy: oklch(0.66 0.13 28);
@@ -209,6 +213,8 @@
     --av-soft-fill: oklch(0.55 0.11 92);
     --av-no: oklch(0.45 0.06 28);
     --av-no-ink: oklch(0.82 0.1 28);
+    --paint-yes: oklch(0.64 0.15 152);
+    --paint-soft: oklch(0.72 0.155 92);
     --st-free: oklch(0.7 0.12 152);
     --st-soft: oklch(0.78 0.11 92);
     --st-busy: oklch(0.66 0.13 28);

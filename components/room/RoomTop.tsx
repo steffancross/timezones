@@ -1,18 +1,21 @@
 'use client';
 
-// Room identity bar: name + share path + avatar cluster + Share / Settings. This
-// is the room's own chrome (the marketing header is hidden on /r/* by SiteChrome).
+// Room identity bar: name + participant count + Share / Settings. This is the
+// room's own chrome (the marketing header is hidden on /r/* by SiteChrome). No
+// avatar cluster — without presence it would imply a liveness we don't track.
 
 import { SettingsDrawer } from '@/components/room/SettingsDrawer';
 import { Button } from '@/components/ui/button';
 import { Settings2, Share2 } from 'lucide-react';
 import { useState } from 'react';
 import { toast } from 'sonner';
-import { Avatar } from './Avatar';
-import { useRoomData } from './room-data-context';
+import { useRoomStore } from './room-store-context';
 
 export function RoomTop() {
-  const { state, youId } = useRoomData();
+  const state = useRoomStore((s) => s.state);
+  const youId = useRoomStore((s) => s.youId);
+  const applyMyIdentity = useRoomStore((s) => s.applyMyIdentity);
+  const setRoomName = useRoomStore((s) => s.setRoomName);
   const [settingsOpen, setSettingsOpen] = useState(false);
 
   const you = youId ? state.participants.find((p) => p.id === youId) : undefined;
@@ -41,14 +44,6 @@ export function RoomTop() {
 
       <span className="flex-1" />
 
-      <div className="flex items-center -space-x-1.5">
-        {state.participants.slice(0, 5).map((p) => (
-          <span key={p.id} className="rounded-full ring-2 ring-[hsl(var(--background))]">
-            <Avatar id={p.id} name={p.displayName} size="sm" />
-          </span>
-        ))}
-      </div>
-
       <Button variant="outline" size="sm" onClick={share}>
         <Share2 className="size-3.5" /> Share
       </Button>
@@ -69,6 +64,8 @@ export function RoomTop() {
             roomId={state.room.id}
             participant={you}
             roomName={state.room.name}
+            onIdentitySaved={applyMyIdentity}
+            onRoomRenamed={setRoomName}
           />
         </>
       )}

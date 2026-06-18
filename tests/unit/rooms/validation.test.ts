@@ -46,13 +46,13 @@ describe('validatePasswordField', () => {
     expect(validatePasswordField(null)).toBeNull();
   });
 
-  it('accepts a long-enough password and returns it', () => {
+  it('accepts any non-empty password (no length floor — low-stakes clobber-prevention)', () => {
+    expect(validatePasswordField('x')).toBe('x');
     expect(validatePasswordField('longenough')).toBe('longenough');
   });
 
-  it('rejects empty string and too-short passwords (empty is not "clear")', () => {
+  it('rejects empty string (use null to clear) and non-strings', () => {
     expect(() => validatePasswordField('')).toThrow(InvalidInput);
-    expect(() => validatePasswordField('short')).toThrow(InvalidInput);
     expect(() => validatePasswordField(42)).toThrow(InvalidInput);
   });
 });

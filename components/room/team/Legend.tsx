@@ -2,7 +2,7 @@
 
 const ITEMS = [
   { label: 'Everyone available', bg: 'var(--hm-all)' },
-  { label: "Works — someone's on “if needed”", bg: 'var(--hatch-soft)' },
+  { label: "Works — someone's on “if needed”", bg: 'var(--paint-soft)' },
   { label: "Someone's out", bg: 'transparent' },
 ] as const;
 

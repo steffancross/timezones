@@ -2,38 +2,45 @@
 
 // Day view — the zoom-in: one continuous half-hour bar per participant for a
 // single day, so you can read "who specifically tapers off when." Fixed name
-// column, horizontally-scrolling track (opens midday→evening), a hover alignment
-// line down every row, a now-cursor when viewing today, and day paging. Compress
-// trims the dead leading/trailing columns to cut horizontal scroll.
+// column; the full 24h is always horizontally scrollable (never clipped) — we
+// just auto-calibrate the initial scroll to land on the day's available hours.
+// Plus a hover alignment line, a now-cursor when viewing today, and day paging.
 
 import { ChevronLeft, ChevronRight } from 'lucide-react';
-import { useMemo, useState } from 'react';
-import { DateTime } from '@/lib/time/luxon';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import type { SlotState } from '@/lib/rooms/compute';
+import { DateTime } from '@/lib/time/luxon';
 import { cn } from '@/lib/utils';
-import { useRoomData } from '../room-data-context';
+import { useRoomStore } from '../room-store-context';
 import { Avatar } from '../Avatar';
 import { hourLabel, slotLabel, type WeekColumn } from './slots';
 
 const SEG_W = 22; // px per half-hour
 const ROW_H = 30;
+const SLOTS = 48;
+const TRACK_W = SLOTS * SEG_W;
+const DEFAULT_SCROLL_SLOT = 16; // ~8am, when the day has no availability
 
 function segBackground(state: SlotState): string {
   if (state === 'y') return 'var(--av-yes)';
-  if (state === 's') return 'var(--hatch-soft)';
+  if (state === 's') return 'var(--paint-soft)';
   return 'transparent';
 }
 
 interface Props {
   dayIndex: number;
   columns: WeekColumn[];
-  compressed: boolean;
   onPageDay: (delta: number) => void;
 }
 
-export function DayView({ dayIndex, columns, compressed, onPageDay }: Props) {
-  const { projection, state, viewerTz, now, youId } = useRoomData();
+export function DayView({ dayIndex, columns, onPageDay }: Props) {
+  const projection = useRoomStore((s) => s.projection);
+  const state = useRoomStore((s) => s.state);
+  const viewerTz = useRoomStore((s) => s.viewerTz);
+  const now = useRoomStore((s) => s.now);
+  const youId = useRoomStore((s) => s.youId);
   const [hoverSlot, setHoverSlot] = useState<number | null>(null);
+  const scrollRef = useRef<HTMLDivElement>(null);
 
   const col = columns[dayIndex];
   const nameById = useMemo(
@@ -41,35 +48,30 @@ export function DayView({ dayIndex, columns, compressed, onPageDay }: Props) {
     [state.participants],
   );
 
-  // Live bounds for this day (compress trims dead edges); full 24h otherwise.
-  const [lo, hi] = useMemo(() => {
-    if (!compressed) return [0, 47];
-    let a: number | null = null;
-    let b = 47;
-    for (let k = 0; k < 48; k++) {
+  // First slot anyone is available on this day — drives where the scroll lands.
+  const firstLive = useMemo(() => {
+    for (let k = 0; k < SLOTS; k++) {
       for (const p of projection.participants) {
-        if ((p.grid[dayIndex]?.[k] ?? 'n') !== 'n') {
-          if (a === null) a = k;
-          b = k;
-          break;
-        }
+        if ((p.grid[dayIndex]?.[k] ?? 'n') !== 'n') return k;
       }
     }
-    return a === null ? [18, 40] : [a, b];
-  }, [compressed, projection, dayIndex]);
+    return -1;
+  }, [projection, dayIndex]);
 
-  const cols = hi - lo + 1;
-  const trackW = cols * SEG_W;
+  // Re-calibrate the scroll on each day so it lands on availability (full 24h
+  // stays scrollable — we only move the starting position, never clip).
+  // biome-ignore lint/correctness/useExhaustiveDependencies: recalibrate per day
+  useEffect(() => {
+    const node = scrollRef.current;
+    if (!node) return;
+    const target = firstLive >= 0 ? firstLive : DEFAULT_SCROLL_SLOT;
+    node.scrollLeft = Math.max(0, (target - 1) * SEG_W); // one slot of lead-in
+  }, [firstLive, dayIndex]);
 
   // Now-cursor (only when this day is today in the viewer's zone).
   const nowLocal = DateTime.fromMillis(now).setZone(viewerTz);
   const isToday = col?.iso === nowLocal.toISODate();
-  const nowLeft = isToday ? ((nowLocal.hour * 60 + nowLocal.minute) / 30 - lo) * SEG_W : null;
-
-  // Open the scroll around midday on mount.
-  const openScroll = (node: HTMLDivElement | null) => {
-    if (node) node.scrollLeft = Math.max(0, (24 - lo) * SEG_W);
-  };
+  const nowLeft = isToday ? ((nowLocal.hour * 60 + nowLocal.minute) / 30) * SEG_W : null;
 
   return (
     <div className="flex flex-col gap-3">
@@ -118,26 +120,24 @@ export function DayView({ dayIndex, columns, compressed, onPageDay }: Props) {
           ))}
         </div>
 
-        {/* scrolling track */}
-        <div className="relative flex-1 overflow-x-auto" ref={openScroll}>
+        {/* scrolling track — always the full 24h */}
+        <div className="relative flex-1 overflow-x-auto" ref={scrollRef}>
           <div
             className="relative"
-            style={{ width: trackW }}
+            style={{ width: TRACK_W }}
             onPointerLeave={() => setHoverSlot(null)}
           >
             {/* hour axis */}
             <div className="relative h-6 border-b border-border">
-              {Array.from({ length: 24 }, (_, h) => h * 2)
-                .filter((k) => k >= lo && k <= hi)
-                .map((k) => (
-                  <span
-                    key={k}
-                    className="absolute top-1 font-mono text-[9px] text-muted-foreground"
-                    style={{ left: (k - lo) * SEG_W }}
-                  >
-                    {hourLabel(k / 2)}
-                  </span>
-                ))}
+              {Array.from({ length: 24 }, (_, h) => h * 2).map((k) => (
+                <span
+                  key={k}
+                  className="absolute top-1 font-mono text-[9px] text-muted-foreground"
+                  style={{ left: k * SEG_W }}
+                >
+                  {hourLabel(k / 2)}
+                </span>
+              ))}
             </div>
 
             {/* per-person bars */}
@@ -150,7 +150,7 @@ export function DayView({ dayIndex, columns, compressed, onPageDay }: Props) {
                 )}
                 style={{ height: ROW_H }}
               >
-                {Array.from({ length: cols }, (_, i) => lo + i).map((k) => {
+                {Array.from({ length: SLOTS }, (_, k) => {
                   const st = p.grid[dayIndex]?.[k] ?? 'n';
                   return (
                     <div
@@ -172,7 +172,7 @@ export function DayView({ dayIndex, columns, compressed, onPageDay }: Props) {
             {hoverSlot !== null && (
               <div
                 className="pointer-events-none absolute top-0 bottom-0 z-10 border-l border-[var(--brand)]"
-                style={{ left: (hoverSlot - lo) * SEG_W }}
+                style={{ left: hoverSlot * SEG_W }}
               >
                 <span className="absolute top-0 -translate-x-1/2 rounded bg-[var(--brand)] px-1 font-mono text-[9px] text-[var(--brand-fg)]">
                   {slotLabel(hoverSlot)}
@@ -181,7 +181,7 @@ export function DayView({ dayIndex, columns, compressed, onPageDay }: Props) {
             )}
 
             {/* now cursor */}
-            {nowLeft !== null && nowLeft >= 0 && nowLeft <= trackW && (
+            {nowLeft !== null && (
               <div
                 className="pointer-events-none absolute top-0 bottom-0 z-20 border-l-2 border-[var(--st-busy)]"
                 style={{ left: nowLeft }}

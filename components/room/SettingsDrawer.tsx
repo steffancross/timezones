@@ -20,7 +20,10 @@ interface Props {
   roomId: string;
   participant: Pick<PublicParticipant, 'displayName' | 'timezone' | 'hasPassword'>;
   roomName: string | null;
-  onSaved?: () => void;
+  /** Identity (name/timezone/password) saved — carries the updated row for the store. */
+  onIdentitySaved?: (participant: PublicParticipant) => void;
+  /** Room renamed — carries the new name for the store. */
+  onRoomRenamed?: (name: string) => void;
 }
 
 export function SettingsDrawer({
@@ -29,7 +32,8 @@ export function SettingsDrawer({
   roomId,
   participant,
   roomName,
-  onSaved,
+  onIdentitySaved,
+  onRoomRenamed,
 }: Props) {
   const [name, setName] = useState(participant.displayName);
   const [timezone, setTimezone] = useState(participant.timezone);
@@ -39,14 +43,13 @@ export function SettingsDrawer({
   const [error, setError] = useState<string | null>(null);
   const [saved, setSaved] = useState(false);
 
-  async function run(action: () => Promise<unknown>) {
+  async function run(action: () => Promise<void>) {
     setBusy(true);
     setError(null);
     setSaved(false);
     try {
       await action();
       setSaved(true);
-      onSaved?.();
     } catch (e) {
       setError(e instanceof Error ? e.message : 'Could not save');
     } finally {
@@ -55,17 +58,27 @@ export function SettingsDrawer({
   }
 
   const saveIdentity = () =>
-    run(() =>
-      updateIdentityRequest(roomId, {
+    run(async () => {
+      const { participant: updated } = await updateIdentityRequest(roomId, {
         name,
         timezone,
         ...(newPassword ? { password: newPassword } : {}),
-      }).then(() => setNewPassword('')),
-    );
+      });
+      setNewPassword('');
+      onIdentitySaved?.(updated); // push name/timezone into the store → live reflow
+    });
 
-  const removePassword = () => run(() => updateIdentityRequest(roomId, { password: null }));
+  const removePassword = () =>
+    run(async () => {
+      const { participant: updated } = await updateIdentityRequest(roomId, { password: null });
+      onIdentitySaved?.(updated);
+    });
 
-  const saveRoomName = () => run(() => renameRoomRequest(roomId, room));
+  const saveRoomName = () =>
+    run(async () => {
+      const { room: updated } = await renameRoomRequest(roomId, room);
+      onRoomRenamed?.(updated.name);
+    });
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -97,7 +110,7 @@ export function SettingsDrawer({
                 id="ar-set-pw"
                 type="password"
                 value={newPassword}
-                placeholder="At least 8 characters"
+                placeholder="Choose a password"
                 autoComplete="new-password"
                 onChange={(e) => setNewPassword(e.target.value)}
               />

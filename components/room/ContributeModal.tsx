@@ -18,6 +18,7 @@ import {
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { createParticipantRequest } from '@/lib/rooms/client';
+import type { PublicParticipant } from '@/lib/rooms/db';
 import { randomHandle } from '@/lib/rooms/handles';
 import { TimezoneField } from './TimezoneField';
 
@@ -33,8 +34,8 @@ interface Props {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   roomId: string;
-  /** Called after a participant is created; carries the new participant id. */
-  onJoined?: (youId: string) => void;
+  /** Called after a participant is created; carries the new public participant. */
+  onJoined?: (participant: PublicParticipant) => void;
   /** Called when the visitor chooses "Find me" — the host opens the recovery picker. */
   onRecover?: () => void;
 }
@@ -53,12 +54,12 @@ export function ContributeModal({ open, onOpenChange, roomId, onJoined, onRecove
     setError(null);
     setSubmitting(true);
     try {
-      const { you } = await createParticipantRequest(roomId, {
+      const { participant } = await createParticipantRequest(roomId, {
         name,
         timezone,
         ...(showPassword && password ? { password } : {}),
       });
-      onJoined?.(you.participantId);
+      onJoined?.(participant);
       onOpenChange(false);
     } catch (e) {
       setError(e instanceof Error ? e.message : 'Something went wrong');
@@ -108,7 +109,7 @@ export function ContributeModal({ open, onOpenChange, roomId, onJoined, onRecove
                 type="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                placeholder="At least 8 characters"
+                placeholder="Choose a password"
                 autoComplete="new-password"
               />
               <p className="text-xs text-muted-foreground">

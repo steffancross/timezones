@@ -5,6 +5,7 @@
 // nav is real while their content lands later.
 
 import { useState } from 'react';
+import { AvailabilityTab } from './availability/AvailabilityTab';
 import { TeamTab } from './team/TeamTab';
 import { RoomTabs, type RoomTab } from './RoomTabs';
 import { RoomTop } from './RoomTop';
@@ -28,7 +29,7 @@ export function RoomShell() {
         <div className="flex-1">
           {tab === 'team' && <TeamTab />}
           {tab === 'overview' && <Placeholder label="The Overview" />}
-          {tab === 'availability' && <Placeholder label="Painting your availability" />}
+          {tab === 'availability' && <AvailabilityTab />}
         </div>
       </div>
     </div>

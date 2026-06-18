@@ -15,10 +15,12 @@
   ],
   "scripts": {
     "dev": "next dev",
+    "dev:cf": "CF_DEV=1 next dev",
     "data:cities": "tsx scripts/build-cities/run.ts",
     "data:search": "tsx scripts/build-search-index.ts",
     "data:holidays": "tsx scripts/build-cities/04-fetch-holidays.ts",
     "data:build": "pnpm data:cities && pnpm data:search && pnpm data:holidays",
+    "seed:rooms": "tsx scripts/seed-rooms.ts",
     "build": "next build",
     "start": "next start",
     "typecheck": "tsc --noEmit",
