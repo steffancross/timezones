@@ -110,7 +110,11 @@ export function TeamTab() {
             title={isExpanded ? 'Collapse dead hours' : 'Show full 24 hours'}
             className="inline-flex size-7 items-center justify-center rounded text-muted-foreground hover:bg-[var(--hover)]"
           >
-            {isExpanded ? <FoldVertical className="size-4" /> : <UnfoldVertical className="size-4" />}
+            {isExpanded ? (
+              <FoldVertical className="size-4" />
+            ) : (
+              <UnfoldVertical className="size-4" />
+            )}
           </button>
         )}
 

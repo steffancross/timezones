@@ -128,16 +128,13 @@ export function createRoomStore(seed: RoomStoreSeed) {
     applyMyIdentity: (participant) =>
       set((s) => {
         if (!s.youId) return s;
-        const participants = s.state.participants.map((p) =>
-          p.id === s.youId ? participant : p,
-        );
+        const participants = s.state.participants.map((p) => (p.id === s.youId ? participant : p));
         const state = { ...s.state, participants };
         const viewerTz = participant.timezone; // you → your zone is the viewer frame
         return { state, viewerTz, ...derive({ ...s, state, viewerTz }) };
       }),
 
-    setRoomName: (name) =>
-      set((s) => ({ state: { ...s.state, room: { ...s.state.room, name } } })),
+    setRoomName: (name) => set((s) => ({ state: { ...s.state, room: { ...s.state.room, name } } })),
   }));
 }
 

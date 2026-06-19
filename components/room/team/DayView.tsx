@@ -6,13 +6,13 @@
 // just auto-calibrate the initial scroll to land on the day's available hours.
 // Plus a hover alignment line, a now-cursor when viewing today, and day paging.
 
-import { ChevronLeft, ChevronRight } from 'lucide-react';
-import { useEffect, useMemo, useRef, useState } from 'react';
 import type { SlotState } from '@/lib/rooms/compute';
 import { DateTime } from '@/lib/time/luxon';
 import { cn } from '@/lib/utils';
-import { useRoomStore } from '../room-store-context';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { Avatar } from '../Avatar';
+import { useRoomStore } from '../room-store-context';
 import { hourLabel, slotLabel, type WeekColumn } from './slots';
 
 const SEG_W = 22; // px per half-hour
@@ -154,6 +154,7 @@ export function DayView({ dayIndex, columns, onPageDay }: Props) {
                   const st = p.grid[dayIndex]?.[k] ?? 'n';
                   return (
                     <div
+                      // biome-ignore lint/suspicious/noArrayIndexKey: its fine
                       key={k}
                       data-slot={k}
                       onPointerEnter={() => setHoverSlot(k)}
