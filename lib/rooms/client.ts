@@ -27,6 +27,12 @@ async function sendJson<T>(url: string, method: string, body: unknown): Promise<
 
 const base = (roomId: string) => `/r/${encodeURIComponent(roomId)}`;
 
+// The one non-room-scoped call: create a fresh room and get its id back. v1
+// creates unnamed; rename happens later via settings.
+export function createRoomRequest(name?: string): Promise<{ id: string }> {
+  return postJson('/api/rooms', name ? { name } : {});
+}
+
 export type ContributeInput = { name: string; timezone: string; password?: string };
 
 export function createParticipantRequest(
