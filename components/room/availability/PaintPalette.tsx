@@ -18,7 +18,7 @@ interface Props {
 
 export function PaintPalette({ active, onChange }: Props) {
   return (
-    <div className="flex items-center gap-2">
+    <div className="flex items-center gap-2 max-md:justify-center">
       {SWATCHES.map((s) => (
         <button
           key={s.state}

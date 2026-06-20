@@ -137,7 +137,10 @@ export function EditGrid({ columns, cellInfo, onPaint }: Props) {
                       'relative cursor-pointer border-r border-b border-[color:var(--border)]/50',
                       k % 2 === 1 && 'border-b-[color:var(--border)]',
                     )}
-                    style={{ height: ROW_H, background: cellBackground(info) }}
+                    // touch-action:none so a finger drag paints instead of scrolling
+                    // the grid. The time gutter keeps its default action as the scroll
+                    // handle on touch. (Touch painting is accepted-rough per spec 7a.)
+                    style={{ height: ROW_H, background: cellBackground(info), touchAction: 'none' }}
                   >
                     {info.changed && (
                       <span className="absolute right-0.5 top-0.5 size-1 rounded-full bg-[var(--brand)]" />

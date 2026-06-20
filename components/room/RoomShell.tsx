@@ -7,6 +7,7 @@
 import { useState } from 'react';
 import { AvailabilityTab } from './availability/AvailabilityTab';
 import { OverviewTab } from './overview/OverviewTab';
+import { RoomBottomNav } from './RoomBottomNav';
 import { TeamTab } from './team/TeamTab';
 import { RoomTabs, type RoomTab } from './RoomTabs';
 import { RoomTop } from './RoomTop';
@@ -16,15 +17,18 @@ export function RoomShell() {
 
   return (
     <div className="mx-auto flex min-h-screen max-w-5xl flex-col">
-      <div className="m-3 flex flex-1 flex-col overflow-hidden rounded-[var(--radius-lg)] border border-border bg-[hsl(var(--card))]">
+      {/* Full-bleed on a phone; a framed card on desktop. */}
+      <div className="flex flex-1 flex-col overflow-hidden border-border bg-[hsl(var(--card))] md:m-3 md:rounded-[var(--radius-lg)] md:border">
         <RoomTop />
         <RoomTabs active={tab} onChange={setTab} />
-        <div className="flex-1">
+        {/* pad past the fixed bottom nav on mobile */}
+        <div className="flex-1 pb-16 md:pb-0">
           {tab === 'team' && <TeamTab onAddAvailability={() => setTab('availability')} />}
           {tab === 'overview' && <OverviewTab onAddAvailability={() => setTab('availability')} />}
           {tab === 'availability' && <AvailabilityTab />}
         </div>
       </div>
+      <RoomBottomNav active={tab} onChange={setTab} />
     </div>
   );
 }

@@ -154,7 +154,7 @@ export function OverviewTab({ onAddAvailability }: { onAddAvailability?: () => v
     return (
       <div className="flex flex-col gap-6 p-4">
         <JustYouSoFar youResponded={!!you?.hasResponded} onAddAvailability={onAddAvailability} />
-        <section className="flex flex-col gap-5 md:flex-row md:gap-8">
+        <section className="flex flex-col-reverse gap-5 md:flex-row md:gap-8">
           <div className="min-w-0 flex-1">
             <Eyebrow>Local time now</Eyebrow>
             <ZoneClocks participants={responders} now={now} />

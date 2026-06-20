@@ -9,14 +9,17 @@ import { ChevronLeft, ChevronRight, FoldVertical, UnfoldVertical } from 'lucide-
 import { useMemo, useState } from 'react';
 import { currentWeekAnchor, rowSegments } from '@/lib/rooms/compute';
 import { contentPhase, respondedParticipants } from '@/lib/rooms/content-state';
+import { useIsMobile } from '@/lib/hooks/use-is-mobile';
 import { DateTime } from '@/lib/time/luxon';
 import { cn } from '@/lib/utils';
 import { JustYouSoFar } from '../JustYouSoFar';
 import { RespondersNote } from '../RespondersNote';
 import { RoomGetStarted } from '../RoomGetStarted';
 import { useRoomStore } from '../room-store-context';
+import { BreakdownSheet } from './BreakdownSheet';
 import { DayView } from './DayView';
 import { Legend } from './Legend';
+import { RosterChips } from './RosterChips';
 import { RosterSidebar } from './RosterSidebar';
 import { buildWeekColumns } from './slots';
 import { type HoverCell, WeekHeatmap } from './WeekHeatmap';
@@ -38,10 +41,12 @@ export function TeamTab({ onAddAvailability }: { onAddAvailability?: () => void 
   const participants = useRoomStore((s) => s.state.participants);
   const youId = useRoomStore((s) => s.youId);
 
+  const isMobile = useIsMobile();
   const [zoom, setZoom] = useState<'week' | 'day'>('week');
   const [compressed, setCompressed] = useState(true);
   const [manuallyExpanded, setManuallyExpanded] = useState<Set<string>>(() => new Set());
   const [hover, setHover] = useState<HoverCell>(null);
+  const [sheetCell, setSheetCell] = useState<HoverCell>(null);
 
   const columns = useMemo(() => buildWeekColumns(weekAnchor), [weekAnchor]);
   const segments = useMemo(() => rowSegments(grid.grade), [grid]);
@@ -175,21 +180,30 @@ export function TeamTab({ onAddAvailability }: { onAddAvailability?: () => void 
 
       {/* body */}
       {zoom === 'week' ? (
-        <div className="flex">
-          <div className="min-w-0 flex-1">
-            <WeekHeatmap
-              grid={grid}
-              columns={columns}
-              segments={segments}
-              compressed={compressed}
-              manuallyExpanded={manuallyExpanded}
-              onExpandFold={expandFold}
-              hover={hover}
-              onHover={setHover}
-            />
+        <>
+          <div className="flex">
+            <div className="min-w-0 flex-1">
+              <WeekHeatmap
+                grid={grid}
+                columns={columns}
+                segments={segments}
+                compressed={compressed}
+                manuallyExpanded={manuallyExpanded}
+                onExpandFold={expandFold}
+                hover={hover}
+                onHover={setHover}
+                onCellTap={isMobile ? (cell) => setSheetCell(cell) : undefined}
+              />
+            </div>
+            {/* Desktop: hover breakdown rail. Mobile: chip-row + tap sheet (below). */}
+            <div className="hidden md:block">
+              <RosterSidebar hover={hover} columns={columns} />
+            </div>
           </div>
-          <RosterSidebar hover={hover} columns={columns} />
-        </div>
+          <div className="md:hidden">
+            <RosterChips />
+          </div>
+        </>
       ) : (
         <DayView
           dayIndex={dayIndex}
@@ -202,6 +216,9 @@ export function TeamTab({ onAddAvailability }: { onAddAvailability?: () => void 
         <RespondersNote count={respondedParticipants(participants).length} />
       </div>
       <Legend />
+
+      {/* Mobile tap-to-inspect breakdown (no-op on desktop — only opened by onCellTap). */}
+      <BreakdownSheet cell={sheetCell} columns={columns} onClose={() => setSheetCell(null)} />
     </div>
   );
 }

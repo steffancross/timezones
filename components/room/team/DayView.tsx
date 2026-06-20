@@ -7,6 +7,7 @@
 // Plus a hover alignment line, a now-cursor when viewing today, and day paging.
 
 import type { SlotState } from '@/lib/rooms/compute';
+import { useIsMobile } from '@/lib/hooks/use-is-mobile';
 import { DateTime } from '@/lib/time/luxon';
 import { cn } from '@/lib/utils';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
@@ -39,6 +40,9 @@ export function DayView({ dayIndex, columns, onPageDay }: Props) {
   const viewerTz = useRoomStore((s) => s.viewerTz);
   const now = useRoomStore((s) => s.now);
   const youId = useRoomStore((s) => s.youId);
+  const isMobile = useIsMobile();
+  // Desktop hovers the alignment line; touch taps it (and it persists until the
+  // next tap, since there's no pointer-leave on a finger).
   const [hoverSlot, setHoverSlot] = useState<number | null>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
 
@@ -125,7 +129,7 @@ export function DayView({ dayIndex, columns, onPageDay }: Props) {
           <div
             className="relative"
             style={{ width: TRACK_W }}
-            onPointerLeave={() => setHoverSlot(null)}
+            onPointerLeave={isMobile ? undefined : () => setHoverSlot(null)}
           >
             {/* hour axis */}
             <div className="relative h-6 border-b border-border">
@@ -153,11 +157,14 @@ export function DayView({ dayIndex, columns, onPageDay }: Props) {
                 {Array.from({ length: SLOTS }, (_, k) => {
                   const st = p.grid[dayIndex]?.[k] ?? 'n';
                   return (
+                    // biome-ignore lint/a11y/noStaticElementInteractions: tap-to-set the alignment line; full keyboard operability is the 7d a11y pass
+                    // biome-ignore lint/a11y/useKeyWithClickEvents: keyboard alignment-line control lands in the 7d a11y pass
                     <div
                       // biome-ignore lint/suspicious/noArrayIndexKey: its fine
                       key={k}
                       data-slot={k}
-                      onPointerEnter={() => setHoverSlot(k)}
+                      onPointerEnter={isMobile ? undefined : () => setHoverSlot(k)}
+                      onClick={() => setHoverSlot(k)}
                       className={cn(
                         'shrink-0',
                         k % 2 === 0 && 'border-l border-[color:var(--border)]/40',

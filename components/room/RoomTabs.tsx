@@ -22,7 +22,7 @@ interface Props {
 
 export function RoomTabs({ active, onChange }: Props) {
   return (
-    <div className="flex items-center gap-1 border-b border-border px-4">
+    <div className="hidden items-center gap-1 border-b border-border px-4 md:flex">
       {TABS.map(({ id, label, Icon }) => (
         <button
           key={id}
