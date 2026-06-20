@@ -15,9 +15,16 @@ export type HoverCell = { day: number; slot: number } | null;
 
 const SLIVER = 'repeating-linear-gradient(45deg, var(--border-strong) 0 1px, transparent 1px 4px)'; // spring-forward "clock change" marker — a thin striped cell
 
-function cellBackground(grade: Grade, gone: boolean, weekend: boolean): string {
+function cellBackground(
+  grade: Grade,
+  gone: boolean,
+  weekend: boolean,
+  variant: 'group' | 'solo',
+): string {
   if (gone) return SLIVER;
-  if (grade === 'all') return 'var(--hm-all)';
+  // Solo (one responder) reads as that person's OWN week, not an "everyone"
+  // consensus — vivid paint green, never the aggregate's --hm-all.
+  if (grade === 'all') return variant === 'solo' ? 'var(--av-yes-strong)' : 'var(--hm-all)';
   if (grade === 'some') return 'var(--paint-soft)'; // solid yellow, matches the paint color
   return weekend ? 'var(--bg)' : 'transparent'; // faint weekend tint on blank cells
 }
@@ -31,8 +38,10 @@ interface Props {
   compressed: boolean;
   manuallyExpanded: Set<string>;
   onExpandFold: (key: string) => void;
-  hover: HoverCell;
-  onHover: (hover: HoverCell) => void;
+  // Hover-driven breakdown is a group-view affordance; solo passes neither.
+  hover?: HoverCell;
+  onHover?: (hover: HoverCell) => void;
+  variant?: 'group' | 'solo';
 }
 
 export function WeekHeatmap({
@@ -42,11 +51,12 @@ export function WeekHeatmap({
   compressed,
   manuallyExpanded,
   onExpandFold,
-  hover,
+  hover = null,
   onHover,
+  variant = 'group',
 }: Props) {
   return (
-    <div className="select-none" onPointerLeave={() => onHover(null)}>
+    <div className="select-none" data-view={variant} onPointerLeave={() => onHover?.(null)}>
       {/* header: time-gutter corner + day columns */}
       <div className="flex">
         <div className="w-11 shrink-0" />
@@ -112,7 +122,7 @@ export function WeekHeatmap({
                       data-nonexistent={gone || undefined}
                       data-day={c}
                       data-slot={k}
-                      onPointerEnter={() => onHover({ day: c, slot: k })}
+                      onPointerEnter={onHover ? () => onHover({ day: c, slot: k }) : undefined}
                       className={cn(
                         'border-r border-b border-[color:var(--border)]/50',
                         hourBoundary && 'border-b-[color:var(--border)]',
@@ -120,7 +130,7 @@ export function WeekHeatmap({
                       )}
                       style={{
                         height: ROW_H,
-                        background: cellBackground(grade, gone, col.weekend),
+                        background: cellBackground(grade, gone, col.weekend, variant),
                       }}
                     />
                   );

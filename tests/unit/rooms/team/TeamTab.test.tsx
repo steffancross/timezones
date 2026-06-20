@@ -100,8 +100,19 @@ describe('TeamTab — day view', () => {
   });
 });
 
-describe('TeamTab — degenerate rooms', () => {
-  it('renders an all-unresponded room without crashing', async () => {
+// Helper for cold-start fixtures (spec 7b).
+const responder = (id: string, week = 'y'.repeat(336)): RoomState['participants'][number] => ({
+  id,
+  displayName: id,
+  timezone: 'UTC',
+  generalWeek: week,
+  overrides: {},
+  hasResponded: true,
+  hasPassword: false,
+});
+
+describe('TeamTab — cold-start content states (spec 7b)', () => {
+  it('empty (zero responders) → get-started, not a blank grid', async () => {
     const empty: RoomState = {
       room: { id: 'e', name: 'Empty', schemaVersion: 1 },
       participants: [
@@ -117,6 +128,33 @@ describe('TeamTab — degenerate rooms', () => {
       ],
     };
     const { container } = await renderTeam(empty);
-    expect(container.textContent).toContain('0 of 1');
+    expect(container.textContent).toContain("You're the first one here");
+    expect(container.textContent).toContain('Add your availability');
+    // No heatmap cells rendered.
+    expect(container.querySelector('[data-grade]')).toBeNull();
+  });
+
+  it('solo (one responder) → single-person view, never an all-green consensus', async () => {
+    const solo: RoomState = {
+      room: { id: 's', name: 'Solo', schemaVersion: 1 },
+      participants: [responder('Solo')],
+    };
+    const { container } = await renderTeam(solo);
+    expect(container.textContent).toContain('Just you so far');
+    expect(container.textContent).toContain('Share the link');
+    // Single-person view is present; the group aggregate + roster are not.
+    expect(container.querySelector('[data-view="solo"]')).not.toBeNull();
+    expect(container.querySelector('[data-view="group"]')).toBeNull();
+    expect(container.textContent).not.toContain('Counting');
+  });
+
+  it('group (2+ responders) → aggregate + a quiet responder count (no denominator)', async () => {
+    const group: RoomState = {
+      room: { id: 'g', name: 'Group', schemaVersion: 1 },
+      participants: [responder('A'), responder('B')],
+    };
+    const { container } = await renderTeam(group);
+    expect(container.querySelector('[data-view="group"]')).not.toBeNull();
+    expect(container.textContent).toContain('2 people have filled so far');
   });
 });

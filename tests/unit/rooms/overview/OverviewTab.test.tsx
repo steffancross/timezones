@@ -13,6 +13,17 @@ function renderOverview(state: RoomState = FIXTURE_ROOM, now: number = FIXTURE_N
   );
 }
 
+// Helpers for the cold-start fixtures (spec 7b).
+const respondedAllN = (id: string): RoomState['participants'][number] => ({
+  id,
+  displayName: id,
+  timezone: 'UTC',
+  generalWeek: 'n'.repeat(336),
+  overrides: {},
+  hasResponded: true,
+  hasPassword: false,
+});
+
 describe('OverviewTab — windows (headline)', () => {
   it('shows the all-clear pill on the green window and names the soft person on the some window', async () => {
     const { container } = await renderOverview();
@@ -33,24 +44,43 @@ describe('OverviewTab — today fallback', () => {
   });
 
   it('degrades to the plain message when there is no partial either', async () => {
-    const solo: RoomState = {
-      room: { id: 's', name: 'Solo', schemaVersion: 1 },
-      participants: [
-        {
-          id: 'solo',
-          displayName: 'Solo',
-          timezone: 'UTC',
-          generalWeek: 'n'.repeat(336),
-          overrides: {},
-          hasResponded: true,
-          hasPassword: false,
-        },
-      ],
+    // Two responders, both fully unavailable → no windows, no partial. (Needs 2+
+    // responders so the windows section renders at all; one responder is the
+    // spec-7b solo cold-start, covered below.)
+    const allOut: RoomState = {
+      room: { id: 'o', name: 'Out', schemaVersion: 1 },
+      participants: [respondedAllN('A'), respondedAllN('B')],
     };
-    const { container } = await renderOverview(solo);
+    const { container } = await renderOverview(allOut);
     expect(container.textContent).toContain('No full overlap left today.');
     expect(container.textContent).not.toContain('closest');
     expect(container.textContent).toContain('No full-overlap windows left this week');
+  });
+});
+
+describe('OverviewTab — cold-start content states (spec 7b)', () => {
+  it('empty (zero responders) → get-started, no windows', async () => {
+    const empty: RoomState = {
+      room: { id: 'e', name: 'Empty', schemaVersion: 1 },
+      participants: [],
+    };
+    const { container } = await renderOverview(empty);
+    expect(container.textContent).toContain("You're the first one here");
+    expect(container.querySelector('[data-testid="window-row"]')).toBeNull();
+    expect(container.textContent).not.toContain('When you overlap');
+  });
+
+  it('solo (one responder) → just-you banner + share, no overlap headline', async () => {
+    const solo: RoomState = {
+      room: { id: 's', name: 'Solo', schemaVersion: 1 },
+      participants: [respondedAllN('Solo')],
+    };
+    const { container } = await renderOverview(solo);
+    expect(container.textContent).toContain('Just you so far');
+    expect(container.textContent).toContain('Share the link');
+    // No "everyone overlaps" windows for one person.
+    expect(container.querySelector('[data-testid="window-row"]')).toBeNull();
+    expect(container.textContent).not.toContain('When you overlap');
   });
 });
 

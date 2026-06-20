@@ -8,8 +8,12 @@
 import { ChevronLeft, ChevronRight, FoldVertical, UnfoldVertical } from 'lucide-react';
 import { useMemo, useState } from 'react';
 import { currentWeekAnchor, rowSegments } from '@/lib/rooms/compute';
+import { contentPhase, respondedParticipants } from '@/lib/rooms/content-state';
 import { DateTime } from '@/lib/time/luxon';
 import { cn } from '@/lib/utils';
+import { JustYouSoFar } from '../JustYouSoFar';
+import { RespondersNote } from '../RespondersNote';
+import { RoomGetStarted } from '../RoomGetStarted';
 import { useRoomStore } from '../room-store-context';
 import { DayView } from './DayView';
 import { Legend } from './Legend';
@@ -25,12 +29,14 @@ function weekLabel(weekAnchor: string): string {
     : `${start.toFormat('MMM d')} – ${end.toFormat('MMM d')}`;
 }
 
-export function TeamTab() {
+export function TeamTab({ onAddAvailability }: { onAddAvailability?: () => void }) {
   const grid = useRoomStore((s) => s.grid);
   const weekAnchor = useRoomStore((s) => s.weekAnchor);
   const viewerTz = useRoomStore((s) => s.viewerTz);
   const now = useRoomStore((s) => s.now);
   const setWeekAnchor = useRoomStore((s) => s.setWeekAnchor);
+  const participants = useRoomStore((s) => s.state.participants);
+  const youId = useRoomStore((s) => s.youId);
 
   const [zoom, setZoom] = useState<'week' | 'day'>('week');
   const [compressed, setCompressed] = useState(true);
@@ -71,6 +77,38 @@ export function TeamTab() {
     setManuallyExpanded(new Set());
     setCompressed(isExpanded); // expanded → collapse (true); collapsed → expand (false)
   };
+
+  // Cold-start states (spec 7b): an empty room is a get-started, not a blank grid;
+  // a one-responder room shows that person's own week (never an all-green
+  // "everyone" consensus). The normal aggregate is the 2+-responder case.
+  const phase = contentPhase(participants);
+  const you = youId ? participants.find((p) => p.id === youId) : undefined;
+
+  if (phase === 'empty') {
+    return (
+      <div className="flex flex-col p-4">
+        <RoomGetStarted onAddAvailability={onAddAvailability} />
+      </div>
+    );
+  }
+
+  if (phase === 'solo') {
+    return (
+      <div className="flex flex-col p-4">
+        <JustYouSoFar youResponded={!!you?.hasResponded} onAddAvailability={onAddAvailability} />
+        <WeekHeatmap
+          grid={grid}
+          columns={columns}
+          segments={segments}
+          compressed={compressed}
+          manuallyExpanded={manuallyExpanded}
+          onExpandFold={expandFold}
+          variant="solo"
+        />
+        <Legend variant="solo" />
+      </div>
+    );
+  }
 
   return (
     <div className="flex flex-col p-4">
@@ -160,6 +198,9 @@ export function TeamTab() {
         />
       )}
 
+      <div className="mt-1 flex items-center justify-between">
+        <RespondersNote count={respondedParticipants(participants).length} />
+      </div>
       <Legend />
     </div>
   );

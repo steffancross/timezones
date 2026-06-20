@@ -20,8 +20,12 @@ import {
   todayWindowsFrom,
   weekWindowsFrom,
 } from '@/lib/rooms/compute';
+import { contentPhase, respondedParticipants } from '@/lib/rooms/content-state';
 import { formatClock, formatTime } from '@/lib/time/format';
 import { DateTime } from '@/lib/time/luxon';
+import { JustYouSoFar } from '../JustYouSoFar';
+import { RespondersNote } from '../RespondersNote';
+import { RoomGetStarted } from '../RoomGetStarted';
 import { useRoomStore } from '../room-store-context';
 import { RightNow } from './RightNow';
 import { ZoneClocks } from './ZoneClocks';
@@ -95,11 +99,12 @@ function WindowRow({
   );
 }
 
-export function OverviewTab() {
+export function OverviewTab({ onAddAvailability }: { onAddAvailability?: () => void }) {
   const state = useRoomStore((s) => s.state);
   const viewerTz = useRoomStore((s) => s.viewerTz);
   const selected = useRoomStore((s) => s.selected);
   const now = useRoomStore((s) => s.now);
+  const youId = useRoomStore((s) => s.youId);
 
   // Pinned to the current week — NOT the store's (pageable) weekAnchor. The anchor
   // string is stable across minute ticks, so it's a sound memo key that only flips
@@ -126,16 +131,50 @@ export function OverviewTab() {
   );
 
   const viewer = DateTime.fromMillis(now).setZone(viewerTz);
-  const responders = state.participants.filter((p) => p.hasResponded);
+  const responders = respondedParticipants(state.participants);
   const freeNames = status
     .filter((s) => s.state === 'y')
     .map((s) => nameById.get(s.participantId) ?? s.participantId);
+
+  // Cold-start states (spec 7b): an empty room is a get-started; a one-responder
+  // room shows their own status, never an "everyone overlaps" headline (the
+  // windows for one person would be the same misleading all-green consensus).
+  const phase = contentPhase(state.participants);
+  const you = youId ? state.participants.find((p) => p.id === youId) : undefined;
+
+  if (phase === 'empty') {
+    return (
+      <div className="flex flex-col gap-6 p-4">
+        <RoomGetStarted onAddAvailability={onAddAvailability} />
+      </div>
+    );
+  }
+
+  if (phase === 'solo') {
+    return (
+      <div className="flex flex-col gap-6 p-4">
+        <JustYouSoFar youResponded={!!you?.hasResponded} onAddAvailability={onAddAvailability} />
+        <section className="flex flex-col gap-5 md:flex-row md:gap-8">
+          <div className="min-w-0 flex-1">
+            <Eyebrow>Local time now</Eyebrow>
+            <ZoneClocks participants={responders} now={now} />
+          </div>
+          <div className="md:w-60">
+            <RightNow status={status} nameById={nameById} />
+          </div>
+        </section>
+      </div>
+    );
+  }
 
   return (
     <div className="flex flex-col gap-6 p-4">
       {/* Answer block */}
       <section>
         <Eyebrow>When you overlap</Eyebrow>
+        <div className="mt-1.5">
+          <RespondersNote count={responders.length} />
+        </div>
 
         <SubLine label="This week" meta="best windows" />
         {week.length > 0 ? (

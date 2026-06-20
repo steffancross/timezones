@@ -20,8 +20,8 @@ export function RoomShell() {
         <RoomTop />
         <RoomTabs active={tab} onChange={setTab} />
         <div className="flex-1">
-          {tab === 'team' && <TeamTab />}
-          {tab === 'overview' && <OverviewTab />}
+          {tab === 'team' && <TeamTab onAddAvailability={() => setTab('availability')} />}
+          {tab === 'overview' && <OverviewTab onAddAvailability={() => setTab('availability')} />}
           {tab === 'availability' && <AvailabilityTab />}
         </div>
       </div>
