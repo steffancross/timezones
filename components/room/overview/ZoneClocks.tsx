@@ -11,7 +11,7 @@ import { DateTime } from '@/lib/time/luxon';
 import { Avatar } from '../Avatar';
 
 interface Props {
-  /** Responders only — the clock list mirrors the people who've actually filled in. */
+  /** All participants — clocks show anyone who has set a timezone, responded or not. */
   participants: PublicParticipant[];
   /** Store's ticking `now` (ms) so clocks update with the minute tick. */
   now: number;

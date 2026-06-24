@@ -7,6 +7,7 @@
 import { BLOB_VERSION, ROOM_TTL_MS } from './config';
 import type { Overrides } from './blob';
 import { generateRoomId } from './id';
+import type { RateLimiter } from './rate-limit';
 
 // Every operation takes an explicit `D1Database` (no Cloudflare-context import
 // here) so the worker-pool integration tests can drive these against
@@ -76,6 +77,22 @@ export async function createRoom(
 }
 
 /**
+ * Room creation behind a per-IP rate-limit — the one public write nothing else
+ * guards (spec 7c). The limiter is injected (same pattern as `claim`) so this is
+ * unit-testable with a fake and the pure op never touches the native binding.
+ */
+export async function createRoomLimited(
+  db: D1Database,
+  limiter: RateLimiter,
+  key: string,
+  name?: string | null,
+): Promise<{ id: string } | { error: 'rate_limited' }> {
+  const { allowed } = await limiter.check(key);
+  if (!allowed) return { error: 'rate_limited' };
+  return createRoom(db, name);
+}
+
+/**
  * Read the full public state of a room, or null if it doesn't exist (bad id or
  * TTL-deleted). Exposes only public fields + the hasResponded / hasPassword
  * booleans — never any secret/hash/raw-timestamp. Does NOT bump last_active_at:
@@ -113,6 +130,20 @@ export async function readRoomState(db: D1Database, roomId: string): Promise<Roo
     room: { id: room.id, name: room.name, schemaVersion: room.schema_version },
     participants,
   };
+}
+
+/**
+ * Bump `last_active_at` to `now`. Called by the state-fetch route handler so
+ * that rooms stay alive as long as someone is viewing them — not just when
+ * availability is edited. A view-only room (everyone set hours once, nobody
+ * edits again) should survive as long as people keep opening it.
+ */
+export async function touchRoom(
+  db: D1Database,
+  roomId: string,
+  now: number = Date.now(),
+): Promise<void> {
+  await db.prepare('UPDATE rooms SET last_active_at = ? WHERE id = ?').bind(now, roomId).run();
 }
 
 /**

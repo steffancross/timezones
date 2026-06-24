@@ -6,23 +6,14 @@
 
 import { Share2 } from 'lucide-react';
 import { toast } from 'sonner';
-import { Button } from '@/components/ui/button';
-
-type ButtonProps = React.ComponentProps<typeof Button>;
+import { cn } from '@/lib/utils';
 
 interface Props {
-  variant?: ButtonProps['variant'];
-  size?: ButtonProps['size'];
   className?: string;
   label?: string;
 }
 
-export function ShareRoomButton({
-  variant = 'outline',
-  size = 'sm',
-  className,
-  label = 'Share',
-}: Props) {
+export function ShareRoomButton({ className, label = 'Share' }: Props) {
   async function share() {
     const url = typeof window !== 'undefined' ? window.location.href : '';
     try {
@@ -34,8 +25,16 @@ export function ShareRoomButton({
   }
 
   return (
-    <Button variant={variant} size={size} className={className} onClick={share}>
-      <Share2 className="size-3.5" /> {label}
-    </Button>
+    <button
+      type="button"
+      className={cn(
+        'inline-flex items-center gap-1.5 rounded-md border border-border px-2.5 py-1 text-xs hover:bg-[var(--hover)]',
+        className,
+      )}
+      onClick={share}
+    >
+      <Share2 className="size-3" />
+      {label}
+    </button>
   );
 }

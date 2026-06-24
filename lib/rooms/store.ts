@@ -21,6 +21,8 @@ export interface RoomStoreState {
   weekAnchor: string;
   selected: Set<string>;
   now: number;
+  /** Your availability has unsaved/in-flight edits — a focus refetch must not clobber it. */
+  dirty: boolean;
   // Derived — recomputed by the input-changing actions below.
   projection: Projection;
   grid: AggregateGrid;
@@ -39,6 +41,10 @@ export interface RoomActions {
   applyMyIdentity: (participant: PublicParticipant) => void;
   /** Live room rename (any participant). */
   setRoomName: (name: string) => void;
+  /** Mark your availability dirty (set by the debounced save while a write is pending). */
+  setDirty: (dirty: boolean) => void;
+  /** Merge a focus-refetched server state without clobbering your unsaved paint. */
+  reconcileServerState: (incoming: RoomState & { you?: { participantId: string } | null }) => void;
 }
 
 export type RoomStore = RoomStoreState & RoomActions;
@@ -76,6 +82,7 @@ export function createRoomStore(seed: RoomStoreSeed) {
     weekAnchor: seed.weekAnchor,
     selected,
     now: seed.now ?? 0,
+    dirty: false,
   };
 
   return createStore<RoomStore>()((set) => ({
@@ -135,6 +142,56 @@ export function createRoomStore(seed: RoomStoreSeed) {
       }),
 
     setRoomName: (name) => set((s) => ({ state: { ...s.state, room: { ...s.state.room, name } } })),
+
+    setDirty: (dirty) => set({ dirty }),
+
+    reconcileServerState: (incoming) =>
+      set((s) => {
+        const { you, ...incomingState } = incoming;
+        const youId = you !== undefined ? (you?.participantId ?? null) : s.youId;
+
+        // Preserve your own availability while you have unsaved/in-flight paint —
+        // take everything else (incl. other people's updates) from the server.
+        const participants = incomingState.participants.map((p) => {
+          if (s.dirty && s.youId && p.id === s.youId) {
+            const mine = s.state.participants.find((x) => x.id === s.youId);
+            if (mine) {
+              return {
+                ...p,
+                generalWeek: mine.generalWeek,
+                overrides: mine.overrides,
+                hasResponded: mine.hasResponded,
+              };
+            }
+          }
+          return p;
+        });
+        const state = { ...incomingState, participants };
+
+        // selected is a personal, non-destructive view: keep prior toggles for
+        // still-present people, default-select anyone newly joined, drop departed.
+        const knownIds = new Set(s.state.participants.map((p) => p.id));
+        const selectedNext = new Set<string>();
+        for (const p of participants) {
+          if (knownIds.has(p.id)) {
+            if (s.selected.has(p.id)) selectedNext.add(p.id);
+          } else {
+            selectedNext.add(p.id);
+          }
+        }
+
+        return {
+          state,
+          youId,
+          selected: selectedNext,
+          ...derive({
+            state,
+            viewerTz: s.viewerTz,
+            weekAnchor: s.weekAnchor,
+            selected: selectedNext,
+          }),
+        };
+      }),
   }));
 }
 

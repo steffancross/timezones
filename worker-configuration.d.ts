@@ -5,6 +5,7 @@ interface __BaseEnv_CloudflareEnv {
 	NEXT_INC_CACHE_R2_BUCKET: R2Bucket;
 	DB: D1Database;
 	CLAIM_LIMITER: RateLimit;
+	ROOM_CREATE_LIMITER: RateLimit;
 	ASSETS: Fetcher;
 	NEXT_PUBLIC_SITE_ID: "worldtimezones";
 	NEXT_PUBLIC_SITE_NAME: "World Timezones";

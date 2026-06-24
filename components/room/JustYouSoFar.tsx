@@ -5,7 +5,6 @@
 // "everyone available"). Instead this banner reframes the single-person view and
 // elevates sharing — the whole point of this screen is to get a second person in.
 
-import { Button } from '@/components/ui/button';
 import { ShareRoomButton } from './ShareRoomButton';
 
 interface Props {
@@ -24,11 +23,15 @@ export function JustYouSoFar({ youResponded = true, onAddAvailability }: Props) 
         </p>
       </div>
       <div className="flex flex-wrap items-center gap-2">
-        <ShareRoomButton variant="default" size="sm" label="Share the link" />
+        <ShareRoomButton label="Share the link" />
         {!youResponded && (
-          <Button variant="outline" size="sm" onClick={onAddAvailability}>
+          <button
+            type="button"
+            className="inline-flex items-center rounded-md border border-border px-2.5 py-1 text-xs hover:bg-[var(--hover)]"
+            onClick={onAddAvailability}
+          >
             Add your availability
-          </Button>
+          </button>
         )}
       </div>
     </div>

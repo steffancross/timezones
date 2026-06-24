@@ -9,6 +9,7 @@ import { currentWeekAnchor } from '@/lib/rooms/compute';
 import type { RoomState } from '@/lib/rooms/db';
 import { createRoomStore } from '@/lib/rooms/store';
 import { useNow } from '@/lib/hooks/useNow';
+import { RoomFreshness } from './RoomFreshness';
 import { RoomStoreProvider } from './room-store-context';
 
 interface Props {
@@ -51,5 +52,10 @@ export function RoomDataProvider({
     store.getState().setNow(now);
   }, [now]);
 
-  return <RoomStoreProvider value={store}>{children}</RoomStoreProvider>;
+  return (
+    <RoomStoreProvider value={store}>
+      <RoomFreshness />
+      {children}
+    </RoomStoreProvider>
+  );
 }

@@ -6,6 +6,7 @@
 // free") render muted + tagged; out people recede.
 
 import type { LiveStatus } from '@/lib/rooms/compute';
+import type { PublicParticipant } from '@/lib/rooms/db';
 import { cn } from '@/lib/utils';
 import { Avatar } from '../Avatar';
 
@@ -19,9 +20,13 @@ const DOT: Record<LiveStatus['state'], string> = {
 interface Props {
   status: LiveStatus[];
   nameById: Map<string, string>;
+  participants?: PublicParticipant[];
 }
 
-export function RightNow({ status, nameById }: Props) {
+export function RightNow({ status, nameById, participants }: Props) {
+  const respondedIds = new Set(status.map((s) => s.participantId));
+  const unresponded = participants?.filter((p) => !respondedIds.has(p.id)) ?? [];
+
   return (
     <div className="flex flex-col gap-px">
       <div className="px-0.5 pb-2 font-mono text-[9px] uppercase tracking-[0.09em] text-muted-foreground">
@@ -34,7 +39,7 @@ export function RightNow({ status, nameById }: Props) {
             key={s.participantId}
             data-testid="rn-item"
             data-state={s.state}
-            data-inferred={s.inferred}
+            data-inferred={String(s.inferred)}
             className={cn('flex items-center gap-2 px-0.5 py-1.5', s.state === 'n' && 'opacity-50')}
           >
             <Avatar id={s.participantId} name={name} size="sm" />
@@ -43,21 +48,25 @@ export function RightNow({ status, nameById }: Props) {
             >
               {name}
             </span>
-            {s.inferred && (
-              <span className="font-mono text-[8.5px] uppercase tracking-wide text-muted-foreground">
-                inferred
-              </span>
-            )}
             <span
               className="ml-auto size-2 shrink-0 rounded-full"
               style={{ background: DOT[s.state] }}
             />
             <span className="w-14 text-right font-mono text-[8.5px] uppercase tracking-wide text-muted-foreground">
-              {LABEL[s.state]}
+              {s.inferred && s.state !== 'n' ? 'inferred' : LABEL[s.state]}
             </span>
           </div>
         );
       })}
+      {unresponded.map((p) => (
+        <div key={p.id} className="flex items-center gap-2 px-0.5 py-1.5 opacity-50">
+          <Avatar id={p.id} name={p.displayName} size="sm" />
+          <span className="text-[12.5px] font-medium">{p.displayName}</span>
+          <span className="ml-auto rounded bg-[var(--hover)] px-1.5 py-0.5 font-mono text-[10px] text-muted-foreground">
+            hasn&apos;t filled
+          </span>
+        </div>
+      ))}
     </div>
   );
 }

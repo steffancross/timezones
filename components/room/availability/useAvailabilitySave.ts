@@ -22,6 +22,12 @@ export function useAvailabilitySave(roomId: string) {
   const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const pending = useRef<Draft | null>(null);
 
+  // Mirror save status into the store so a focus refetch (spec 7c) knows not to
+  // clobber paint that's still unsaved or in flight.
+  useEffect(() => {
+    api.getState().setDirty(status === 'unsaved' || status === 'saving');
+  }, [api, status]);
+
   const flush = useCallback(async () => {
     const draft = pending.current;
     if (!draft) return;

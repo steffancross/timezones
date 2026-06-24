@@ -9,7 +9,7 @@
 
 import type { SlotState } from '@/lib/rooms/compute';
 import { cn } from '@/lib/utils';
-import { useEffect, useRef } from 'react';
+import { useCallback, useEffect, useRef } from 'react';
 import { hourLabel, ROW_H } from '../team/slots';
 
 export type EditColumn = { label: string; dayNum?: number; weekend: boolean };
@@ -21,7 +21,7 @@ const OPEN_SLOT = 14;
 function cellBackground({ state, ghost }: CellInfo): string {
   if (state === 'y') return ghost ? 'oklch(0.7 0.15 152 / 0.2)' : 'var(--paint-yes)';
   if (state === 's') return ghost ? 'oklch(0.81 0.155 92 / 0.22)' : 'var(--paint-soft)';
-  return 'transparent';
+  return 'var(--hm-blank)';
 }
 
 interface Props {
@@ -63,9 +63,9 @@ export function EditGrid({ columns, cellInfo, onPaint }: Props) {
     return () => window.removeEventListener('pointerup', stop);
   }, []);
 
-  const openScroll = (node: HTMLDivElement | null) => {
+  const openScroll = useCallback((node: HTMLDivElement | null) => {
     if (node) node.scrollTop = OPEN_SLOT * ROW_H;
-  };
+  }, []);
 
   const slots = Array.from({ length: 48 }, (_, k) => k);
 
@@ -133,14 +133,20 @@ export function EditGrid({ columns, cellInfo, onPaint }: Props) {
                     onPointerEnter={() => {
                       if (painting.current) paintTo(c, k);
                     }}
-                    className={cn(
-                      'relative cursor-pointer border-r border-b border-[color:var(--border)]/50',
-                      k % 2 === 1 && 'border-b-[color:var(--border)]',
-                    )}
+                    className="relative cursor-pointer"
                     // touch-action:none so a finger drag paints instead of scrolling
                     // the grid. The time gutter keeps its default action as the scroll
                     // handle on touch. (Touch painting is accepted-rough per spec 7a.)
-                    style={{ height: ROW_H, background: cellBackground(info), touchAction: 'none' }}
+                    style={{
+                      height: ROW_H,
+                      background: cellBackground(info),
+                      touchAction: 'none',
+                      borderBottom:
+                        k % 2 === 1
+                          ? '1px solid hsl(var(--border))'
+                          : '1px dotted hsl(var(--border) / 0.75)',
+                      borderRight: c < cols - 1 ? '1px solid hsl(var(--border))' : undefined,
+                    }}
                   >
                     {info.changed && (
                       <span className="absolute right-0.5 top-0.5 size-1 rounded-full bg-[var(--brand)]" />

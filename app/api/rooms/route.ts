@@ -3,9 +3,14 @@
 // wrapper over the pure `createRoom` op (high-entropy id + collision retry live
 // there). v1 creates an unnamed room — rename happens later via settings.
 
-import { requireJsonContentType, readJsonBody } from '@/lib/rooms/handler-utils';
-import { getDb } from '@/lib/rooms/context';
-import { createRoom } from '@/lib/rooms/db';
+import { getCloudflareContext } from '@opennextjs/cloudflare';
+import { createRoomLimited } from '@/lib/rooms/db';
+import { clientIp, readJsonBody, requireJsonContentType } from '@/lib/rooms/handler-utils';
+import {
+  allowAllRateLimiter,
+  cloudflareRateLimiter,
+  roomCreateRateLimitKey,
+} from '@/lib/rooms/rate-limit';
 
 export const dynamic = 'force-dynamic';
 
@@ -13,13 +18,24 @@ export async function POST(request: Request): Promise<Response> {
   const guard = requireJsonContentType(request);
   if (guard) return guard;
 
-  // TODO(spec 7c): per-IP room-creation rate-limit (ROOM_CREATE_LIMITER binding
-  // + clientIp), mirroring the CLAIM_LIMITER pattern in /r/:roomId/claim. This
-  // is the one public write nothing else rate-limits.
+  const { env } = getCloudflareContext();
+
+  // Per-IP rate-limit — the one public write nothing else guards (spec 7c). The
+  // native binding isn't modeled locally / in tests, so fall back to allow-all.
+  const limiter = env.ROOM_CREATE_LIMITER
+    ? cloudflareRateLimiter(env.ROOM_CREATE_LIMITER)
+    : allowAllRateLimiter;
 
   const body = await readJsonBody(request);
   const name = typeof body.name === 'string' ? body.name : null;
 
-  const { id } = await createRoom(getDb(), name);
-  return Response.json({ id });
+  const result = await createRoomLimited(
+    env.DB,
+    limiter,
+    roomCreateRateLimitKey(clientIp(request)),
+    name,
+  );
+  if ('error' in result) return Response.json({ error: result.error }, { status: 429 });
+
+  return Response.json({ id: result.id });
 }

@@ -5,14 +5,21 @@
 // ownership — any participant may rename). No Drawer primitive exists, so this
 // reuses the Dialog shell. Wired to PATCH /me and PATCH /room.
 
-import { useState } from 'react';
+import { ThemeToggle } from '@/components/site/ThemeToggle';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { renameRoomRequest, updateIdentityRequest } from '@/lib/rooms/client';
 import type { PublicParticipant } from '@/lib/rooms/db';
+import { useEffect, useState } from 'react';
+import { toast } from 'sonner';
 import { TimezoneField } from './TimezoneField';
+
+// Sentinel displayed when a password is already set. We never receive the real
+// value from the server — only `hasPassword: boolean`. Showing dots signals
+// "set" to the user; we don't re-send the field unless they change it.
+const PW_SENTINEL = '••••••••';
 
 interface Props {
   open: boolean;
@@ -20,9 +27,7 @@ interface Props {
   roomId: string;
   participant: Pick<PublicParticipant, 'displayName' | 'timezone' | 'hasPassword'>;
   roomName: string | null;
-  /** Identity (name/timezone/password) saved — carries the updated row for the store. */
   onIdentitySaved?: (participant: PublicParticipant) => void;
-  /** Room renamed — carries the new name for the store. */
   onRoomRenamed?: (name: string) => void;
 }
 
@@ -37,19 +42,35 @@ export function SettingsDrawer({
 }: Props) {
   const [name, setName] = useState(participant.displayName);
   const [timezone, setTimezone] = useState(participant.timezone);
+  const [password, setPassword] = useState(participant.hasPassword ? PW_SENTINEL : '');
   const [room, setRoom] = useState(roomName ?? '');
-  const [newPassword, setNewPassword] = useState('');
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [saved, setSaved] = useState(false);
 
-  async function run(action: () => Promise<void>) {
+  // Reset form to current values whenever the modal opens, so a closed-without-
+  // saving state doesn't bleed into the next open.
+  // biome-ignore lint/correctness/useExhaustiveDependencies: resets form on open only — adding participant fields would re-reset mid-session on background store updates
+  useEffect(() => {
+    if (!open) return;
+    setName(participant.displayName);
+    setTimezone(participant.timezone);
+    setPassword(participant.hasPassword ? PW_SENTINEL : '');
+    setRoom(roomName ?? '');
+    setError(null);
+  }, [open]);
+
+  const isDirtyIdentity =
+    name !== participant.displayName ||
+    timezone !== participant.timezone ||
+    (password !== PW_SENTINEL && password !== '');
+  const isDirtyRoom = room !== (roomName ?? '');
+
+  async function run(action: () => Promise<void>, successMsg = 'Saved') {
     setBusy(true);
     setError(null);
-    setSaved(false);
     try {
       await action();
-      setSaved(true);
+      toast.success(successMsg);
     } catch (e) {
       setError(e instanceof Error ? e.message : 'Could not save');
     } finally {
@@ -62,32 +83,38 @@ export function SettingsDrawer({
       const { participant: updated } = await updateIdentityRequest(roomId, {
         name,
         timezone,
-        ...(newPassword ? { password: newPassword } : {}),
+        // Don't send the sentinel back — only send if user actually typed a new value
+        ...(password && password !== PW_SENTINEL ? { password } : {}),
       });
-      setNewPassword('');
-      onIdentitySaved?.(updated); // push name/timezone into the store → live reflow
+      if (updated.hasPassword) setPassword(PW_SENTINEL);
+      onIdentitySaved?.(updated);
     });
 
   const removePassword = () =>
     run(async () => {
       const { participant: updated } = await updateIdentityRequest(roomId, { password: null });
+      setPassword('');
       onIdentitySaved?.(updated);
-    });
+    }, 'Password removed');
 
   const saveRoomName = () =>
     run(async () => {
       const { room: updated } = await renameRoomRequest(roomId, room);
       onRoomRenamed?.(updated.name);
-    });
+    }, 'Room renamed');
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent>
+      <DialogContent data-form-type="other">
         <DialogHeader>
-          <DialogTitle>Settings</DialogTitle>
+          <div className="flex items-center justify-between pr-4">
+            <DialogTitle>Settings</DialogTitle>
+            <ThemeToggle />
+          </div>
         </DialogHeader>
 
         <div className="flex flex-col gap-5">
+          {/* Identity */}
           <section className="flex flex-col gap-3">
             <div className="flex flex-col gap-1.5">
               <Label htmlFor="ar-set-name">Your name</Label>
@@ -95,6 +122,8 @@ export function SettingsDrawer({
                 id="ar-set-name"
                 value={name}
                 maxLength={60}
+                autoComplete="off"
+                data-bwignore="true"
                 onChange={(e) => setName(e.target.value)}
               />
             </div>
@@ -103,30 +132,37 @@ export function SettingsDrawer({
               <TimezoneField value={timezone} onChange={setTimezone} />
             </div>
             <div className="flex flex-col gap-1.5">
-              <Label htmlFor="ar-set-pw">
-                {participant.hasPassword ? 'Change password' : 'Set a password'}
-              </Label>
+              <Label htmlFor="ar-set-pw">Password</Label>
               <Input
                 id="ar-set-pw"
-                type="password"
-                value={newPassword}
-                placeholder="Choose a password"
+                type="text"
+                value={password}
+                placeholder={participant.hasPassword ? undefined : 'Set a password (optional)'}
                 autoComplete="new-password"
-                onChange={(e) => setNewPassword(e.target.value)}
+                data-bwignore="true"
+                onChange={(e) => setPassword(e.target.value)}
               />
-            </div>
-            <div className="flex items-center gap-2">
-              <Button size="sm" disabled={busy || !name.trim()} onClick={saveIdentity}>
-                Save
-              </Button>
               {participant.hasPassword && (
-                <Button size="sm" variant="outline" disabled={busy} onClick={removePassword}>
+                <button
+                  type="button"
+                  disabled={busy}
+                  onClick={removePassword}
+                  className="self-start text-xs text-muted-foreground hover:text-destructive disabled:opacity-50"
+                >
                   Remove password
-                </Button>
+                </button>
               )}
             </div>
+            <Button
+              size="sm"
+              disabled={busy || !name.trim() || !isDirtyIdentity}
+              onClick={saveIdentity}
+            >
+              Save
+            </Button>
           </section>
 
+          {/* Room */}
           <section className="flex flex-col gap-3 border-t pt-4">
             <div className="flex flex-col gap-1.5">
               <Label htmlFor="ar-set-room">Room name</Label>
@@ -134,13 +170,15 @@ export function SettingsDrawer({
                 id="ar-set-room"
                 value={room}
                 maxLength={60}
+                autoComplete="off"
+                data-bwignore="true"
                 onChange={(e) => setRoom(e.target.value)}
               />
             </div>
             <Button
               size="sm"
               variant="outline"
-              disabled={busy || !room.trim()}
+              disabled={busy || !room.trim() || !isDirtyRoom}
               onClick={saveRoomName}
             >
               Rename room
@@ -148,7 +186,10 @@ export function SettingsDrawer({
           </section>
 
           {error && <p className="text-sm text-destructive">{error}</p>}
-          {saved && !error && <p className="text-sm text-muted-foreground">Saved.</p>}
+
+          <p className="text-[11px] text-muted-foreground/60">
+            Rooms are deleted after 180 days without anyone opening them.
+          </p>
         </div>
       </DialogContent>
     </Dialog>

@@ -10,7 +10,7 @@
 import { getCloudflareContext } from '@opennextjs/cloudflare';
 import { buildSecretCookie, readSecretCookie } from '@/lib/rooms/cookies';
 import { generateSecret } from '@/lib/rooms/crypto';
-import { readRoomState } from '@/lib/rooms/db';
+import { readRoomState, touchRoom } from '@/lib/rooms/db';
 import { isSecureRequest } from '@/lib/rooms/handler-utils';
 import { resolveMe } from '@/lib/rooms/identity';
 
@@ -26,6 +26,10 @@ export async function GET(
 
   const state = await readRoomState(db, roomId);
   if (!state) return Response.json({ error: 'room not found' }, { status: 404 });
+
+  // Bump last_active_at on every fetch so view-only rooms (set hours once,
+  // never edited again) survive as long as someone keeps opening them.
+  await touchRoom(db, roomId);
 
   // Ensure a cookie exists; mint one for first-time visitors.
   const existing = readSecretCookie(request.headers.get('cookie'));

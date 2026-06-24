@@ -5,23 +5,37 @@
 // manually-expanded folds, day index); the heavy projection/aggregate come
 // already-memoized from the room-data provider, so hover never re-projects.
 
-import { ChevronLeft, ChevronRight, FoldVertical, UnfoldVertical } from 'lucide-react';
-import { useMemo, useState } from 'react';
+import { Popover, PopoverAnchor, PopoverContent } from '@/components/ui/popover';
+import { useIsMobile } from '@/lib/hooks/use-is-mobile';
+import {
+  buildIcs,
+  downloadIcs,
+  googleCalendarUrl,
+  selectionToMillis,
+} from '@/lib/rooms/calendar-export';
 import { currentWeekAnchor, rowSegments } from '@/lib/rooms/compute';
 import { contentPhase, respondedParticipants } from '@/lib/rooms/content-state';
-import { useIsMobile } from '@/lib/hooks/use-is-mobile';
+import { formatDuration } from '@/lib/time/format';
 import { DateTime } from '@/lib/time/luxon';
 import { cn } from '@/lib/utils';
+import {
+  CalendarPlus,
+  ChevronLeft,
+  ChevronRight,
+  FoldVertical,
+  UnfoldVertical,
+} from 'lucide-react';
+import { useMemo, useState } from 'react';
 import { JustYouSoFar } from '../JustYouSoFar';
 import { RespondersNote } from '../RespondersNote';
-import { RoomGetStarted } from '../RoomGetStarted';
 import { useRoomStore } from '../room-store-context';
+import { RoomGetStarted } from '../RoomGetStarted';
 import { BreakdownSheet } from './BreakdownSheet';
 import { DayView } from './DayView';
 import { Legend } from './Legend';
 import { RosterChips } from './RosterChips';
 import { RosterSidebar } from './RosterSidebar';
-import { buildWeekColumns } from './slots';
+import { buildWeekColumns, slotLabel } from './slots';
 import { type HoverCell, WeekHeatmap } from './WeekHeatmap';
 
 function weekLabel(weekAnchor: string): string {
@@ -40,13 +54,31 @@ export function TeamTab({ onAddAvailability }: { onAddAvailability?: () => void 
   const setWeekAnchor = useRoomStore((s) => s.setWeekAnchor);
   const participants = useRoomStore((s) => s.state.participants);
   const youId = useRoomStore((s) => s.youId);
+  const roomName = useRoomStore((s) => s.state.room.name);
+
+  const projection = useRoomStore((s) => s.projection);
 
   const isMobile = useIsMobile();
   const [zoom, setZoom] = useState<'week' | 'day'>('week');
+  const [selectMode, setSelectMode] = useState(false);
+  const [selection, setSelection] = useState<{
+    day: number;
+    startSlot: number;
+    endSlot: number;
+  } | null>(null);
+  const [popoverOpen, setPopoverOpen] = useState(false);
+  const [eventTitle, setEventTitle] = useState('');
   const [compressed, setCompressed] = useState(true);
   const [manuallyExpanded, setManuallyExpanded] = useState<Set<string>>(() => new Set());
   const [hover, setHover] = useState<HoverCell>(null);
   const [sheetCell, setSheetCell] = useState<HoverCell>(null);
+  const [hoveredMemberId, setHoveredMemberId] = useState<string | null>(null);
+  const [dayHoverSlot, setDayHoverSlot] = useState<number | null>(null);
+
+  const highlightGrid = useMemo(
+    () => projection.participants.find((p) => p.participantId === hoveredMemberId)?.grid ?? null,
+    [hoveredMemberId, projection],
+  );
 
   const columns = useMemo(() => buildWeekColumns(weekAnchor), [weekAnchor]);
   const segments = useMemo(() => rowSegments(grid.grade), [grid]);
@@ -57,6 +89,9 @@ export function TeamTab({ onAddAvailability }: { onAddAvailability?: () => void 
     const idx = buildWeekColumns(weekAnchor).findIndex((c) => c.iso === todayIso);
     return idx === -1 ? 0 : idx;
   });
+
+  const dayHoverCell: HoverCell =
+    dayHoverSlot !== null ? { day: dayIndex, slot: dayHoverSlot } : null;
 
   // Current week is the floor — no paging into the past.
   const floor = currentWeekAnchor(viewerTz, now);
@@ -82,6 +117,68 @@ export function TeamTab({ onAddAvailability }: { onAddAvailability?: () => void 
     setManuallyExpanded(new Set());
     setCompressed(isExpanded); // expanded → collapse (true); collapsed → expand (false)
   };
+
+  const handleRangeSelect = (day: number, startSlot: number, endSlot: number) => {
+    setSelection({ day, startSlot, endSlot });
+    // Stay in selectMode so the user can re-drag to adjust before confirming.
+  };
+
+  const handleConfirmSchedule = () => {
+    if (!selection) return;
+    if (!eventTitle) setEventTitle(roomName ?? '');
+    setPopoverOpen(true);
+  };
+
+  const handleCancel = () => {
+    setSelectMode(false);
+    setPopoverOpen(false);
+    setSelection(null);
+    setEventTitle('');
+  };
+
+  const handleGoogleCalendar = () => {
+    if (!selection) return;
+    const { startMs, endMs } = selectionToMillis(
+      weekAnchor,
+      viewerTz,
+      selection.day,
+      selection.startSlot,
+      selection.endSlot,
+    );
+    const url = googleCalendarUrl(
+      eventTitle || roomName || 'Team meeting',
+      startMs,
+      endMs,
+      viewerTz,
+    );
+    window.open(url, '_blank', 'noopener,noreferrer');
+  };
+
+  const handleDownloadIcs = () => {
+    if (!selection) return;
+    const { startMs, endMs } = selectionToMillis(
+      weekAnchor,
+      viewerTz,
+      selection.day,
+      selection.startSlot,
+      selection.endSlot,
+    );
+    const title = eventTitle || roomName || 'Team meeting';
+    const content = buildIcs(title, startMs, endMs, viewerTz);
+    downloadIcs(content, `${title.replace(/[^a-z0-9]/gi, '-').toLowerCase()}.ics`);
+  };
+
+  const selectionLabel = selection
+    ? (() => {
+        const col = columns[selection.day];
+        if (!col) return '';
+        const dateStr = DateTime.fromISO(col.iso).toFormat('ccc, MMM d');
+        const startStr = slotLabel(selection.startSlot);
+        const endStr = slotLabel(selection.endSlot + 1);
+        const dur = formatDuration((selection.endSlot - selection.startSlot + 1) * 30);
+        return `${dateStr} · ${startStr} – ${endStr} (${dur})`;
+      })()
+    : '';
 
   // Cold-start states (spec 7b): an empty room is a get-started, not a blank grid;
   // a one-responder room shows that person's own week (never an all-green
@@ -141,6 +238,39 @@ export function TeamTab({ onAddAvailability }: { onAddAvailability?: () => void 
             </button>
           </>
         )}
+        {zoom === 'day' && (
+          <>
+            <button
+              type="button"
+              aria-label="Previous day"
+              onClick={() => {
+                setDayIndex((i) => Math.max(0, i - 1));
+                setDayHoverSlot(null);
+              }}
+              disabled={dayIndex === 0}
+              className="inline-flex size-7 items-center justify-center rounded text-muted-foreground hover:bg-[var(--hover)] disabled:opacity-40"
+            >
+              <ChevronLeft className="size-4" />
+            </button>
+            <span className="text-sm font-semibold tracking-tight">
+              {columns[dayIndex]
+                ? `${columns[dayIndex].label} · ${DateTime.fromISO(columns[dayIndex].iso).toFormat('MMM d')}`
+                : ''}
+            </span>
+            <button
+              type="button"
+              aria-label="Next day"
+              onClick={() => {
+                setDayIndex((i) => Math.min(6, i + 1));
+                setDayHoverSlot(null);
+              }}
+              disabled={dayIndex === 6}
+              className="inline-flex size-7 items-center justify-center rounded text-muted-foreground hover:bg-[var(--hover)] disabled:opacity-40"
+            >
+              <ChevronRight className="size-4" />
+            </button>
+          </>
+        )}
 
         <span className="flex-1" />
 
@@ -193,11 +323,20 @@ export function TeamTab({ onAddAvailability }: { onAddAvailability?: () => void 
                 hover={hover}
                 onHover={setHover}
                 onCellTap={isMobile ? (cell) => setSheetCell(cell) : undefined}
+                highlightGrid={highlightGrid}
+                selectMode={selectMode}
+                onRangeSelect={handleRangeSelect}
+                highlightRange={selection}
               />
             </div>
             {/* Desktop: hover breakdown rail. Mobile: chip-row + tap sheet (below). */}
             <div className="hidden md:block">
-              <RosterSidebar hover={hover} columns={columns} />
+              <RosterSidebar
+                hover={hover}
+                columns={columns}
+                onMemberHover={setHoveredMemberId}
+                hoveredMemberId={hoveredMemberId}
+              />
             </div>
           </div>
           <div className="md:hidden">
@@ -205,17 +344,120 @@ export function TeamTab({ onAddAvailability }: { onAddAvailability?: () => void 
           </div>
         </>
       ) : (
-        <DayView
-          dayIndex={dayIndex}
-          columns={columns}
-          onPageDay={(delta) => setDayIndex((i) => Math.min(6, Math.max(0, i + delta)))}
-        />
+        <>
+          <div className="flex">
+            <div className="min-w-0 flex-1">
+              <DayView
+                dayIndex={dayIndex}
+                columns={columns}
+                selectMode={selectMode}
+                onRangeSelect={(s, e) => handleRangeSelect(dayIndex, s, e)}
+                highlightRange={
+                  selection && selection.day === dayIndex
+                    ? { startSlot: selection.startSlot, endSlot: selection.endSlot }
+                    : undefined
+                }
+                onHoverSlot={setDayHoverSlot}
+              />
+            </div>
+            <div className="hidden md:block">
+              <RosterSidebar
+                hover={dayHoverCell}
+                columns={columns}
+                onMemberHover={setHoveredMemberId}
+                hoveredMemberId={hoveredMemberId}
+              />
+            </div>
+          </div>
+          <div className="md:hidden">
+            <RosterChips />
+          </div>
+        </>
       )}
 
       <div className="mt-1 flex items-center justify-between">
         <RespondersNote count={respondedParticipants(participants).length} />
       </div>
-      <Legend />
+      <div className="flex items-center justify-between">
+        <Legend />
+        <Popover open={popoverOpen} onOpenChange={setPopoverOpen}>
+          <PopoverAnchor asChild>
+            <div className="flex flex-col items-end gap-1">
+              {selectMode ? (
+                <div className="flex items-center gap-2">
+                  <button
+                    type="button"
+                    onClick={handleCancel}
+                    className="inline-flex shrink-0 items-center rounded-md border border-border px-2.5 py-1 text-xs font-medium hover:bg-[var(--hover)]"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="button"
+                    onClick={handleConfirmSchedule}
+                    disabled={!selection}
+                    className={cn(
+                      'inline-flex shrink-0 items-center gap-1.5 rounded-md px-2.5 py-1 text-xs font-medium transition-colors',
+                      selection
+                        ? 'bg-[var(--brand)] text-[var(--brand-fg)] hover:opacity-90'
+                        : 'cursor-not-allowed bg-muted text-muted-foreground opacity-50',
+                    )}
+                  >
+                    <CalendarPlus className="size-3" />
+                    Schedule
+                  </button>
+                </div>
+              ) : (
+                <button
+                  type="button"
+                  onClick={() => setSelectMode(true)}
+                  className="inline-flex shrink-0 items-center gap-1.5 rounded-md bg-[var(--brand)] px-2.5 py-1 text-xs font-medium text-[var(--brand-fg)] hover:opacity-90"
+                >
+                  <CalendarPlus className="size-3" />
+                  Schedule event
+                </button>
+              )}
+              {selectMode && (
+                <p className="text-[11px] text-muted-foreground">
+                  {zoom === 'week'
+                    ? 'Drag within a day column to select.'
+                    : 'Drag to select a time range.'}
+                </p>
+              )}
+            </div>
+          </PopoverAnchor>
+          <PopoverContent align="end" className="w-72 space-y-3 p-4">
+            {selection && (
+              <>
+                <p className="text-sm font-medium">{selectionLabel}</p>
+                <input
+                  type="text"
+                  value={eventTitle}
+                  onChange={(e) => setEventTitle(e.target.value)}
+                  placeholder={roomName ?? 'Event title'}
+                  className="w-full rounded-md border border-border bg-transparent px-3 py-1.5 text-sm outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand)]"
+                />
+                <div className="flex gap-2">
+                  <button
+                    type="button"
+                    onClick={handleGoogleCalendar}
+                    className="flex-1 rounded-md bg-[var(--brand)] px-3 py-1.5 text-xs font-medium text-[var(--brand-fg)] hover:opacity-90"
+                  >
+                    Google Calendar
+                  </button>
+                  <button
+                    type="button"
+                    onClick={handleDownloadIcs}
+                    className="flex-1 rounded-md border border-border px-3 py-1.5 text-xs font-medium hover:bg-[var(--hover)]"
+                  >
+                    .ics file
+                  </button>
+                </div>
+              </>
+            )}
+          </PopoverContent>
+        </Popover>
+      </div>
 
       {/* Mobile tap-to-inspect breakdown (no-op on desktop — only opened by onCellTap). */}
       <BreakdownSheet cell={sheetCell} columns={columns} onClose={() => setSheetCell(null)} />

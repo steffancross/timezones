@@ -48,11 +48,11 @@ function Eyebrow({ children }: { children: React.ReactNode }) {
 
 function SubLine({ label, meta }: { label: string; meta?: string }) {
   return (
-    <div className="mt-3 mb-1 flex items-baseline gap-2">
-      <span className="text-xs font-semibold uppercase tracking-wide text-foreground/80">
+    <div className="mb-1 mt-3 flex items-baseline gap-2 whitespace-nowrap">
+      <span className="font-mono text-[10px] font-semibold uppercase tracking-[0.09em] text-[var(--brand)]">
         {label}
       </span>
-      {meta && <span className="text-[11px] text-muted-foreground">{meta}</span>}
+      {meta && <span className="text-[12px] text-muted-foreground">{meta}</span>}
     </div>
   );
 }
@@ -72,7 +72,10 @@ function WindowRow({
   const end = DateTime.fromMillis(w.endInstant).setZone(viewerTz);
   const softNames = w.softPeople.map((id) => nameById.get(id) ?? id);
   return (
-    <div className="flex items-center gap-2 py-0.5 text-sm" data-testid="window-row">
+    <div
+      className="flex flex-wrap items-center gap-x-2 gap-y-0.5 py-0.5 text-sm"
+      data-testid="window-row"
+    >
       <span
         className="size-[7px] shrink-0 rounded-full"
         style={{ background: w.grade === 'all' ? 'var(--av-yes-strong)' : 'var(--av-soft-fill)' }}
@@ -157,10 +160,10 @@ export function OverviewTab({ onAddAvailability }: { onAddAvailability?: () => v
         <section className="flex flex-col-reverse gap-5 md:flex-row md:gap-8">
           <div className="min-w-0 flex-1">
             <Eyebrow>Local time now</Eyebrow>
-            <ZoneClocks participants={responders} now={now} />
+            <ZoneClocks participants={state.participants} now={now} />
           </div>
           <div className="md:w-60">
-            <RightNow status={status} nameById={nameById} />
+            <RightNow status={status} nameById={nameById} participants={state.participants} />
           </div>
         </section>
       </div>
@@ -178,15 +181,17 @@ export function OverviewTab({ onAddAvailability }: { onAddAvailability?: () => v
 
         <SubLine label="This week" meta="best windows" />
         {week.length > 0 ? (
-          week.map((w) => (
-            <WindowRow
-              key={`${w.day}-${w.startSlot}`}
-              w={w}
-              viewerTz={viewerTz}
-              total={total}
-              nameById={nameById}
-            />
-          ))
+          <div className={week.length === 4 ? 'grid grid-cols-2' : ''}>
+            {week.map((w) => (
+              <WindowRow
+                key={`${w.day}-${w.startSlot}`}
+                w={w}
+                viewerTz={viewerTz}
+                total={total}
+                nameById={nameById}
+              />
+            ))}
+          </div>
         ) : (
           <p className="text-[13px] text-muted-foreground">
             No full-overlap windows left this week.
@@ -242,10 +247,10 @@ export function OverviewTab({ onAddAvailability }: { onAddAvailability?: () => v
       <section className="flex flex-col gap-5 md:flex-row md:gap-8">
         <div className="min-w-0 flex-1">
           <Eyebrow>Local time now</Eyebrow>
-          <ZoneClocks participants={responders} now={now} />
+          <ZoneClocks participants={state.participants} now={now} />
         </div>
         <div className="md:w-60">
-          <RightNow status={status} nameById={nameById} />
+          <RightNow status={status} nameById={nameById} participants={state.participants} />
         </div>
       </section>
     </div>
