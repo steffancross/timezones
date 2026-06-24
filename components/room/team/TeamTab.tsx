@@ -33,6 +33,7 @@ import { RoomGetStarted } from '../RoomGetStarted';
 import { BreakdownSheet } from './BreakdownSheet';
 import { DayView } from './DayView';
 import { Legend } from './Legend';
+import { NoOverlapCard } from './NoOverlapCard';
 import { RosterChips } from './RosterChips';
 import { RosterSidebar } from './RosterSidebar';
 import { buildWeekColumns, slotLabel } from './slots';
@@ -82,6 +83,7 @@ export function TeamTab({ onAddAvailability }: { onAddAvailability?: () => void 
 
   const columns = useMemo(() => buildWeekColumns(weekAnchor), [weekAnchor]);
   const segments = useMemo(() => rowSegments(grid.grade), [grid]);
+  const allFolded = compressed && segments.length === 1 && !!segments[0]?.fold;
 
   // Default the day view to today if it's in the viewed week, else Sunday.
   const todayIso = DateTime.fromMillis(now).setZone(viewerTz).toISODate();
@@ -313,26 +315,30 @@ export function TeamTab({ onAddAvailability }: { onAddAvailability?: () => void 
         <>
           <div className="flex">
             <div className="min-w-0 flex-1">
-              <WeekHeatmap
-                grid={grid}
-                columns={columns}
-                segments={segments}
-                compressed={compressed}
-                manuallyExpanded={manuallyExpanded}
-                onExpandFold={expandFold}
-                hover={hover}
-                onHover={setHover}
-                onCellTap={isMobile ? (cell) => setSheetCell(cell) : undefined}
-                highlightGrid={highlightGrid}
-                selectMode={selectMode}
-                onRangeSelect={handleRangeSelect}
-                highlightRange={selection}
-              />
+              {allFolded ? (
+                <NoOverlapCard onShowGrid={() => setCompressed(false)} />
+              ) : (
+                <WeekHeatmap
+                  grid={grid}
+                  columns={columns}
+                  segments={segments}
+                  compressed={compressed}
+                  manuallyExpanded={manuallyExpanded}
+                  onExpandFold={expandFold}
+                  hover={hover}
+                  onHover={setHover}
+                  onCellTap={isMobile ? (cell) => setSheetCell(cell) : undefined}
+                  highlightGrid={highlightGrid}
+                  selectMode={selectMode}
+                  onRangeSelect={handleRangeSelect}
+                  highlightRange={selection}
+                />
+              )}
             </div>
             {/* Desktop: hover breakdown rail. Mobile: chip-row + tap sheet (below). */}
             <div className="hidden md:block">
               <RosterSidebar
-                hover={hover}
+                hover={allFolded ? null : hover}
                 columns={columns}
                 onMemberHover={setHoveredMemberId}
                 hoveredMemberId={hoveredMemberId}

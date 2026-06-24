@@ -132,16 +132,9 @@ export function RosterSidebar({ hover, columns, onMemberHover, hoveredMemberId }
       })}
 
       <p className="mt-2 text-xs text-muted-foreground">
-        {hover ? (
-          "Hovering a time shows each person's answer."
-        ) : (
-          <>
-            Uncheck anyone who&apos;s out — the grid recomputes without them. Hover a person to see
-            their week on the grid.
-            {anyUnresponded &&
-              " People who haven't painted their week yet are ignored until they do."}
-          </>
-        )}
+        Uncheck anyone who&apos;s out — the grid recomputes without them. Hover the grid to see each
+        person&apos;s answer; hover a person to highlight their week.
+        {anyUnresponded && " People who haven't painted yet are ignored until they do."}
       </p>
     </aside>
   );
