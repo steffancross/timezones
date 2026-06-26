@@ -58,6 +58,8 @@ export function TeamTab({ onAddAvailability }: { onAddAvailability?: () => void 
   const roomName = useRoomStore((s) => s.state.room.name);
 
   const projection = useRoomStore((s) => s.projection);
+  const colorMode = useRoomStore((s) => s.colorMode);
+  const setColorMode = useRoomStore((s) => s.setColorMode);
 
   const isMobile = useIsMobile();
   const [zoom, setZoom] = useState<'week' | 'day'>('week');
@@ -83,7 +85,20 @@ export function TeamTab({ onAddAvailability }: { onAddAvailability?: () => void 
 
   const columns = useMemo(() => buildWeekColumns(weekAnchor), [weekAnchor]);
   const segments = useMemo(() => rowSegments(grid.grade), [grid]);
-  const allFolded = compressed && segments.length === 1 && !!segments[0]?.fold;
+  const allFolded = colorMode === 'consensus' && compressed && segments.length === 1 && !!segments[0]?.fold;
+
+  const heatmapLevels = useMemo(() => {
+    if (colorMode !== 'heatmap') return null;
+    const parts = projection.participants;
+    const n = parts.length;
+    if (n === 0) return null;
+    return Array.from({ length: 7 }, (_, d) =>
+      Array.from({ length: 48 }, (_, k) => {
+        const canMake = parts.filter((p) => (p.grid[d]?.[k] ?? 'n') !== 'n').length;
+        return canMake === 0 ? 0 : Math.ceil((canMake / n) * 5);
+      }),
+    );
+  }, [colorMode, projection]);
 
   // Default the day view to today if it's in the viewed week, else Sunday.
   const todayIso = DateTime.fromMillis(now).setZone(viewerTz).toISODate();
@@ -276,8 +291,8 @@ export function TeamTab({ onAddAvailability }: { onAddAvailability?: () => void 
 
         <span className="flex-1" />
 
-        {/* Compress is a week-view concern; the day view is always full-24h scroll. */}
-        {zoom === 'week' && (
+        {/* Compress is a week-view/consensus concern; heatmap always shows all rows. */}
+        {zoom === 'week' && colorMode === 'consensus' && (
           <button
             type="button"
             onClick={toggleCompress}
@@ -292,6 +307,26 @@ export function TeamTab({ onAddAvailability }: { onAddAvailability?: () => void 
             )}
           </button>
         )}
+
+        <div className="inline-flex overflow-hidden rounded-md border border-border text-xs">
+          {(['consensus', 'heatmap'] as const).map((m) => (
+            <button
+              key={m}
+              type="button"
+              disabled={zoom === 'day'}
+              onClick={() => setColorMode(m)}
+              className={cn(
+                'px-2.5 py-1 capitalize',
+                colorMode === m && zoom === 'week'
+                  ? 'bg-[var(--brand)] text-[var(--brand-fg)]'
+                  : 'hover:bg-[var(--hover)]',
+                zoom === 'day' && 'cursor-not-allowed opacity-40',
+              )}
+            >
+              {m}
+            </button>
+          ))}
+        </div>
 
         <div className="inline-flex overflow-hidden rounded-md border border-border text-xs">
           {(['week', 'day'] as const).map((z) => (
@@ -316,7 +351,10 @@ export function TeamTab({ onAddAvailability }: { onAddAvailability?: () => void 
           <div className="flex">
             <div className="min-w-0 flex-1">
               {allFolded ? (
-                <NoOverlapCard onShowGrid={() => setCompressed(false)} />
+                <NoOverlapCard
+                  onShowGrid={() => setCompressed(false)}
+                  onSwitchHeatmap={() => setColorMode('heatmap')}
+                />
               ) : (
                 <WeekHeatmap
                   grid={grid}
@@ -332,6 +370,7 @@ export function TeamTab({ onAddAvailability }: { onAddAvailability?: () => void 
                   selectMode={selectMode}
                   onRangeSelect={handleRangeSelect}
                   highlightRange={selection}
+                  heatmapLevels={heatmapLevels}
                 />
               )}
             </div>
@@ -385,7 +424,7 @@ export function TeamTab({ onAddAvailability }: { onAddAvailability?: () => void 
         <RespondersNote count={respondedParticipants(participants).length} />
       </div>
       <div className="flex items-center justify-between">
-        <Legend />
+        <Legend variant={zoom === 'week' && colorMode === 'heatmap' ? 'heatmap' : 'group'} />
         <Popover open={popoverOpen} onOpenChange={setPopoverOpen}>
           <PopoverAnchor asChild>
             <div className="flex flex-col items-end gap-1">

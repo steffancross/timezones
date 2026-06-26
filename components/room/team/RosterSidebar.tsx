@@ -27,6 +27,7 @@ export function RosterSidebar({ hover, columns, onMemberHover, hoveredMemberId }
   const selected = useRoomStore((s) => s.selected);
   const toggleSelected = useRoomStore((s) => s.toggleSelected);
   const projection = useRoomStore((s) => s.projection);
+  const colorMode = useRoomStore((s) => s.colorMode);
   const members = state.participants;
 
   // Per-person state at the hovered cell, from the projection (compute set only).
@@ -46,13 +47,19 @@ export function RosterSidebar({ hover, columns, onMemberHover, hoveredMemberId }
   const softCount = hoverStates
     ? respondedSelected.filter((m) => hoverStates.get(m.id) === 's').length
     : 0;
+  const canMakeCount = hoverStates
+    ? respondedSelected.filter((m) => hoverStates.get(m.id) !== 'n').length
+    : 0;
 
   const countedTotal = respondedSelected.length;
   const anyUnresponded = members.some((m) => !m.hasResponded);
 
-  const hoverPillLabel = hover ? `${columns[hover.day]?.label} · ${slotLabel(hover.slot)}` : ' ';
+  const hoverDayLabel = hover ? columns[hover.day]?.label ?? '' : '';
+  const hoverPillLabel = hover ? `${hoverDayLabel} · ${slotLabel(hover.slot)}` : ' ';
   const hoverCountLabel = hover
-    ? `${freeCount} free${softCount > 0 ? ` · ${softCount} if needed` : ''}`
+    ? colorMode === 'heatmap'
+      ? `${canMakeCount} of ${countedTotal} can make it`
+      : `${freeCount} free${softCount > 0 ? ` · ${softCount} if needed` : ''}`
     : ' ';
 
   return (

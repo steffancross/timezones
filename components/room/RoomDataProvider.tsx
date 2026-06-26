@@ -34,12 +34,17 @@ export function RoomDataProvider({
   const seedNow = pinnedNow ?? Date.now();
   const storeRef = useRef<ReturnType<typeof createRoomStore> | null>(null);
   if (!storeRef.current) {
+    let colorMode: 'consensus' | 'heatmap' = 'consensus';
+    try {
+      if (localStorage.getItem('ar_color_mode') === 'heatmap') colorMode = 'heatmap';
+    } catch {}
     storeRef.current = createRoomStore({
       state,
       youId,
       viewerTz,
       weekAnchor: initialWeekAnchor ?? currentWeekAnchor(viewerTz, seedNow),
       now: seedNow,
+      colorMode,
     });
   }
   const store = storeRef.current;
