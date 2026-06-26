@@ -152,7 +152,9 @@ export function createRoomStore(seed: RoomStoreSeed) {
     setDirty: (dirty) => set({ dirty }),
 
     setColorMode: (colorMode) => {
-      try { localStorage.setItem('ar_color_mode', colorMode); } catch {}
+      try {
+        localStorage.setItem('ar_color_mode', colorMode);
+      } catch {}
       set({ colorMode });
     },
 

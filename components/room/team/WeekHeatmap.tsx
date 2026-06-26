@@ -101,14 +101,35 @@ export function WeekHeatmap({
       }
     : (highlightRange ?? null);
 
+  function cellFromPoint(x: number, y: number): { day: number; slot: number } | null {
+    const el = document.elementFromPoint(x, y);
+    const cell = el?.closest('[data-day][data-slot]');
+    if (!cell) return null;
+    const day = Number((cell as HTMLElement).dataset.day);
+    const slot = Number((cell as HTMLElement).dataset.slot);
+    if (Number.isNaN(day) || Number.isNaN(slot)) return null;
+    return { day, slot };
+  }
+
   return (
     <div
       className="select-none"
       data-view={variant}
+      style={selectMode ? { touchAction: 'none' } : undefined}
       onPointerLeave={() => {
         onHover?.(null);
         setDragState(null);
       }}
+      onPointerMove={
+        selectMode && dragState
+          ? (e) => {
+              const hit = cellFromPoint(e.clientX, e.clientY);
+              if (hit && hit.day === dragState.day) {
+                setDragState((d) => (d ? { ...d, currentSlot: hit.slot } : null));
+              }
+            }
+          : undefined
+      }
       onPointerUp={() => {
         if (!dragState) return;
         const { day, startSlot, currentSlot } = dragState;
@@ -139,7 +160,9 @@ export function WeekHeatmap({
 
       {/* body: fold strips interleaved with visible row-blocks */}
       {segments.map((seg) => {
-        const open = heatmapLevels ? true : !compressed || !seg.fold || manuallyExpanded.has(foldKey(seg));
+        const open = heatmapLevels
+          ? true
+          : !compressed || !seg.fold || manuallyExpanded.has(foldKey(seg));
         if (seg.fold && !open) {
           return (
             <FoldStrip

@@ -21,7 +21,7 @@ interface Props {
 
 export function RoomBottomNav({ active, onChange }: Props) {
   return (
-    <nav className="fixed inset-x-0 bottom-0 z-40 flex border-t border-border bg-[hsl(var(--card))] md:hidden">
+    <nav className="fixed inset-x-0 bottom-0 z-40 flex border-t border-border bg-[hsl(var(--card))] pb-[env(safe-area-inset-bottom)] md:hidden">
       {ITEMS.map(({ id, label, Icon }) => (
         <button
           key={id}
