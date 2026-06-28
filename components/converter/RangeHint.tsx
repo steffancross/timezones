@@ -39,7 +39,10 @@ export function RangeHint() {
     <HintBubble
       onDismiss={dismiss}
       arrow={{ side: 'bottom', className: 'left-1/2 -translate-x-1/2' }}
-      className="absolute left-1/2 top-2 z-20 -translate-x-1/2"
+      // On mobile the Settings hint drops out of the wrapped toolbar into the
+      // top of the card, so push the range hint down to clear it; desktop keeps
+      // the two apart already (gear hint is right-aligned in the single-row bar).
+      className="absolute left-1/2 top-16 z-20 -translate-x-1/2 md:top-2"
     >
       Click and drag across any row to select a time range.
     </HintBubble>
