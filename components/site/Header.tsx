@@ -3,6 +3,7 @@ import env from '@/lib/env';
 import { ThemeToggle } from './ThemeToggle';
 
 const navLinks = [
+  { href: '/what-time-is-this', label: 'Paste a Time' },
   { href: '/conversions', label: 'Conversions' },
   { href: '/cities', label: 'Cities' },
   { href: '/timezones', label: 'Timezones' },

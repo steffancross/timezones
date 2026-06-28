@@ -83,6 +83,15 @@ export function Footer() {
               <li>
                 <Link
                   prefetch={false}
+                  href="/what-time-is-this"
+                  className="text-muted-foreground hover:text-foreground"
+                >
+                  What time is this?
+                </Link>
+              </li>
+              <li>
+                <Link
+                  prefetch={false}
                   href="/dst"
                   className="text-muted-foreground hover:text-foreground"
                 >
