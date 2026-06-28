@@ -5,10 +5,10 @@
 // avatar cluster — without presence it would imply a liveness we don't track.
 
 import { SettingsDrawer } from '@/components/room/SettingsDrawer';
+import { ShareRoomButton } from '@/components/room/ShareRoomButton';
 import { Button } from '@/components/ui/button';
-import { Settings2, Share2 } from 'lucide-react';
+import { Settings2 } from 'lucide-react';
 import { useState } from 'react';
-import { toast } from 'sonner';
 import { useRoomStore } from './room-store-context';
 
 export function RoomTop() {
@@ -20,16 +20,6 @@ export function RoomTop() {
 
   const you = youId ? state.participants.find((p) => p.id === youId) : undefined;
   const count = state.participants.length;
-
-  async function share() {
-    const url = typeof window !== 'undefined' ? window.location.href : '';
-    try {
-      await navigator.clipboard.writeText(url);
-      toast.success('Room link copied');
-    } catch {
-      toast.error('Could not copy the link');
-    }
-  }
 
   return (
     <div className="flex items-center gap-3 border-b border-border px-4 py-3">
@@ -44,9 +34,7 @@ export function RoomTop() {
 
       <span className="flex-1" />
 
-      <Button variant="outline" size="sm" onClick={share}>
-        <Share2 className="size-3.5" /> Share
-      </Button>
+      <ShareRoomButton />
 
       {you && (
         <>

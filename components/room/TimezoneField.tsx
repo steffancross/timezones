@@ -20,14 +20,13 @@ export function TimezoneField({ value, detected, onChange }: Props) {
   const [query, setQuery] = useState('');
   const [results, setResults] = useState<SearchResult[]>([]);
   const [open, setOpen] = useState(false);
-  // Render readOnly until first focus: browsers skip autofill on readonly inputs.
-  // This blocks autofill on load, but Firefox still pops its saved-logins dropdown
-  // on focus because it pairs this box with the password field in the same Settings
-  // form (and ignores autocomplete="off" for credential fields). The real fix is the
-  // <form> boundary below: isolating this input in its own password-field-free form
-  // gives Firefox's login manager nothing to attach to. We arm on focus so typing works.
+  // Render readOnly until first focus: browsers skip autofill on readonly inputs,
+  // which blocks the password manager's overlay on load. We arm on focus so typing
+  // works. (This used to live in its own nested <form> to fully isolate it from the
+  // password field — but a form-in-form is invalid HTML and breaks hydration, so we
+  // rely on readonly-until-armed + the autofill-suppression attrs on the input.)
   const [armed, setArmed] = useState(false);
-  const wrapRef = useRef<HTMLFormElement>(null);
+  const wrapRef = useRef<HTMLDivElement>(null);
 
   // Debounced search (mirrors SearchInput's 80ms).
   useEffect(() => {
@@ -61,14 +60,10 @@ export function TimezoneField({ value, detected, onChange }: Props) {
   const isAuto = Boolean(detected && value === detected);
 
   return (
-    // Own form (no password field) so Firefox's login manager won't render the
-    // "manage passwords" dropdown over the results. onSubmit guards the Enter key.
-    <form
-      ref={wrapRef}
-      className="relative"
-      autoComplete="off"
-      onSubmit={(e) => e.preventDefault()}
-    >
+    // A plain <div>, not a <form> — this lives inside the contribute/settings form,
+    // and a nested form is invalid HTML. The Enter-key guard moves to the input's
+    // onKeyDown so a search-Enter never submits the surrounding form.
+    <div ref={wrapRef} className="relative">
       <div className="mb-1.5 flex items-center gap-2">
         <span className="text-sm text-muted-foreground">Current:</span>
         <span className="text-sm font-medium">{value || 'none'}</span>
@@ -99,6 +94,15 @@ export function TimezoneField({ value, detected, onChange }: Props) {
           setArmed(true);
           setOpen(true);
         }}
+        onKeyDown={(e) => {
+          // Don't let Enter in the search box submit the surrounding form; instead
+          // pick the top match if there is one.
+          if (e.key === 'Enter') {
+            e.preventDefault();
+            const top = results[0];
+            if (top) select(top);
+          }
+        }}
       />
       {open && results.length > 0 && (
         <div className="absolute z-50 mt-1 max-h-60 w-full overflow-y-auto rounded-md border bg-popover p-1 shadow-md">
@@ -115,6 +119,6 @@ export function TimezoneField({ value, detected, onChange }: Props) {
           ))}
         </div>
       )}
-    </form>
+    </div>
   );
 }
