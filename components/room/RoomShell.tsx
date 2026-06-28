@@ -6,20 +6,13 @@
 
 import { useState } from 'react';
 import { AvailabilityTab } from './availability/AvailabilityTab';
+import { OverviewTab } from './overview/OverviewTab';
 import { TeamTab } from './team/TeamTab';
 import { RoomTabs, type RoomTab } from './RoomTabs';
 import { RoomTop } from './RoomTop';
 
-function Placeholder({ label }: { label: string }) {
-  return (
-    <div className="flex min-h-60 items-center justify-center p-10 text-center text-sm text-muted-foreground">
-      {label} arrives in a later step.
-    </div>
-  );
-}
-
 export function RoomShell() {
-  const [tab, setTab] = useState<RoomTab>('team');
+  const [tab, setTab] = useState<RoomTab>('overview');
 
   return (
     <div className="mx-auto flex min-h-screen max-w-5xl flex-col">
@@ -28,7 +21,7 @@ export function RoomShell() {
         <RoomTabs active={tab} onChange={setTab} />
         <div className="flex-1">
           {tab === 'team' && <TeamTab />}
-          {tab === 'overview' && <Placeholder label="The Overview" />}
+          {tab === 'overview' && <OverviewTab />}
           {tab === 'availability' && <AvailabilityTab />}
         </div>
       </div>

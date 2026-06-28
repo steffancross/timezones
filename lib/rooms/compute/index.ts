@@ -11,11 +11,13 @@ export type {
   LiveStatus,
   MeetingWindow,
   ParticipantProjection,
+  PartialToday,
   PlainDate,
   Projection,
   Segment,
   SlotState,
 } from './types';
+export type { Prepared } from './windows';
 
 export {
   cellInstant,
@@ -27,6 +29,13 @@ export {
 export { computeSet, project } from './projection';
 export { aggregate, cellGrade } from './aggregate';
 export { rowSegments } from './segments';
-export { todayWindows, weekWindows } from './windows';
+export {
+  prepare,
+  todayWindows,
+  todayWindowsFrom,
+  weekWindows,
+  weekWindowsFrom,
+} from './windows';
+export { closestPartialToday, closestPartialTodayFrom } from './partial';
 export { liveStatus } from './status';
 export { cellBreakdown } from './breakdown';

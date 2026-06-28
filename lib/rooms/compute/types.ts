@@ -65,6 +65,12 @@ export type MeetingWindow = {
   endInstant: Instant; // end of the last cell (exclusive boundary)
 };
 
+/** The best-covered remaining slot today when no full overlap is left (spec 6). */
+export type PartialToday = {
+  slot: number; // viewer half-hour index 0..47 on today's column
+  outParticipants: string[]; // compute-set participants who are 'n' at that slot
+};
+
 /** A participant's availability at `now`, in their own zone. */
 export type LiveStatus = {
   participantId: string;

@@ -17,23 +17,35 @@ interface Props {
   viewerTz: string;
   /** Override the initial viewed week (Sunday). Defaults to the current week. */
   initialWeekAnchor?: string;
+  /** Pin `now` (ms) and suppress the live minute tick — for deterministic tests/SSR. */
+  now?: number;
   children: React.ReactNode;
 }
 
-export function RoomDataProvider({ state, youId, viewerTz, initialWeekAnchor, children }: Props) {
+export function RoomDataProvider({
+  state,
+  youId,
+  viewerTz,
+  initialWeekAnchor,
+  now: pinnedNow,
+  children,
+}: Props) {
+  const seedNow = pinnedNow ?? Date.now();
   const storeRef = useRef<ReturnType<typeof createRoomStore> | null>(null);
   if (!storeRef.current) {
     storeRef.current = createRoomStore({
       state,
       youId,
       viewerTz,
-      weekAnchor: initialWeekAnchor ?? currentWeekAnchor(viewerTz, Date.now()),
-      now: Date.now(),
+      weekAnchor: initialWeekAnchor ?? currentWeekAnchor(viewerTz, seedNow),
+      now: seedNow,
     });
   }
   const store = storeRef.current;
 
-  const now = useNow('minute').toMillis();
+  // When `now` is pinned, ignore the live tick so the store stays deterministic.
+  const live = useNow('minute').toMillis();
+  const now = pinnedNow ?? live;
   // biome-ignore lint/correctness/useExhaustiveDependencies: store identity is stable (per-mount ref)
   useEffect(() => {
     store.getState().setNow(now);

@@ -1,3 +1,5 @@
+// biome-ignore-all lint/suspicious/noConsole: CLI seed script
+
 // Dev seed for Availability Rooms — populates LOCAL D1 with a few rooms to
 // evaluate the views against (there's no create-room UI yet). Run:
 //
@@ -10,13 +12,13 @@
 // Idempotent: it deletes its own rooms (fixed ids) and re-inserts. Local only —
 // it shells out to `wrangler d1 execute --local`, the same store `next dev` reads.
 
-import { execFileSync } from 'node:child_process';
-import { mkdirSync, writeFileSync } from 'node:fs';
-import { join } from 'node:path';
 import type { SlotState } from '@/lib/rooms/blob';
 import { BLOB_VERSION } from '@/lib/rooms/config';
 import { generateSecret, hashPassword, sha256Base64url } from '@/lib/rooms/crypto';
 import { generateParticipantId } from '@/lib/rooms/id';
+import { execFileSync } from 'node:child_process';
+import { mkdirSync, writeFileSync } from 'node:fs';
+import { join } from 'node:path';
 
 // The standard identity present in every populated room — claim it to hop in.
 const DEV_NAME = 'Dev';
@@ -51,14 +53,24 @@ const ROOMS: SeedRoom[] = [
     id: 'dev-solo',
     name: 'Solo room',
     participants: [
-      { name: DEV_NAME, timezone: 'America/New_York', week: week(nineToFive(), eveningSoft([1, 3])), dev: true },
+      {
+        name: DEV_NAME,
+        timezone: 'America/New_York',
+        week: week(nineToFive(), eveningSoft([1, 3])),
+        dev: true,
+      },
     ],
   },
   {
     id: 'dev-trio',
     name: 'Team sync (US)',
     participants: [
-      { name: DEV_NAME, timezone: 'America/New_York', week: week(nineToFive(), eveningSoft([1, 3])), dev: true },
+      {
+        name: DEV_NAME,
+        timezone: 'America/New_York',
+        week: week(nineToFive(), eveningSoft([1, 3])),
+        dev: true,
+      },
       { name: 'Alex', timezone: 'America/Chicago', week: week(nineToFive()) },
       { name: 'Sam', timezone: 'America/Denver', week: week(nineToFive(), eveningSoft([0, 2, 4])) },
     ],
@@ -67,7 +79,12 @@ const ROOMS: SeedRoom[] = [
     id: 'dev-global',
     name: 'Global crew',
     participants: [
-      { name: DEV_NAME, timezone: 'America/Los_Angeles', week: week(nineToFive(), eveningSoft([1, 3])), dev: true },
+      {
+        name: DEV_NAME,
+        timezone: 'America/Los_Angeles',
+        week: week(nineToFive(), eveningSoft([1, 3])),
+        dev: true,
+      },
       { name: 'Liv', timezone: 'Europe/London', week: week(nineToFive()) },
       { name: 'Priya', timezone: 'Asia/Kolkata', week: week(nineToFive()) },
       { name: 'Yuki', timezone: 'Asia/Tokyo', week: week(nineToFive(), eveningSoft([0, 4])) },

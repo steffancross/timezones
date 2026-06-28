@@ -20,12 +20,14 @@ export function TimezoneField({ value, detected, onChange }: Props) {
   const [query, setQuery] = useState('');
   const [results, setResults] = useState<SearchResult[]>([]);
   const [open, setOpen] = useState(false);
-  // Render readOnly until first focus: browsers skip autofill on readonly inputs,
-  // which is the only reliable way to stop the "manage passwords" overlay from
-  // covering the results (the password field nearby makes Chrome treat this as a
-  // username). We arm it on focus so typing still works.
+  // Render readOnly until first focus: browsers skip autofill on readonly inputs.
+  // This blocks autofill on load, but Firefox still pops its saved-logins dropdown
+  // on focus because it pairs this box with the password field in the same Settings
+  // form (and ignores autocomplete="off" for credential fields). The real fix is the
+  // <form> boundary below: isolating this input in its own password-field-free form
+  // gives Firefox's login manager nothing to attach to. We arm on focus so typing works.
   const [armed, setArmed] = useState(false);
-  const wrapRef = useRef<HTMLDivElement>(null);
+  const wrapRef = useRef<HTMLFormElement>(null);
 
   // Debounced search (mirrors SearchInput's 80ms).
   useEffect(() => {
@@ -59,7 +61,14 @@ export function TimezoneField({ value, detected, onChange }: Props) {
   const isAuto = Boolean(detected && value === detected);
 
   return (
-    <div ref={wrapRef} className="relative">
+    // Own form (no password field) so Firefox's login manager won't render the
+    // "manage passwords" dropdown over the results. onSubmit guards the Enter key.
+    <form
+      ref={wrapRef}
+      className="relative"
+      autoComplete="off"
+      onSubmit={(e) => e.preventDefault()}
+    >
       <div className="mb-1.5 flex items-center gap-2">
         <span className="text-sm text-muted-foreground">Current:</span>
         <span className="text-sm font-medium">{value || 'none'}</span>
@@ -106,6 +115,6 @@ export function TimezoneField({ value, detected, onChange }: Props) {
           ))}
         </div>
       )}
-    </div>
+    </form>
   );
 }

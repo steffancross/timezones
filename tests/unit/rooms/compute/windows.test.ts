@@ -1,6 +1,12 @@
 import { describe, expect, it } from 'vitest';
 import { DateTime } from '@/lib/time/luxon';
-import { todayWindows, weekWindows } from '@/lib/rooms/compute/windows';
+import {
+  prepare,
+  todayWindows,
+  todayWindowsFrom,
+  weekWindows,
+  weekWindowsFrom,
+} from '@/lib/rooms/compute/windows';
 import type { ComputeInput } from '@/lib/rooms/compute/types';
 import {
   FIXTURE_NOW,
@@ -59,5 +65,25 @@ describe('todayWindows (fixture)', () => {
     const windows = todayWindows({ ...base, now: at('2026-01-05T08:00:00') });
     expect(windows).toHaveLength(1);
     expect(windows[0]).toMatchObject({ day: 1, startSlot: 18, endSlot: 21, grade: 'all' });
+  });
+});
+
+describe('window cores (prepare + *From)', () => {
+  it('the *From cores match the input wrappers byte-for-byte', () => {
+    const p = prepare(base);
+    expect(weekWindowsFrom(p, base.now)).toEqual(weekWindows(base));
+    expect(todayWindowsFrom(p, base.now, base.viewerTz)).toEqual(
+      todayWindows({ ...base, now: base.now }),
+    );
+  });
+
+  it('one prepared bundle re-ranks for a different now without re-projecting', () => {
+    // The whole point of the split: project once, past-filter per tick.
+    const p = prepare(base);
+    const later = at('2026-01-05T15:00:00'); // Monday 10:00 NY — truncates the Monday window
+    expect(weekWindowsFrom(p, later)).toEqual(weekWindows({ ...base, now: later }));
+    expect(todayWindowsFrom(p, later, base.viewerTz)).toEqual(
+      todayWindows({ ...base, now: later }),
+    );
   });
 });
