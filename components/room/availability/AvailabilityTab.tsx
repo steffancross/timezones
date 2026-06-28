@@ -5,7 +5,6 @@
 // get the contribute modal first, then paint; the first save flips them to
 // responded. Saves are optimistic + debounced (useAvailabilitySave).
 
-import { useEffect, useMemo, useRef, useState } from 'react';
 import { ContributeModal } from '@/components/room/ContributeModal';
 import { RecoveryPicker } from '@/components/room/RecoveryPicker';
 import { useRoomStore } from '@/components/room/room-store-context';
@@ -13,9 +12,10 @@ import { buildWeekColumns } from '@/components/room/team/slots';
 import { Button } from '@/components/ui/button';
 import { displayColToDow, parseDay, parseWeek, type SlotState } from '@/lib/rooms/blob';
 import { currentWeekAnchor } from '@/lib/rooms/compute';
+import { WEEKDAY_LABELS } from '@/lib/time/calendar';
 import { DateTime } from '@/lib/time/luxon';
 import { cn } from '@/lib/utils';
-import { WEEKDAY_LABELS } from '@/lib/time/calendar';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { type CellInfo, EditGrid } from './EditGrid';
 import { PaintPalette } from './PaintPalette';
 import { useAvailabilitySave } from './useAvailabilitySave';
@@ -100,7 +100,10 @@ export function AvailabilityTab() {
     const day = overrides[wc.iso];
     if (day) {
       const state = day[slot] ?? 'n';
-      return { state, ghost: false, changed: state !== tpl };
+      const changed = state !== tpl;
+      // Only show full paint on cells that actually differ from the template;
+      // unchanged cells stay dimmed (ghost) so the column doesn't light up whole.
+      return { state, ghost: !changed, changed };
     }
     return { state: tpl, ghost: true, changed: false };
   };
@@ -200,28 +203,39 @@ export function AvailabilityTab() {
 
       {mode === 'week' && (
         <div className="relative mb-2 flex items-center gap-2">
-          <Button variant="outline" size="sm" onClick={() => setPickerOpen((o) => !o)}>
+          <button
+            type="button"
+            className="inline-flex items-center rounded-md border border-border px-2.5 py-1 text-xs hover:bg-[var(--hover)]"
+            onClick={() => setPickerOpen((o) => !o)}
+          >
             Week of {weekRangeLabel(overrideAnchor)}
-          </Button>
-          <Button
-            variant="ghost"
-            size="sm"
-            className="text-[var(--brand)]"
+          </button>
+          <button
+            type="button"
+            className="rounded-md px-2.5 py-1 text-xs text-[var(--brand)] hover:bg-[var(--hover)]"
             onClick={resetOverrideWeek}
           >
             Reset to general week
-          </Button>
+          </button>
           {pickerOpen && (
-            <div className="absolute top-full left-0 z-30 mt-1.5">
-              <WeekPicker
-                value={overrideAnchor}
-                floor={currentWeekAnchor(viewerTz, now)}
-                onSelect={(sunday) => {
-                  setOverrideAnchor(sunday);
-                  setPickerOpen(false);
-                }}
+            <>
+              {/* biome-ignore lint/a11y/noStaticElementInteractions: click-outside backdrop */}
+              <div
+                role="presentation"
+                className="fixed inset-0 z-20"
+                onClick={() => setPickerOpen(false)}
               />
-            </div>
+              <div className="absolute top-full left-0 z-30 mt-1.5">
+                <WeekPicker
+                  value={overrideAnchor}
+                  floor={currentWeekAnchor(viewerTz, now)}
+                  onSelect={(sunday) => {
+                    setOverrideAnchor(sunday);
+                    setPickerOpen(false);
+                  }}
+                />
+              </div>
+            </>
           )}
         </div>
       )}

@@ -18,14 +18,15 @@ import { slotLabel, type WeekColumn } from './slots';
 interface Props {
   hover: HoverCell;
   columns: WeekColumn[];
+  onMemberHover?: (id: string | null) => void;
+  hoveredMemberId?: string | null;
 }
 
-export function RosterSidebar({ hover, columns }: Props) {
+export function RosterSidebar({ hover, columns, onMemberHover, hoveredMemberId }: Props) {
   const state = useRoomStore((s) => s.state);
   const selected = useRoomStore((s) => s.selected);
   const toggleSelected = useRoomStore((s) => s.toggleSelected);
   const projection = useRoomStore((s) => s.projection);
-  const youId = useRoomStore((s) => s.youId);
   const members = state.participants;
 
   // Per-person state at the hovered cell, from the projection (compute set only).
@@ -38,57 +39,69 @@ export function RosterSidebar({ hover, columns }: Props) {
     return map;
   }, [hover, projection]);
 
-  const countedTotal = members.filter((m) => m.hasResponded && selected.has(m.id)).length;
+  const respondedSelected = members.filter((m) => m.hasResponded && selected.has(m.id));
+  const freeCount = hoverStates
+    ? respondedSelected.filter((m) => hoverStates.get(m.id) === 'y').length
+    : 0;
+  const softCount = hoverStates
+    ? respondedSelected.filter((m) => hoverStates.get(m.id) === 's').length
+    : 0;
+
+  const countedTotal = respondedSelected.length;
   const anyUnresponded = members.some((m) => !m.hasResponded);
 
-  let freeCount = 0;
-  let softCount = 0;
-  if (hoverStates) {
-    for (const s of hoverStates.values()) {
-      if (s === 'y') freeCount++;
-      else if (s === 's') softCount++;
-    }
-  }
+  const hoverPillLabel = hover ? `${columns[hover.day]?.label} · ${slotLabel(hover.slot)}` : ' ';
+  const hoverCountLabel = hover
+    ? `${freeCount} free${softCount > 0 ? ` · ${softCount} if needed` : ''}`
+    : ' ';
 
   return (
     <aside className="flex w-60 shrink-0 flex-col gap-1 border-l border-border p-3 text-sm">
-      <div className="mb-1 flex items-center justify-between">
-        <span className="font-medium">{hover ? 'At this time' : 'Counting'}</span>
-        <span className="font-mono text-xs text-muted-foreground">
+      <div className="mb-2 flex items-baseline justify-between">
+        <span className="text-[13px] font-semibold tracking-tight">
+          {hover ? 'At this time' : 'Counting'}
+        </span>
+        <span className="font-mono text-[10px] text-muted-foreground">
           {countedTotal} of {members.length}
         </span>
       </div>
 
-      {hover && (
-        <div className="mb-1 flex flex-col gap-0.5 rounded-md bg-[var(--bg)] px-2 py-1.5">
-          <span className="text-xs text-muted-foreground">
-            {columns[hover.day]?.label} · {slotLabel(hover.slot)}
-          </span>
-          <span className="font-medium text-[var(--av-yes-ink)]">
-            {freeCount} free{softCount ? ` · ${softCount} if needed` : ''}
-          </span>
-        </div>
-      )}
+      <div
+        className={cn(
+          'rounded-[5px] border border-[color:var(--brand)]/25 bg-[var(--brand-soft)] px-2.5 py-1.5 font-mono text-[10.5px] font-semibold text-[var(--brand)]',
+          !hover && 'invisible',
+        )}
+      >
+        {hoverPillLabel}
+      </div>
+      <div
+        className={cn('mb-1 font-mono text-[9.5px] text-muted-foreground', !hover && 'invisible')}
+      >
+        {hoverCountLabel}
+      </div>
 
       {members.map((m) => {
         const unresponded = !m.hasResponded;
         const on = selected.has(m.id) && !unresponded;
         const st = hoverStates?.get(m.id);
         return (
+          // biome-ignore lint/a11y/noStaticElementInteractions: mouse-only hover highlight; no keyboard interaction needed
           <div
             key={m.id}
             className={cn(
               'flex items-center gap-2 rounded-md px-1 py-1',
               !on && 'opacity-55',
-              m.id === youId && 'bg-[var(--brand-soft)]',
+              m.id === hoveredMemberId && 'bg-[var(--brand-soft)]',
             )}
+            onMouseEnter={() => onMemberHover?.(m.id)}
+            onMouseLeave={() => onMemberHover?.(null)}
           >
             <Avatar id={m.id} name={m.displayName} size="sm" />
             <span className="min-w-0 flex-1 truncate">{m.displayName}</span>
 
             {unresponded ? (
               <span className="rounded bg-[var(--hover)] px-1.5 py-0.5 font-mono text-[10px] text-muted-foreground">
-                hasn't filled
+                hasn&apos;t filled
               </span>
             ) : hover ? (
               <span
@@ -119,11 +132,16 @@ export function RosterSidebar({ hover, columns }: Props) {
       })}
 
       <p className="mt-2 text-xs text-muted-foreground">
-        {hover
-          ? "Hovering a time shows each person's answer."
-          : anyUnresponded
-            ? "People who haven't painted their week yet are ignored until they do."
-            : "Uncheck anyone who's out — the grid recomputes without them."}
+        {hover ? (
+          "Hovering a time shows each person's answer."
+        ) : (
+          <>
+            Uncheck anyone who&apos;s out — the grid recomputes without them. Hover a person to see
+            their week on the grid.
+            {anyUnresponded &&
+              " People who haven't painted their week yet are ignored until they do."}
+          </>
+        )}
       </p>
     </aside>
   );

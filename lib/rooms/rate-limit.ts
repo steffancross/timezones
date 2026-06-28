@@ -36,3 +36,8 @@ export const allowAllRateLimiter: RateLimiter = {
 export function claimRateLimitKey(roomId: string, clientIp: string): string {
   return `claim:${roomId}:${clientIp}`;
 }
+
+/** Build the limiter key for a room-creation attempt (the one unguarded public write). */
+export function roomCreateRateLimitKey(clientIp: string): string {
+  return `create:${clientIp}`;
+}

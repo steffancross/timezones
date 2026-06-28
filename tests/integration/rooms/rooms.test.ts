@@ -1,7 +1,8 @@
 import { env } from 'cloudflare:test';
 import { beforeEach, describe, expect, it } from 'vitest';
 import { ROOM_ID_LENGTH, ROOM_TTL_MS } from '@/lib/rooms/config';
-import { createRoom, readRoomState, runJanitor } from '@/lib/rooms/db';
+import { createRoom, createRoomLimited, readRoomState, runJanitor } from '@/lib/rooms/db';
+import type { RateLimiter } from '@/lib/rooms/rate-limit';
 
 const URL_SAFE = /^[A-Za-z0-9_-]+$/;
 
@@ -88,7 +89,7 @@ describe('createRoom / readRoomState', () => {
     });
   });
 
-  it('sets last_active_at = created_at on create, and a read never bumps it', async () => {
+  it('sets last_active_at = created_at on create; readRoomState itself does not bump it (the route calls touchRoom separately)', async () => {
     const now = 1_700_000_000_000;
     const { id } = await createRoom(env.DB, null, now);
 
@@ -177,5 +178,46 @@ describe('runJanitor', () => {
     const now = 1_700_000_000_000;
     await createRoom(env.DB, 'Fresh', now);
     expect(await runJanitor(env.DB, now)).toEqual({ rooms: 0, participants: 0 });
+  });
+});
+
+// A per-key counting limiter (mirrors the claim test's injected fake) — the
+// native binding isn't modeled here.
+function countingLimiter(max: number): RateLimiter {
+  const counts = new Map<string, number>();
+  return {
+    check: async (key) => {
+      const n = (counts.get(key) ?? 0) + 1;
+      counts.set(key, n);
+      return { allowed: n <= max };
+    },
+  };
+}
+
+describe('createRoomLimited — per-IP room-creation rate-limit (spec 7c)', () => {
+  it('creates while under the limit, then rejects the over-limit attempt', async () => {
+    const limiter = countingLimiter(2);
+    const key = 'create:1.2.3.4';
+
+    const a = await createRoomLimited(env.DB, limiter, key);
+    const b = await createRoomLimited(env.DB, limiter, key);
+    const c = await createRoomLimited(env.DB, limiter, key);
+
+    expect(a).toHaveProperty('id');
+    expect(b).toHaveProperty('id');
+    expect(c).toEqual({ error: 'rate_limited' });
+
+    // The rejected attempt wrote no room.
+    if ('id' in a && 'id' in b) {
+      expect(await readRoomState(env.DB, a.id)).not.toBeNull();
+      expect(await readRoomState(env.DB, b.id)).not.toBeNull();
+    }
+  });
+
+  it('keys are independent — a different IP is unaffected', async () => {
+    const limiter = countingLimiter(1);
+    expect(await createRoomLimited(env.DB, limiter, 'create:a')).toHaveProperty('id');
+    expect(await createRoomLimited(env.DB, limiter, 'create:a')).toEqual({ error: 'rate_limited' });
+    expect(await createRoomLimited(env.DB, limiter, 'create:b')).toHaveProperty('id');
   });
 });

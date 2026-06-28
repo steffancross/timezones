@@ -3,7 +3,7 @@
 // Same-origin requests send the path-scoped ar_secret cookie automatically; the
 // JSON content-type satisfies each handler's CSRF guard.
 
-import type { PublicParticipant } from './db';
+import type { PublicParticipant, RoomState } from './db';
 import type { ClaimableParticipant } from './identity';
 
 async function postJson<T>(url: string, body: unknown): Promise<T> {
@@ -54,6 +54,15 @@ export function renameRoomRequest(
   name: string,
 ): Promise<{ room: { id: string; name: string } }> {
   return patchJson(`${base(roomId)}/room`, { name });
+}
+
+export type RoomStateResponse = RoomState & { you: { participantId: string } | null };
+
+/** Refetch the room state (spec 7c fetch-on-focus). Mirrors the SSR read shape. */
+export async function fetchRoomState(roomId: string): Promise<RoomStateResponse> {
+  const res = await fetch(`${base(roomId)}/state`);
+  if (!res.ok) throw new Error(`request failed (${res.status})`);
+  return (await res.json()) as RoomStateResponse;
 }
 
 export async function listClaimableRequest(roomId: string): Promise<ClaimableParticipant[]> {

@@ -15,9 +15,13 @@ export function FoldStrip({ from, to, onExpand }: Props) {
     <button
       type="button"
       onClick={onExpand}
-      className="flex w-full items-center gap-2 border-b border-border bg-[var(--bg)] px-3 py-1.5 text-left text-xs text-muted-foreground hover:bg-[var(--hover)]"
+      className="my-[3px] flex h-[23px] w-full items-center gap-2 rounded-[5px] border border-dashed border-border pl-11 pr-3 text-left font-mono text-[10px] text-muted-foreground hover:border-muted-foreground/40"
+      style={{
+        background:
+          'repeating-linear-gradient(135deg, hsl(var(--muted)) 0 6px, var(--bg) 6px 12px)',
+      }}
     >
-      <span className="font-medium text-foreground/70">
+      <span className="font-semibold text-foreground/70">
         {slotLabel(from)} – {slotLabel((to + 1) % 48)}
       </span>
       <span>· nobody around</span>

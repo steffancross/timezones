@@ -7,7 +7,7 @@ import { formatClock, formatHourTile } from '@/lib/time/format';
 import { DateTime } from '@/lib/time/luxon';
 
 /** Pixels per half-hour row — the anchored row height. */
-export const ROW_H = 14;
+export const ROW_H = 17;
 
 /** Full clock label for a slot start, e.g. 18 → "9:00 am". */
 export function slotLabel(k: number): string {

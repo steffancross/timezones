@@ -6,8 +6,9 @@
 // control toggles all folds. Anchored positions: every row is ROW_H tall and a
 // fold collapses to a fixed strip, so live rows keep their vertical map.
 
-import type { AggregateGrid, Grade, Segment } from '@/lib/rooms/compute';
+import type { AggregateGrid, Grade, Segment, SlotState } from '@/lib/rooms/compute';
 import { cn } from '@/lib/utils';
+import { useState } from 'react';
 import { FoldStrip } from './FoldStrip';
 import { hourLabel, ROW_H, type WeekColumn } from './slots';
 
@@ -18,15 +19,21 @@ const SLIVER = 'repeating-linear-gradient(45deg, var(--border-strong) 0 1px, tra
 function cellBackground(
   grade: Grade,
   gone: boolean,
-  weekend: boolean,
   variant: 'group' | 'solo',
+  highlight?: SlotState | null,
 ): string {
   if (gone) return SLIVER;
+  // Roster-hover mode: show the individual's own state instead of the aggregate.
+  if (highlight != null) {
+    if (highlight === 'y') return 'var(--av-yes-strong)';
+    if (highlight === 's') return 'var(--paint-soft)';
+    return 'var(--hm-blank)';
+  }
   // Solo (one responder) reads as that person's OWN week, not an "everyone"
   // consensus — vivid paint green, never the aggregate's --hm-all.
   if (grade === 'all') return variant === 'solo' ? 'var(--av-yes-strong)' : 'var(--hm-all)';
-  if (grade === 'some') return 'var(--paint-soft)'; // solid yellow, matches the paint color
-  return weekend ? 'var(--bg)' : 'transparent'; // faint weekend tint on blank cells
+  if (grade === 'some') return 'var(--paint-soft)';
+  return 'var(--hm-blank)';
 }
 
 const foldKey = (s: Segment) => `${s.from}-${s.to}`;
@@ -44,6 +51,14 @@ interface Props {
   // Touch: tapping a cell opens the breakdown sheet (no hover on a phone).
   onCellTap?: (cell: { day: number; slot: number }) => void;
   variant?: 'group' | 'solo';
+  // When a roster member is hovered, paint their individual SlotState grid
+  // instead of the aggregate. grid[day][slot].
+  highlightGrid?: SlotState[][] | null;
+  // Drag-to-select mode: disables hover/tap, enables drag range selection.
+  selectMode?: boolean;
+  onRangeSelect?: (day: number, startSlot: number, endSlot: number) => void;
+  // Committed selection — keeps the range highlighted while the export popover is open.
+  highlightRange?: { day: number; startSlot: number; endSlot: number } | null;
 }
 
 export function WeekHeatmap({
@@ -57,9 +72,41 @@ export function WeekHeatmap({
   onHover,
   onCellTap,
   variant = 'group',
+  highlightGrid = null,
+  selectMode = false,
+  onRangeSelect,
+  highlightRange = null,
 }: Props) {
+  const [dragState, setDragState] = useState<{
+    day: number;
+    startSlot: number;
+    currentSlot: number;
+  } | null>(null);
+
+  // Active drag takes precedence over committed selection for the highlight.
+  const effectiveRange = dragState
+    ? {
+        day: dragState.day,
+        startSlot: Math.min(dragState.startSlot, dragState.currentSlot),
+        endSlot: Math.max(dragState.startSlot, dragState.currentSlot),
+      }
+    : (highlightRange ?? null);
+
   return (
-    <div className="select-none" data-view={variant} onPointerLeave={() => onHover?.(null)}>
+    <div
+      className="select-none"
+      data-view={variant}
+      onPointerLeave={() => {
+        onHover?.(null);
+        setDragState(null);
+      }}
+      onPointerUp={() => {
+        if (!dragState) return;
+        const { day, startSlot, currentSlot } = dragState;
+        onRangeSelect?.(day, Math.min(startSlot, currentSlot), Math.max(startSlot, currentSlot));
+        setDragState(null);
+      }}
+    >
       {/* header: time-gutter corner + day columns */}
       <div className="flex">
         <div className="w-11 shrink-0" />
@@ -116,8 +163,10 @@ export function WeekHeatmap({
                   const c = col.index;
                   const grade = grid.grade[c]?.[k] ?? 'none';
                   const gone = grid.nonexistent[c]?.[k] ?? false;
+                  const highlight = highlightGrid ? (highlightGrid[c]?.[k] ?? 'n') : null;
                   const isHover = hover?.day === c && hover?.slot === k;
-                  const hourBoundary = k % 2 === 1; // bottom of a :30 row = top of the hour
+                  // :30 slot bottom = hour boundary (solid); :00 slot bottom = half-hour (dotted)
+                  const hourBoundary = k % 2 === 1;
                   return (
                     // biome-ignore lint/a11y/noStaticElementInteractions: tap-to-open-breakdown; full keyboard grid operability is the 7d a11y pass
                     // biome-ignore lint/a11y/useKeyWithClickEvents: ARIA grid roles + roving-tabindex/arrow nav land in the 7d a11y pass
@@ -127,16 +176,49 @@ export function WeekHeatmap({
                       data-nonexistent={gone || undefined}
                       data-day={c}
                       data-slot={k}
-                      onPointerEnter={onHover ? () => onHover({ day: c, slot: k }) : undefined}
-                      onClick={onCellTap ? () => onCellTap({ day: c, slot: k }) : undefined}
+                      onPointerDown={
+                        selectMode
+                          ? (e) => {
+                              e.preventDefault();
+                              setDragState({ day: c, startSlot: k, currentSlot: k });
+                            }
+                          : undefined
+                      }
+                      onPointerEnter={
+                        selectMode
+                          ? () => {
+                              if (dragState?.day === c)
+                                setDragState((d) => (d ? { ...d, currentSlot: k } : null));
+                            }
+                          : onHover
+                            ? () => onHover({ day: c, slot: k })
+                            : undefined
+                      }
+                      onClick={
+                        selectMode
+                          ? undefined
+                          : onCellTap
+                            ? () => onCellTap({ day: c, slot: k })
+                            : undefined
+                      }
                       className={cn(
-                        'border-r border-b border-[color:var(--border)]/50',
-                        hourBoundary && 'border-b-[color:var(--border)]',
-                        isHover && 'relative z-10 ring-2 ring-inset ring-[var(--brand)]',
+                        !selectMode &&
+                          isHover &&
+                          'relative z-10 ring-2 ring-inset ring-[var(--brand)]',
+                        selectMode && 'cursor-crosshair',
                       )}
                       style={{
                         height: ROW_H,
-                        background: cellBackground(grade, gone, col.weekend, variant),
+                        background: cellBackground(grade, gone, variant, highlight),
+                        borderBottom: hourBoundary
+                          ? '1px solid hsl(var(--border))'
+                          : '1px dotted hsl(var(--border) / 0.75)',
+                        borderRight: c < 6 ? '1px solid hsl(var(--border))' : undefined,
+                        ...(effectiveRange?.day === c &&
+                          k >= effectiveRange.startSlot &&
+                          k <= effectiveRange.endSlot && {
+                            boxShadow: 'inset 0 0 0 9999px var(--brand)',
+                          }),
                       }}
                     />
                   );

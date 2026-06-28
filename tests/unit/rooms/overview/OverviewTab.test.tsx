@@ -85,11 +85,13 @@ describe('OverviewTab — cold-start content states (spec 7b)', () => {
 });
 
 describe('OverviewTab — live status', () => {
-  it('omits the unresponded participant and marks the override-covered person definite', async () => {
+  it("shows unresponded with hasn't-filled tag, marks override-covered person definite", async () => {
     const { container } = await renderOverview();
     const items = [...container.querySelectorAll<HTMLElement>('[data-testid="rn-item"]')];
-    // Priya never responded → no status row anywhere in Overview.
-    expect(container.textContent).not.toContain('Priya');
+    // Priya never responded → appears with "hasn't filled" tag but has no status row.
+    expect(container.textContent).toContain('Priya');
+    expect(container.textContent).toContain("hasn't filled");
+    expect(items.find((el) => el.textContent?.includes('Priya'))).toBeUndefined();
     // Sam is covered by a concrete override at FIXTURE_NOW → definite, not inferred.
     const sam = items.find((el) => el.textContent?.includes('Sam'));
     expect(sam?.getAttribute('data-inferred')).toBe('false');
