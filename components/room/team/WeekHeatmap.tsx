@@ -36,6 +36,11 @@ function cellBackground(
   return 'var(--hm-blank)';
 }
 
+function cellBackgroundHeatmap(level: number): string {
+  if (level === 0) return 'var(--hm-blank)';
+  return `var(--hm-l${level})`;
+}
+
 const foldKey = (s: Segment) => `${s.from}-${s.to}`;
 
 interface Props {
@@ -59,6 +64,9 @@ interface Props {
   onRangeSelect?: (day: number, startSlot: number, endSlot: number) => void;
   // Committed selection — keeps the range highlighted while the export popover is open.
   highlightRange?: { day: number; startSlot: number; endSlot: number } | null;
+  // Heatmap mode (spec E): when provided, disables fold logic and colors cells by count.
+  // heatmapLevels[day][slot] = 0 (blank) … 5 (everyone can make it).
+  heatmapLevels?: number[][] | null;
 }
 
 export function WeekHeatmap({
@@ -76,6 +84,7 @@ export function WeekHeatmap({
   selectMode = false,
   onRangeSelect,
   highlightRange = null,
+  heatmapLevels = null,
 }: Props) {
   const [dragState, setDragState] = useState<{
     day: number;
@@ -130,7 +139,7 @@ export function WeekHeatmap({
 
       {/* body: fold strips interleaved with visible row-blocks */}
       {segments.map((seg) => {
-        const open = !compressed || !seg.fold || manuallyExpanded.has(foldKey(seg));
+        const open = heatmapLevels ? true : !compressed || !seg.fold || manuallyExpanded.has(foldKey(seg));
         if (seg.fold && !open) {
           return (
             <FoldStrip
@@ -209,7 +218,11 @@ export function WeekHeatmap({
                       )}
                       style={{
                         height: ROW_H,
-                        background: cellBackground(grade, gone, variant, highlight),
+                        background: heatmapLevels
+                          ? highlight != null
+                            ? cellBackground(grade, gone, variant, highlight)
+                            : cellBackgroundHeatmap(heatmapLevels[c]?.[k] ?? 0)
+                          : cellBackground(grade, gone, variant, highlight),
                         borderBottom: hourBoundary
                           ? '1px solid hsl(var(--border))'
                           : '1px dotted hsl(var(--border) / 0.75)',

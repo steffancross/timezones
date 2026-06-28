@@ -23,6 +23,8 @@ export interface RoomStoreState {
   now: number;
   /** Your availability has unsaved/in-flight edits — a focus refetch must not clobber it. */
   dirty: boolean;
+  /** Per-viewer display preference — persisted to localStorage under 'ar_color_mode'. */
+  colorMode: 'consensus' | 'heatmap';
   // Derived — recomputed by the input-changing actions below.
   projection: Projection;
   grid: AggregateGrid;
@@ -43,6 +45,8 @@ export interface RoomActions {
   setRoomName: (name: string) => void;
   /** Mark your availability dirty (set by the debounced save while a write is pending). */
   setDirty: (dirty: boolean) => void;
+  /** Switch the per-viewer grid color mode and persist to localStorage. */
+  setColorMode: (colorMode: 'consensus' | 'heatmap') => void;
   /** Merge a focus-refetched server state without clobbering your unsaved paint. */
   reconcileServerState: (incoming: RoomState & { you?: { participantId: string } | null }) => void;
 }
@@ -56,6 +60,7 @@ export type RoomStoreSeed = {
   weekAnchor: string;
   selected?: Set<string>;
   now?: number;
+  colorMode?: 'consensus' | 'heatmap';
 };
 
 /** Recompute the cached projection/aggregate from the current inputs. */
@@ -83,6 +88,7 @@ export function createRoomStore(seed: RoomStoreSeed) {
     selected,
     now: seed.now ?? 0,
     dirty: false,
+    colorMode: seed.colorMode ?? ('consensus' as const),
   };
 
   return createStore<RoomStore>()((set) => ({
@@ -144,6 +150,11 @@ export function createRoomStore(seed: RoomStoreSeed) {
     setRoomName: (name) => set((s) => ({ state: { ...s.state, room: { ...s.state.room, name } } })),
 
     setDirty: (dirty) => set({ dirty }),
+
+    setColorMode: (colorMode) => {
+      try { localStorage.setItem('ar_color_mode', colorMode); } catch {}
+      set({ colorMode });
+    },
 
     reconcileServerState: (incoming) =>
       set((s) => {

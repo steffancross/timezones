@@ -122,6 +122,12 @@
        design mock; ink/line/paper reuse the converter neutrals above. */
     --hm-all: oklch(0.7 0.11 152); /* everyone available — rich green */
     --hm-all-ink: oklch(0.38 0.08 152);
+    /* Heatmap mode ramp (spec E) — 5 levels, same hue as --hm-all */
+    --hm-l1: oklch(0.945 0.035 152);
+    --hm-l2: oklch(0.890 0.058 152);
+    --hm-l3: oklch(0.815 0.082 152);
+    --hm-l4: oklch(0.735 0.103 152);
+    --hm-l5: oklch(0.655 0.125 152);
     --av-yes: oklch(0.8 0.075 152);
     --av-yes-strong: oklch(0.72 0.105 152);
     --av-yes-ink: oklch(0.4 0.075 152);
@@ -207,6 +213,11 @@
     /* Availability Room — dark variants (--hatch-soft inherits via var()). */
     --hm-all: oklch(0.62 0.12 152);
     --hm-all-ink: oklch(0.86 0.06 152);
+    --hm-l1: oklch(0.30 0.030 152);
+    --hm-l2: oklch(0.37 0.055 152);
+    --hm-l3: oklch(0.44 0.080 152);
+    --hm-l4: oklch(0.52 0.103 152);
+    --hm-l5: oklch(0.62 0.125 152);
     --av-yes: oklch(0.55 0.09 152);
     --av-yes-strong: oklch(0.62 0.12 152);
     --av-yes-ink: oklch(0.86 0.07 152);
