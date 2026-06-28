@@ -25,5 +25,19 @@
       "binding": "NEXT_INC_CACHE_R2_BUCKET",
       "bucket_name": "worldtimezones-incremental-cache"
     }
+  ],
+  // Availability Room store (spec 1) — the app's first database. Local dev and
+  // tests auto-provision their own D1 (.wrangler/state and in-memory workerd);
+  // only this remote one must be created once via `wrangler d1 create
+  // worldtimezones-rooms`, whose printed database_id replaces the placeholder
+  // below. Apply schema: `wrangler d1 migrations apply worldtimezones-rooms
+  // --local` (dev) / `--remote` (prod).
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "worldtimezones-rooms",
+      "database_id": "72edecc3-6b56-4700-9a30-6cce15102d8f",
+      "migrations_dir": "migrations"
+    }
   ]
 }
