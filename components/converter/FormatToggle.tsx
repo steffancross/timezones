@@ -19,7 +19,7 @@ export function FormatToggle() {
     <div
       role="group"
       aria-label="Time format"
-      className="inline-flex h-8 items-center gap-0.5 rounded-[var(--radius)] border border-[color:var(--border)] bg-card p-0.5"
+      className="inline-flex h-8 items-center gap-0.5 rounded-[var(--radius)] border border-border bg-card p-0.5"
     >
       <SegmentButton active={format === '12'} onClick={() => setFormat('12')}>
         12

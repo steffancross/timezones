@@ -50,7 +50,7 @@ export function ShareButton() {
       title="Copy link to this view"
       className={cn(
         'inline-flex size-8 items-center justify-center rounded-[var(--radius)]',
-        'border border-[color:var(--border)] bg-card',
+        'border border-border bg-card',
         'text-[color:var(--fg-muted)] transition-colors',
         !disabled && 'hover:bg-[var(--hover)] hover:text-[color:var(--fg)]',
         disabled && 'cursor-not-allowed opacity-40',

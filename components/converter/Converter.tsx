@@ -128,7 +128,7 @@ export function Converter({ visitorIana }: ConverterProps = {}) {
       <DSTBanner />
 
       {/* Toolbar */}
-      <div className="rounded-[var(--radius-lg,6px)] border border-[color:var(--border)] bg-card p-2.5">
+      <div className="rounded-[var(--radius-lg,6px)] border border-border bg-card p-2.5">
         <div className="flex flex-wrap items-center gap-2 md:flex-nowrap">
           <div className="min-w-0 flex-1 max-md:basis-full">
             <SearchInput onSelect={handleSearchSelect} />
@@ -147,7 +147,7 @@ export function Converter({ visitorIana }: ConverterProps = {}) {
       {zones.length === 0 ? (
         <EmptyState />
       ) : (
-        <div className="relative rounded-[var(--radius-lg,6px)] border border-[color:var(--border)] bg-card">
+        <div className="relative rounded-[var(--radius-lg,6px)] border border-border bg-card">
           {zones.map((zone, i) => (
             <ZoneRow key={`${zone.kind}:${zone.slug}`} zone={zone} index={i} />
           ))}

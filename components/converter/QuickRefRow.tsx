@@ -43,7 +43,7 @@ export function QuickRefRow({ hour, fromText, toText, dayText, ariaLabel }: Prop
           select();
         }
       }}
-      className="cursor-pointer border-t border-[color:var(--border)] tabular-nums transition-colors hover:bg-[color:var(--hover)] focus-visible:bg-[color:var(--hover)] focus-visible:outline-none"
+      className="cursor-pointer border-t border-border tabular-nums transition-colors hover:bg-[color:var(--hover)] focus-visible:bg-[color:var(--hover)] focus-visible:outline-none"
     >
       <td className="px-4 py-1.5">{fromText}</td>
       <td className="px-4 py-1.5">{toText}</td>

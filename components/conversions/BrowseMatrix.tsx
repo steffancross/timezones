@@ -90,7 +90,7 @@ export function BrowseMatrix({ sources, initialSelectedId }: Props) {
           placeholder="Search any zone or city…"
           aria-label="Filter sources and destinations"
           className={cn(
-            'h-9 min-w-[240px] flex-1 rounded-md border border-[color:var(--border)] bg-[var(--input-bg)] px-3',
+            'h-9 min-w-[240px] flex-1 rounded-md border border-border bg-[var(--input-bg)] px-3',
             'text-[13px] text-[color:var(--fg)] placeholder:text-[color:var(--fg-subtle)]',
             'focus:border-[color:var(--brand)] focus:outline-none focus:shadow-[0_0_0_3px_var(--brand-soft)]',
             'sm:max-w-[360px]',
@@ -121,7 +121,7 @@ function SourceSidebar({
 }) {
   if (sources.length === 0) {
     return (
-      <div className="rounded-lg border border-[color:var(--border)] bg-[var(--card)] p-4 text-[13px] text-[color:var(--fg-subtle)]">
+      <div className="rounded-lg border border-border bg-card p-4 text-[13px] text-[color:var(--fg-subtle)]">
         No matching sources.
       </div>
     );
@@ -129,7 +129,7 @@ function SourceSidebar({
 
   return (
     <div
-      className="overflow-y-auto rounded-lg border border-[color:var(--border)] bg-[var(--card)] p-1"
+      className="overflow-y-auto rounded-lg border border-border bg-card p-1"
       style={{ maxHeight: '580px' }}
     >
       <ul className="space-y-px">
@@ -187,7 +187,7 @@ function DestinationsPane({
 }) {
   if (!source) {
     return (
-      <div className="flex min-h-[480px] items-center justify-center rounded-lg border border-[color:var(--border)] bg-[var(--card)]">
+      <div className="flex min-h-[480px] items-center justify-center rounded-lg border border-border bg-card">
         <div className="text-center">
           <div className="text-[15px] font-medium text-[color:var(--fg)]">No source selected</div>
           <div className="mt-1 text-[13px] text-[color:var(--fg-subtle)]">
@@ -200,7 +200,7 @@ function DestinationsPane({
 
   return (
     <div
-      className="rounded-lg border border-[color:var(--border)] bg-[var(--card)]"
+      className="rounded-lg border border-border bg-card"
       style={{ minHeight: '480px' }}
     >
       <DestinationsHeader source={source} count={destinations.length} />
@@ -237,7 +237,7 @@ function DestinationsHeader({ source, count }: { source: MatrixSource; count: nu
   }, [source]);
 
   return (
-    <div className="flex items-baseline justify-between border-b border-[color:var(--border)] px-4 py-3">
+    <div className="flex items-baseline justify-between border-b border-border px-4 py-3">
       <div>
         <h3 className="text-[19px] font-semibold leading-tight text-[color:var(--fg)]">
           From {source.name}

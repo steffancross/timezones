@@ -55,7 +55,7 @@ export function SettingsMenu() {
         <PopoverTrigger
           className={cn(
             'inline-flex size-8 items-center justify-center rounded-[var(--radius)]',
-            'border border-[color:var(--border)] bg-card',
+            'border border-border bg-card',
             'text-[color:var(--fg-muted)] transition-colors',
             'hover:bg-[var(--hover)] hover:text-[color:var(--fg)]',
           )}
@@ -147,7 +147,7 @@ function Swatch({ kind }: { kind: OverlayKind }) {
   return (
     <span
       aria-hidden="true"
-      className="inline-block h-3 w-[22px] shrink-0 rounded-[2px] border border-[color:var(--border)]"
+      className="inline-block h-3 w-[22px] shrink-0 rounded-[2px] border border-border"
       style={{ background: bg }}
     />
   );

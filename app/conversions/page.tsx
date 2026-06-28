@@ -43,7 +43,7 @@ export default function ConversionsIndex() {
         </h1>
         <p className="mt-2 text-[15px] text-[color:var(--fg-muted)]">
           Pick any two zones or cities and jump straight to a live converter. Below, browse the most
-          popular pairs at a glance — or filter the full matrix.
+          popular pairs at a glance or filter the full matrix.
         </p>
       </header>
 

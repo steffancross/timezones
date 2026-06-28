@@ -68,14 +68,25 @@ const COUNTRY_REGION: Record<string, string> = {
   MA: 'Africa',
 };
 
-function groupByRegion(cities: readonly City[]): Record<string, City[]> {
+const REGION_ORDER = [
+  'North America',
+  'South America',
+  'Europe',
+  'Asia',
+  'Middle East',
+  'Africa',
+  'Oceania',
+  'Other',
+];
+
+function groupByRegion(cities: readonly City[]): [string, City[]][] {
   const groups: Record<string, City[]> = {};
   for (const c of cities) {
     const region = COUNTRY_REGION[c.country_code] ?? 'Other';
     if (!groups[region]) groups[region] = [];
     groups[region].push(c);
   }
-  return groups;
+  return REGION_ORDER.filter((r) => groups[r]).map((r) => [r, groups[r]]);
 }
 
 export default function CitiesIndex() {
@@ -113,7 +124,7 @@ export default function CitiesIndex() {
                 <Link
                   prefetch={false}
                   href={`/time-in/${c.id}`}
-                  className="block rounded-md border border-border px-3 py-1.5 text-sm hover:bg-accent"
+                  className="block rounded-md border border-border bg-card px-3 py-1.5 text-sm hover:bg-accent"
                 >
                   {c.name}
                 </Link>
@@ -122,7 +133,7 @@ export default function CitiesIndex() {
         </ul>
       </section>
 
-      {Object.entries(groups).map(([region, list]) => (
+      {groups.map(([region, list]) => (
         <section key={region} className="mb-8">
           <h2 className="mb-3 text-lg font-semibold">{region}</h2>
           <ul className="grid grid-cols-2 gap-1 text-sm sm:grid-cols-3 md:grid-cols-4">

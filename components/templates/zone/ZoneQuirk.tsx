@@ -6,7 +6,7 @@
 export function ZoneQuirk({ quirk }: { quirk: string }) {
   return (
     <section>
-      <aside className="border-l-2 border-[color:var(--border)] pl-4 text-sm italic leading-relaxed text-[color:var(--fg-muted)]">
+      <aside className="border-l-2 border-border pl-4 text-sm italic leading-relaxed text-[color:var(--fg-muted)]">
         {quirk}
       </aside>
     </section>

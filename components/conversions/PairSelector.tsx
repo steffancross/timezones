@@ -157,7 +157,7 @@ export function PairSelector({ label, value, onChange, curated }: Props) {
           aria-label={`${label === 'FROM' ? 'From' : 'To'}: ${value.name}`}
           className={cn(
             'group relative flex h-[68px] w-full flex-col items-start justify-end',
-            'rounded-lg border border-[color:var(--border)] bg-[var(--card)] px-3.5 pb-2 pt-5 text-left',
+            'rounded-lg border border-border bg-card px-3.5 pb-2 pt-5 text-left',
             'transition-colors hover:border-[color:var(--border-strong)]',
             'data-[state=open]:border-[color:var(--brand)]',
             'data-[state=open]:shadow-[0_0_0_3px_var(--brand-soft)]',
@@ -179,7 +179,7 @@ export function PairSelector({ label, value, onChange, curated }: Props) {
         sideOffset={6}
         className="w-[var(--radix-popover-trigger-width)] min-w-[320px] max-h-[380px] overflow-hidden p-0"
       >
-        <div className="sticky top-0 z-10 border-b border-[color:var(--border)] bg-[var(--card)] p-2">
+        <div className="sticky top-0 z-10 border-b border-border bg-card p-2">
           <div className="relative">
             <Search
               className="pointer-events-none absolute left-2.5 top-1/2 size-3.5 -translate-y-1/2 text-[color:var(--fg-subtle)]"
@@ -194,7 +194,7 @@ export function PairSelector({ label, value, onChange, curated }: Props) {
               placeholder="Search zones and cities…"
               aria-label="Search zones and cities"
               className={cn(
-                'h-8 w-full rounded-md border border-[color:var(--border)] bg-[var(--input-bg)] pl-8 pr-2',
+                'h-8 w-full rounded-md border border-border bg-[var(--input-bg)] pl-8 pr-2',
                 'text-[13px] text-[color:var(--fg)] placeholder:text-[color:var(--fg-subtle)]',
                 'focus:border-[color:var(--brand)] focus:outline-none focus:shadow-[0_0_0_3px_var(--brand-soft)]',
               )}

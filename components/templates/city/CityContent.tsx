@@ -168,7 +168,7 @@ function ConversionLinks({ city }: { city: City }) {
             <Link
               prefetch={false}
               href={`/convert/${city.id}-to-${dest.id}`}
-              className="block rounded-[var(--radius)] border border-[color:var(--border)] px-3 py-2 text-sm hover:bg-[var(--hover)]"
+              className="block rounded-[var(--radius)] border border-border bg-card px-3 py-2 text-sm hover:bg-[var(--hover)]"
             >
               {city.name} → {dest.name}
             </Link>

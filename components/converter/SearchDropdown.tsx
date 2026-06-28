@@ -73,7 +73,7 @@ export function SearchDropdown({ results, loading, query, onSelect }: Props) {
       aria-label="Search results"
       className={cn(
         'absolute left-0 right-0 top-full z-40 mt-1.5 p-1',
-        'rounded-[var(--radius-lg,6px)] border border-[color:var(--border)] bg-card shadow-lg',
+        'rounded-[var(--radius-lg,6px)] border border-border bg-card shadow-lg',
         'max-h-80 overflow-y-auto',
       )}
     >

@@ -18,7 +18,7 @@ export function RelatedPairs({ slug }: Props) {
             <Link
               prefetch={false}
               href={`/convert/${r.slug}`}
-              className="block rounded-[var(--radius)] border border-[color:var(--border)] px-3 py-2 hover:bg-[var(--hover)]"
+              className="block rounded-[var(--radius)] border border-border bg-card px-3 py-2 hover:bg-[var(--hover)]"
             >
               {r.label}
             </Link>

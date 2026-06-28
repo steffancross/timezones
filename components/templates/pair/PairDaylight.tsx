@@ -108,7 +108,7 @@ export function PairDaylight({ pair }: Props) {
 
 function SideCard({ sun }: { sun: SideSun }) {
   return (
-    <div className="rounded-[var(--radius)] border border-[color:var(--border)] p-4">
+    <div className="rounded-[var(--radius)] border border-border bg-card p-4">
       <div className="text-sm font-semibold">{sun.name}</div>
       <dl className="mt-3 grid grid-cols-3 gap-2 text-sm tabular-nums">
         <div>

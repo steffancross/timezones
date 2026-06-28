@@ -87,7 +87,7 @@ export function HourTile({
     'border-b',
     isWeekend
       ? 'text-[color:var(--weekend-fg)] border-[color:var(--weekend-base)]'
-      : 'text-[color:var(--fg-subtle)] border-[color:var(--border)]',
+      : 'text-[color:var(--fg-subtle)] border-border',
     // Base minor tick (left edge of each cell). Mobile-compact shrinks
     // 6 → 5px and majors 12 → 9px per Mobile compact spec.
     "before:content-[''] before:absolute before:left-0 before:bottom-0 before:w-px before:h-1.5 max-md:before:h-[5px]",

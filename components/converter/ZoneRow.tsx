@@ -36,7 +36,7 @@ export function ZoneRow({ zone, index }: ZoneRowProps) {
     <div
       className={cn(
         'grid items-center gap-y-2 gap-x-2.5 px-3 py-3.5',
-        'border-b last:border-b-0',
+        index < totalZones - 1 && 'border-b',
         // Mobile: 2 cols (label 1fr, controls auto), 2 rows (label+controls / strip)
         'grid-cols-[1fr_auto] grid-rows-[auto_auto]',
         // Desktop: 3 cols (32px / 240px / 1fr), 1 row. Grid template lives in

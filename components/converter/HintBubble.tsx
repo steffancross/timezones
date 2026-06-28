@@ -28,7 +28,7 @@ export function HintBubble({
     <div
       role="status"
       className={cn(
-        'w-max max-w-[240px] rounded-[var(--radius)] border border-[color:var(--border)] bg-card',
+        'w-max max-w-[240px] rounded-[var(--radius)] border border-border bg-card',
         'px-3 py-2.5 text-[12px] leading-snug text-[color:var(--fg-muted)] shadow-md',
         className,
       )}
@@ -39,8 +39,8 @@ export function HintBubble({
           className={cn(
             'absolute size-2.5 rotate-45 bg-card',
             arrow.side === 'top'
-              ? '-top-[5px] border-l border-t border-[color:var(--border)]'
-              : '-bottom-[5px] border-b border-r border-[color:var(--border)]',
+              ? '-top-[5px] border-l border-t border-border'
+              : '-bottom-[5px] border-b border-r border-border',
             arrow.className,
           )}
         />

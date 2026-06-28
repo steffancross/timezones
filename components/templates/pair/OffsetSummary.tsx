@@ -52,7 +52,7 @@ export function OffsetSummary({ pair }: Props) {
         )}
       </p>
       <div className="mt-4 grid gap-4 md:grid-cols-2">
-        <div className="rounded-[var(--radius)] border border-[color:var(--border)] p-5">
+        <div className="rounded-[var(--radius)] border border-border bg-card p-5">
           <div className="text-4xl font-light tabular-nums">
             {absHours === 0 ? (
               'Same time'
@@ -77,7 +77,7 @@ export function OffsetSummary({ pair }: Props) {
           </p>
         </div>
 
-        <div className="rounded-[var(--radius)] border border-[color:var(--border)] p-5 text-sm">
+        <div className="rounded-[var(--radius)] border border-border bg-card p-5 text-sm">
           <p>
             <strong>{fromAbbrev}</strong>: {formatOffset(fromTime.offset)}
           </p>

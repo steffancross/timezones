@@ -39,7 +39,7 @@ export function StartRoomButton({ className, label = 'Start a new room' }: Props
         onClick={start}
         disabled={pending}
         className={cn(
-          'rounded-[var(--radius)] border border-[color:var(--border)] bg-card px-4 py-2 text-sm hover:bg-[var(--hover)] disabled:opacity-60',
+          'rounded-[var(--radius)] border border-border bg-card px-4 py-2 text-sm hover:bg-[var(--hover)] disabled:opacity-60',
           className,
         )}
       >
