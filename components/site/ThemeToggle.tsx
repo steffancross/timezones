@@ -39,7 +39,7 @@ export function ThemeToggle() {
     <div
       role="group"
       aria-label="Theme"
-      className="inline-flex h-8 items-center gap-0.5 rounded-[var(--radius)] border border-[color:var(--border)] bg-card p-0.5 "
+      className="inline-flex h-8 items-center gap-0.5 rounded-[var(--radius)] border border-border bg-card p-0.5 "
     >
       <SegmentButton active={theme === 'light'} onClick={() => apply('light')} label="Light">
         <Sun className="h-5.5 w-3.5" aria-hidden />

@@ -13,7 +13,7 @@ export function PopularPairsGrid({ cards }: { cards: PopularCard[] }) {
           <Link
             prefetch={false}
             href={`/convert/${card.slug}`}
-            className="group block rounded-lg border border-[color:var(--border)] bg-[var(--card)] px-4 py-3 transition-colors hover:border-[color:var(--border-strong)] hover:bg-[var(--hover)]"
+            className="group block rounded-lg border border-border bg-card px-4 py-3 transition-colors hover:border-[color:var(--border-strong)] hover:bg-[var(--hover)]"
           >
             <div className="flex items-center gap-1.5 text-[15px] font-semibold leading-tight text-[color:var(--fg)]">
               <span className="truncate">{card.fromName}</span>

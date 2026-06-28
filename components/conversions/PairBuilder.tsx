@@ -34,7 +34,7 @@ export function PairBuilder({ initialFrom, initialTo, curated }: Props) {
         aria-label="Swap from and to"
         className={cn(
           'group order-2 mx-auto flex size-9 items-center justify-center self-center',
-          'rounded-full border border-[color:var(--border)] bg-[var(--card)] text-[color:var(--fg-muted)]',
+          'rounded-full border border-border bg-card text-[color:var(--fg-muted)]',
           'transition-all hover:bg-[var(--hover)] hover:text-[color:var(--fg)]',
           'md:order-none',
         )}

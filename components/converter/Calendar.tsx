@@ -83,7 +83,7 @@ export function Calendar({ value, today, onSelect }: CalendarProps) {
       </div>
 
       {/* Footer */}
-      <div className="mt-2 flex justify-center border-t border-[color:var(--border)] pt-2">
+      <div className="mt-2 flex justify-center border-t border-border pt-2">
         <button
           type="button"
           onClick={handleToday}

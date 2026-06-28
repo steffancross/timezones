@@ -50,7 +50,7 @@ export function DisambiguationList({ bareSlug, qualifiedSlugs }: Props) {
             <Link
               prefetch={false}
               href={`/time-in/${c.id}`}
-              className="block rounded-[var(--radius)] border border-[color:var(--border)] bg-card p-4 hover:bg-[var(--hover)]"
+              className="block rounded-[var(--radius)] border border-border bg-card p-4 hover:bg-[var(--hover)]"
             >
               <div className="font-semibold">
                 {c.name}

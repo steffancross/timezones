@@ -51,7 +51,7 @@ export function QuickReferenceTable({ pair }: Props) {
         Full 24-hour conversion table — tap any time to open it in the converter.
       </p>
 
-      <div className="mt-4 overflow-x-auto rounded-[var(--radius)] border border-[color:var(--border)]">
+      <div className="mt-4 overflow-x-auto rounded-[var(--radius)] border border-border">
         <table className="w-full text-sm">
           <thead className="bg-[color:var(--hover)]">
             <tr>

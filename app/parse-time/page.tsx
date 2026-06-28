@@ -5,17 +5,17 @@ import { buildMetadata } from '@/lib/seo/metadata';
 import '../smart-converter.css';
 
 export const metadata = buildMetadata({
-  title: 'What Time Is This for Me? Paste & Convert + Countdown',
+  title: 'Parse Time — Paste & Convert Any Time + Countdown',
   description:
     'Paste any announcement — a drop, preorder, stream or launch — and see every time in your local zone with a live countdown. DST-aware, handles multiple events.',
-  path: '/what-time-is-this',
+  path: '/parse-time',
 });
 
 const webAppSchema = {
   '@context': 'https://schema.org',
   '@type': 'WebApplication',
-  name: 'What time is this for me?',
-  url: `${env.NEXT_PUBLIC_BASE_URL}/what-time-is-this`,
+  name: 'Parse Time',
+  url: `${env.NEXT_PUBLIC_BASE_URL}/parse-time`,
   applicationCategory: 'UtilitiesApplication',
   operatingSystem: 'Any',
   offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
@@ -23,7 +23,7 @@ const webAppSchema = {
     'Paste a time stated in someone else’s time zone and convert it to your local time with a live countdown.',
 };
 
-export default function WhatTimeIsThisPage() {
+export default function ParseTimePage() {
   return (
     <div className="mx-auto max-w-2xl px-4 py-6">
       <script
@@ -32,7 +32,7 @@ export default function WhatTimeIsThisPage() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(webAppSchema) }}
       />
 
-      <Breadcrumbs items={[{ label: 'Home', href: '/' }, { label: 'What time is this?' }]} />
+      <Breadcrumbs items={[{ label: 'Home', href: '/' }, { label: 'Parse Time' }]} />
 
       <div className="mt-3">
         <SmartConverter />

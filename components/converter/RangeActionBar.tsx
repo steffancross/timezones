@@ -242,7 +242,7 @@ function RangeTimeSelect({
       <SelectTrigger
         size="sm"
         aria-label={kind === 'start' ? 'Range start time' : 'Range end time'}
-        className="gap-1 border-[color:var(--border)] bg-[var(--input-bg)] pr-1.5 pl-2 font-mono text-[13px] font-semibold tracking-[-0.005em] text-[color:var(--fg)] hover:border-[color:var(--border-strong)]"
+        className="gap-1 border-border bg-[var(--input-bg)] pr-1.5 pl-2 font-mono text-[13px] font-semibold tracking-[-0.005em] text-[color:var(--fg)] hover:border-[color:var(--border-strong)]"
       >
         <SelectValue />
       </SelectTrigger>
@@ -293,7 +293,7 @@ function ActionBtn({
       onClick={onClick}
       aria-label={label}
       title={label}
-      className="inline-flex h-8 items-center gap-1.5 rounded-md border border-[color:var(--border)] bg-card px-2.5 max-md:size-8 max-md:justify-center max-md:gap-0 max-md:px-0 text-[12.5px] text-[color:var(--fg)] transition-colors hover:bg-[var(--hover)]"
+      className="inline-flex h-8 items-center gap-1.5 rounded-md border border-border bg-card px-2.5 max-md:size-8 max-md:justify-center max-md:gap-0 max-md:px-0 text-[12.5px] text-[color:var(--fg)] transition-colors hover:bg-[var(--hover)]"
     >
       <span className="text-[color:var(--fg-muted)]">{icon}</span>
       <span className="max-md:sr-only">{label}</span>

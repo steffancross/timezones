@@ -36,7 +36,7 @@ export function DatePicker() {
       <PopoverTrigger
         type="button"
         aria-label="Anchor date"
-        className="inline-flex h-8 items-center gap-1.5 rounded-[var(--radius)] border border-[color:var(--border)] bg-card px-2.5 font-mono text-[13px] tabular-nums text-[color:var(--fg)] outline-none transition-colors hover:bg-[var(--hover)] focus-visible:border-[color:var(--brand)] focus-visible:shadow-[0_0_0_3px_var(--brand-soft)] data-[state=open]:border-[color:var(--brand)]"
+        className="inline-flex h-8 items-center gap-1.5 rounded-[var(--radius)] border border-border bg-card px-2.5 font-mono text-[13px] tabular-nums text-[color:var(--fg)] outline-none transition-colors hover:bg-[var(--hover)] focus-visible:border-[color:var(--brand)] focus-visible:shadow-[0_0_0_3px_var(--brand-soft)] data-[state=open]:border-[color:var(--brand)]"
       >
         {label}
         <CalendarDays className="size-3.5 text-[color:var(--fg-muted)]" />

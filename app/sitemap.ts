@@ -13,7 +13,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
   const base = env.NEXT_PUBLIC_BASE_URL;
   return [
     { url: `${base}/`, changeFrequency: 'daily', priority: 1.0 },
-    { url: `${base}/what-time-is-this`, changeFrequency: 'monthly', priority: 0.9 },
+    { url: `${base}/parse-time`, changeFrequency: 'monthly', priority: 0.9 },
     { url: `${base}/cities`, changeFrequency: 'weekly', priority: 0.9 },
     { url: `${base}/timezones`, changeFrequency: 'weekly', priority: 0.9 },
     { url: `${base}/conversions`, changeFrequency: 'weekly', priority: 0.9 },

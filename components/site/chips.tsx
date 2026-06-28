@@ -19,7 +19,7 @@ export function CityChip({ city }: { city: City }) {
       <Link
         prefetch={false}
         href={`/time-in/${city.id}`}
-        className="inline-flex items-center gap-2 rounded-[var(--radius)] border border-[color:var(--border)] px-3 py-1 text-sm hover:bg-[var(--hover)]"
+        className="inline-flex items-center gap-2 rounded-[var(--radius)] border border-border bg-card px-3 py-1 text-sm hover:bg-[var(--hover)]"
       >
         <span>{city.name}</span>
         <span className="font-mono text-[10px] uppercase text-[color:var(--fg-muted)]">
@@ -47,7 +47,7 @@ export function AirportChip({
   return (
     <li
       title={title}
-      className="rounded-[var(--radius)] border border-[color:var(--border)] px-3 py-1 text-sm"
+      className="rounded-[var(--radius)] border border-border bg-card px-3 py-1 text-sm"
     >
       <span className="font-mono font-medium">{iata}</span>
       {name ? <span className="text-[color:var(--fg-muted)]"> · {trimAirport(name)}</span> : null}

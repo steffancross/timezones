@@ -47,7 +47,7 @@ export function WorkingHoursEditor() {
   }
 
   return (
-    <div className="mt-2.5 space-y-2.5 rounded-[var(--radius)] border border-[color:var(--border)] bg-[var(--surface-2,var(--card))] p-2.5">
+    <div className="mt-2.5 space-y-2.5 rounded-[var(--radius)] border border-border bg-[var(--surface-2,var(--card))] p-2.5">
       <div className="flex items-center gap-2 text-[12px]">
         <span className="w-9 text-[color:var(--fg-muted)]">Hours</span>
         <HourSelect value={wh.start} onChange={setStart} max={wh.end - 1} format={format} />
@@ -71,7 +71,7 @@ export function WorkingHoursEditor() {
                   'h-6 flex-1 rounded-[3px] border font-mono text-[11px] transition-colors',
                   on
                     ? 'border-[color:var(--brand)] bg-[var(--brand)] text-[color:var(--brand-fg)]'
-                    : 'border-[color:var(--border)] bg-card text-[color:var(--fg-muted)] hover:text-[color:var(--fg)]',
+                    : 'border-border bg-card text-[color:var(--fg-muted)] hover:text-[color:var(--fg)]',
                 )}
               >
                 {d.name}
@@ -105,7 +105,7 @@ function HourSelect({
     <select
       value={value}
       onChange={(e) => onChange(Number.parseInt(e.target.value, 10))}
-      className="h-7 flex-1 rounded-[var(--radius)] border border-[color:var(--border)] bg-card px-1.5 font-mono text-[12px]"
+      className="h-7 flex-1 rounded-[var(--radius)] border border-border bg-card px-1.5 font-mono text-[12px]"
     >
       {Array.from({ length: 24 }, (_, h) => h)
         .filter((h) => h >= min && h <= max)

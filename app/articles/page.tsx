@@ -30,7 +30,7 @@ export default async function ArticlesIndex() {
             <Link
               prefetch={false}
               href={`/articles/${a.slug}`}
-              className="block rounded-md border border-border p-4 hover:bg-accent"
+              className="block rounded-md border border-border bg-card p-4 hover:bg-accent"
             >
               <div className="font-semibold">{a.frontmatter.title}</div>
               <div className="mt-1 text-sm text-muted-foreground">

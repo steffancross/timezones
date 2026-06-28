@@ -27,7 +27,7 @@ export function ConvertFromZone({ zone }: { zone: Zone }) {
             <Link
               prefetch={false}
               href={`/convert/${zone.id}-to-${dest.id}`}
-              className="flex items-center justify-between gap-2 rounded-[var(--radius)] border border-[color:var(--border)] px-3 py-2 text-sm hover:bg-[var(--hover)]"
+              className="flex items-center justify-between gap-2 rounded-[var(--radius)] border border-border bg-card px-3 py-2 text-sm hover:bg-[var(--hover)]"
             >
               <span>{dest.display_name}</span>
               <span className="shrink-0 font-mono text-[10px] text-[color:var(--fg-muted)]">

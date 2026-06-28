@@ -1,14 +1,11 @@
 import Link from 'next/link';
 import env from '@/lib/env';
+import { NavMore } from './NavMore';
 import { ThemeToggle } from './ThemeToggle';
 
 const navLinks = [
-  { href: '/what-time-is-this', label: 'Paste a Time' },
+  { href: '/parse-time', label: 'Parse Time' },
   { href: '/conversions', label: 'Conversions' },
-  { href: '/cities', label: 'Cities' },
-  { href: '/timezones', label: 'Timezones' },
-  { href: '/dst', label: 'DST' },
-  { href: '/articles', label: 'Articles' },
   { href: '/availability-room', label: 'Rooms' },
 ];
 
@@ -31,6 +28,7 @@ export function Header() {
                 {link.label}
               </Link>
             ))}
+            <NavMore />
           </nav>
           <ThemeToggle />
         </div>

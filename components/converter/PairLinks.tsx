@@ -54,7 +54,7 @@ export function PairLinks() {
               <Link
                 prefetch={false}
                 href={`/convert/${slug}`}
-                className="inline-flex items-center rounded-[var(--radius)] border border-[color:var(--border)] bg-card px-2.5 py-1 text-[13px] text-[color:var(--fg)] transition-colors hover:bg-[var(--hover)]"
+                className="inline-flex items-center rounded-[var(--radius)] border border-border bg-card px-2.5 py-1 text-[13px] text-[color:var(--fg)] transition-colors hover:bg-[var(--hover)]"
               >
                 {home.label} → {other.label}
               </Link>

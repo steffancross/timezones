@@ -14,7 +14,7 @@ interface Props {
 
 export function RegionPills({ value, onChange }: Props) {
   return (
-    <fieldset className="flex flex-wrap items-center gap-1 rounded-full border border-[color:var(--border)] bg-[var(--card)] p-1">
+    <fieldset className="flex flex-wrap items-center gap-1 rounded-full border border-border bg-card p-1">
       <legend className="sr-only">Filter by region</legend>
       {OPTIONS.map((opt) => {
         const active = opt === value;
