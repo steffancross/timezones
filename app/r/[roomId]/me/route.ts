@@ -4,7 +4,12 @@
 
 import { getCloudflareContext } from '@opennextjs/cloudflare';
 import { clearSecretCookie, readSecretCookie } from '@/lib/rooms/cookies';
-import { isSecureRequest, mapWriteError, readJsonBody, requireJsonContentType } from '@/lib/rooms/handler-utils';
+import {
+  isSecureRequest,
+  mapWriteError,
+  readJsonBody,
+  requireJsonContentType,
+} from '@/lib/rooms/handler-utils';
 import { deleteParticipant, resolveMe, updateIdentity } from '@/lib/rooms/identity';
 
 export const dynamic = 'force-dynamic';

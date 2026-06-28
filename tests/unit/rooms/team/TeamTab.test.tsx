@@ -40,9 +40,7 @@ describe('TeamTab — deselect recomputes the aggregate', () => {
     const { container } = await renderTeam();
     expect(container.textContent).toContain('4 of 5'); // 4 responders counted, Priya unresponded
 
-    const remove = container.querySelector<HTMLElement>('[aria-label="Remove Sam"]');
-    if (!remove) throw new Error('Sam toggle not found');
-    await page.elementLocator(remove).click();
+    await page.getByRole('button', { name: 'Remove Sam' }).click();
 
     expect(cell(container, 2, 18)?.getAttribute('data-grade')).toBe('all'); // Sam's "if needed" gone
     expect(container.textContent).toContain('3 of 5');
@@ -81,8 +79,8 @@ describe('TeamTab — fold expand persists across recompute', () => {
     expect(cell(container, 1, 0)).not.toBeNull(); // now expanded
 
     // Recompute via a selection change; the expanded fold stays open.
-    const remove = container.querySelector<HTMLElement>('[aria-label="Remove Sam"]');
-    if (remove) await page.elementLocator(remove).click();
+    const removeLoc = page.getByRole('button', { name: 'Remove Sam' });
+    if (removeLoc.query() !== null) await removeLoc.click();
     expect(cell(container, 1, 0)).not.toBeNull();
   });
 });

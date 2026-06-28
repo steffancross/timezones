@@ -199,10 +199,7 @@ function DestinationsPane({
   }
 
   return (
-    <div
-      className="rounded-lg border border-border bg-card"
-      style={{ minHeight: '480px' }}
-    >
+    <div className="rounded-lg border border-border bg-card" style={{ minHeight: '480px' }}>
       <DestinationsHeader source={source} count={destinations.length} />
       {destinations.length === 0 ? (
         <div className="flex min-h-[360px] items-center justify-center">

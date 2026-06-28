@@ -28,7 +28,11 @@ function makeWeek(
   return slots.join('');
 }
 
-const MON = 1, TUE = 2, WED = 3, THU = 4, FRI = 5;
+const MON = 1,
+  TUE = 2,
+  WED = 3,
+  THU = 4,
+  FRI = 5;
 const WORKDAYS = [MON, TUE, WED, THU, FRI];
 
 function participant(
@@ -37,7 +41,15 @@ function participant(
   timezone: string,
   generalWeek: string,
 ): PublicParticipant {
-  return { id, displayName, timezone, generalWeek, overrides: {}, hasResponded: true, hasPassword: false };
+  return {
+    id,
+    displayName,
+    timezone,
+    generalWeek,
+    overrides: {},
+    hasResponded: true,
+    hasPassword: false,
+  };
 }
 
 // Alex — New York. Core hours 9–5.

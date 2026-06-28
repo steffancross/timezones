@@ -173,7 +173,9 @@ export function Footer() {
             (CC BY 4.0). Time zone rules from the IANA Time Zone Database.
           </p>
           <div className="mt-2 flex items-center justify-between">
-            <p>© {new Date().getFullYear()} {env.NEXT_PUBLIC_SITE_NAME}</p>
+            <p>
+              © {new Date().getFullYear()} {env.NEXT_PUBLIC_SITE_NAME}
+            </p>
             <div className="flex gap-4">
               <Link prefetch={false} href="/privacy" className="hover:text-foreground">
                 Privacy

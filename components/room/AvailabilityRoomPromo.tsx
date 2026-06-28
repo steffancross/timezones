@@ -38,8 +38,8 @@ export function AvailabilityRoomPromo() {
           Need a time that works for the whole group?
         </h2>
         <p className="mb-5 max-w-[46ch] text-[14.5px] leading-relaxed text-[color:var(--fg-muted)]">
-          Converting one zone to another only gets you so far. Spin up a Room, share
-          one link, and everyone paints when they&apos;re free.
+          Converting one zone to another only gets you so far. Spin up a Room, share one link, and
+          everyone paints when they&apos;re free.
         </p>
         <div className="flex flex-wrap items-center gap-3">
           <Link
