@@ -40,12 +40,7 @@ export default async function ExampleRoomPage() {
   };
 
   return (
-    <RoomDataProvider
-      state={demoRoom}
-      youId={DEMO_YOU_ID}
-      viewerTz={viewerTz}
-      demo={true}
-    >
+    <RoomDataProvider state={demoRoom} youId={DEMO_YOU_ID} viewerTz={viewerTz} demo={true}>
       <RoomShell />
     </RoomDataProvider>
   );

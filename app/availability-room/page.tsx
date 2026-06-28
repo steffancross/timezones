@@ -89,9 +89,9 @@ export default function AvailabilityRoomPage() {
             works for everyone.
           </h1>
           <p className="lede">
-            A converter tells you what time it is over there. A <strong> Room</strong>{' '}
-            tells you when your whole group is actually free. Paint your week, share one link, and
-            watch the overlap appear.
+            A converter tells you what time it is over there. A <strong> Room</strong> tells you
+            when your whole group is actually free. Paint your week, share one link, and watch the
+            overlap appear.
           </p>
           <div className="hero-actions">
             <Link
@@ -177,7 +177,6 @@ export default function AvailabilityRoomPage() {
             <h3>Create a room</h3>
             <p>
               Name it and set your home zone. You get a link to share — that&apos;s the whole setup.
-              Add a password if you&apos;ll want to edit from another device.
             </p>
           </div>
           <div className="ar-step">
@@ -224,9 +223,7 @@ export default function AvailabilityRoomPage() {
               </svg>
             </span>
             <h3>Paint, don&apos;t poll</h3>
-            <p>
-              Drag across a continuous half-hour grid to mark free, if needed, and busy. 
-            </p>
+            <p>Drag across a continuous half-hour grid to mark free, if needed, and busy.</p>
           </div>
           <div className="ar-feature">
             <span className="ficon" aria-hidden="true">
@@ -297,10 +294,10 @@ export default function AvailabilityRoomPage() {
                 <h3>Consensus or heatmap</h3>
               </div>
               <p>
-                <strong>Consensus</strong>{' '}is strict: a slot only turns green when everyone can
-                make it, yellow when all are in but some are &ldquo;if needed,&rdquo; and stays
-                blank if anyone&apos;s out. <strong>Heatmap</strong>{' '}relaxes that into a
-                when2meet-style gradient.
+                <strong>Consensus</strong> is strict: a slot only turns green when everyone can make
+                it, yellow when all are in but some are &ldquo;if needed,&rdquo; and stays blank if
+                anyone&apos;s out. <strong>Heatmap</strong> relaxes that into a when2meet-style
+                gradient.
               </p>
             </div>
             <div className="ar-vc-visual" aria-hidden="true">
@@ -390,8 +387,8 @@ export default function AvailabilityRoomPage() {
                     <span>12p</span>
                     <span>5p</span>
                   </div>
+                  <div className="vlabel">Day · Thu Jun 11</div>
                 </div>
-                <div className="vlabel">Day · Thu Jun 11</div>
               </div>
             </div>
           </div>
@@ -405,8 +402,7 @@ export default function AvailabilityRoomPage() {
               <p>
                 Paint a <strong>general week</strong> once and it becomes your default every week.
                 When a particular week is different, switch to <strong>this week</strong> and
-                override just those days. A single tap resets any week back to your general
-                pattern.
+                override just those days. A single tap resets any week back to your general pattern.
               </p>
             </div>
             <div className="ar-vc-visual" aria-hidden="true">

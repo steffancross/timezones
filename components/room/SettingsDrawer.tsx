@@ -196,7 +196,10 @@ export function SettingsDrawer({
           <section className="flex flex-col gap-3 border-t pt-4">
             <button
               type="button"
-              onClick={() => { onSwitchPerson?.(); onOpenChange(false); }}
+              onClick={() => {
+                onSwitchPerson?.();
+                onOpenChange(false);
+              }}
               className="self-start text-sm text-muted-foreground hover:text-foreground"
             >
               Switch person
@@ -213,13 +216,13 @@ export function SettingsDrawer({
             ) : (
               <div className="flex flex-col gap-2 rounded-md border border-destructive/30 bg-destructive/5 p-3">
                 <p className="text-[12px] text-muted-foreground">
-                  This permanently removes your name and all your availability from this room.
-                  This cannot be undone.
+                  This permanently removes your name and all your availability from this room. This
+                  cannot be undone.
                 </p>
                 <Input
                   value={leaveConfirm}
                   onChange={(e) => setLeaveConfirm(e.target.value)}
-                  placeholder='type LEAVE to confirm'
+                  placeholder="type LEAVE to confirm"
                   autoComplete="off"
                   data-bwignore="true"
                   disabled={leavePhase === 'pending'}
@@ -246,7 +249,10 @@ export function SettingsDrawer({
                   </Button>
                   <button
                     type="button"
-                    onClick={() => { setLeavePhase('idle'); setLeaveConfirm(''); }}
+                    onClick={() => {
+                      setLeavePhase('idle');
+                      setLeaveConfirm('');
+                    }}
                     className="text-sm text-muted-foreground hover:text-foreground"
                   >
                     Cancel

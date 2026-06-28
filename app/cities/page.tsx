@@ -1,9 +1,9 @@
-import Link from 'next/link';
 import { CitiesSearch, type PopularCity } from '@/components/cities/CitiesSearch';
 import { Breadcrumbs } from '@/components/site/Breadcrumbs';
 import { getAllCities } from '@/lib/cities/resolve';
 import type { City } from '@/lib/cities/types';
 import { buildMetadata } from '@/lib/seo/metadata';
+import Link from 'next/link';
 
 export const metadata = buildMetadata({
   title: 'Cities',
@@ -86,7 +86,8 @@ function groupByRegion(cities: readonly City[]): [string, City[]][] {
     if (!groups[region]) groups[region] = [];
     groups[region].push(c);
   }
-  return REGION_ORDER.filter((r) => groups[r]).map((r) => [r, groups[r]]);
+  // biome-ignore lint/style/noNonNullAssertion: we know groups has all the regions
+  return REGION_ORDER.filter((r) => groups[r]).map((r) => [r, groups[r]!]);
 }
 
 export default function CitiesIndex() {

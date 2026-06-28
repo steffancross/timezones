@@ -329,7 +329,9 @@ export async function claim(
   // secret_hash is NOT NULL so we replace with a throwaway hash nobody has a cookie for.
   const orphanHash = await sha256Base64url(generateSecret());
   await db
-    .prepare('UPDATE participants SET secret_hash = ? WHERE room_id = ? AND secret_hash = ? AND id != ?')
+    .prepare(
+      'UPDATE participants SET secret_hash = ? WHERE room_id = ? AND secret_hash = ? AND id != ?',
+    )
     .bind(orphanHash, roomId, secretHash, participantId)
     .run();
   await db

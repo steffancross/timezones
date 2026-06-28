@@ -64,7 +64,10 @@ export function RoomTop() {
             roomName={state.room.name}
             onIdentitySaved={applyMyIdentity}
             onRoomRenamed={setRoomName}
-            onSwitchPerson={() => { setSettingsOpen(false); setRecoveryOpen(true); }}
+            onSwitchPerson={() => {
+              setSettingsOpen(false);
+              setRecoveryOpen(true);
+            }}
           />
           <RecoveryPicker
             open={recoveryOpen}
