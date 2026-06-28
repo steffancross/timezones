@@ -165,7 +165,7 @@ export function AvailabilityTab() {
   }
 
   return (
-    <div className="flex flex-col p-4">
+    <div className="flex flex-col p-4 max-md:pb-28">
       <div className="mb-3 flex items-center gap-3">
         <div>
           <div className="text-sm font-semibold">
@@ -240,7 +240,9 @@ export function AvailabilityTab() {
         />
       )}
 
-      <div className="mt-3">
+      {/* Desktop: inline below the grid. Mobile: a fixed bottom action bar that
+          sits just above the bottom tab nav. */}
+      <div className="mt-3 max-md:fixed max-md:inset-x-0 max-md:bottom-14 max-md:z-40 max-md:mt-0 max-md:border-t max-md:border-border max-md:bg-[hsl(var(--card))] max-md:p-3">
         <PaintPalette active={paint} onChange={setPaint} />
       </div>
     </div>

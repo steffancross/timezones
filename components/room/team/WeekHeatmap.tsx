@@ -41,6 +41,8 @@ interface Props {
   // Hover-driven breakdown is a group-view affordance; solo passes neither.
   hover?: HoverCell;
   onHover?: (hover: HoverCell) => void;
+  // Touch: tapping a cell opens the breakdown sheet (no hover on a phone).
+  onCellTap?: (cell: { day: number; slot: number }) => void;
   variant?: 'group' | 'solo';
 }
 
@@ -53,6 +55,7 @@ export function WeekHeatmap({
   onExpandFold,
   hover = null,
   onHover,
+  onCellTap,
   variant = 'group',
 }: Props) {
   return (
@@ -116,6 +119,8 @@ export function WeekHeatmap({
                   const isHover = hover?.day === c && hover?.slot === k;
                   const hourBoundary = k % 2 === 1; // bottom of a :30 row = top of the hour
                   return (
+                    // biome-ignore lint/a11y/noStaticElementInteractions: tap-to-open-breakdown; full keyboard grid operability is the 7d a11y pass
+                    // biome-ignore lint/a11y/useKeyWithClickEvents: ARIA grid roles + roving-tabindex/arrow nav land in the 7d a11y pass
                     <div
                       key={`${c}-${k}`}
                       data-grade={grade}
@@ -123,6 +128,7 @@ export function WeekHeatmap({
                       data-day={c}
                       data-slot={k}
                       onPointerEnter={onHover ? () => onHover({ day: c, slot: k }) : undefined}
+                      onClick={onCellTap ? () => onCellTap({ day: c, slot: k }) : undefined}
                       className={cn(
                         'border-r border-b border-[color:var(--border)]/50',
                         hourBoundary && 'border-b-[color:var(--border)]',
