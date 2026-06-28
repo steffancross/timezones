@@ -14,6 +14,7 @@ import { useRoomStore } from './room-store-context';
 export function RoomTop() {
   const state = useRoomStore((s) => s.state);
   const youId = useRoomStore((s) => s.youId);
+  const demo = useRoomStore((s) => s.demo);
   const applyMyIdentity = useRoomStore((s) => s.applyMyIdentity);
   const setRoomName = useRoomStore((s) => s.setRoomName);
   const [settingsOpen, setSettingsOpen] = useState(false);
@@ -34,9 +35,15 @@ export function RoomTop() {
 
       <span className="flex-1" />
 
-      <ShareRoomButton />
+      {demo && (
+        <span className="rounded-full border border-border px-2 py-0.5 font-mono text-[10px] uppercase tracking-wide text-muted-foreground">
+          Demo
+        </span>
+      )}
 
-      {you && (
+      {!demo && <ShareRoomButton />}
+
+      {you && !demo && (
         <>
           <Button
             variant="ghost"

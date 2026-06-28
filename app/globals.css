@@ -54,6 +54,12 @@
    shadcn's "--primary" and design's "--brand" intentionally point at the same
    color, so the two systems agree where they meet. */
 @layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+}
+
+@layer base {
   :root {
     /* shadcn surface tokens (HSL) */
     --background: 48 14% 98%;
@@ -151,6 +157,11 @@
       var(--av-soft-line) 3px,
       var(--av-soft-line) 4.4px
     );
+
+    /* Availability Room promo/landing aliases — re-resolve via var() at runtime
+       so the dark-mode overrides of --av-yes-strong / --av-yes-ink apply. */
+    --avr-yes: var(--av-yes-strong);
+    --avr-ink: var(--av-yes-ink);
   }
 
   [data-theme="dark"] {
@@ -260,6 +271,115 @@
     outline: 2px solid hsl(var(--ring));
     outline-offset: 2px;
   }
+}
+
+/* === Availability Room mini heatmap widget ===
+   Used by AvailabilityRoomPromo (home page) and the /availability-room landing page.
+   Must live in globals.css (not page-scoped) because it's rendered on the home page. */
+.avr-hm {
+  --avr-row: 11px;
+}
+.avr-hm.sm {
+  --avr-row: 8px;
+}
+.avr-hm .hm-head {
+  display: flex;
+  margin-bottom: 6px;
+}
+.avr-hm .hm-corner {
+  width: 34px;
+  flex-shrink: 0;
+}
+.avr-hm .hm-days {
+  flex: 1;
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+}
+.avr-hm .hm-days .d {
+  text-align: center;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--fg-muted);
+  line-height: 1.25;
+}
+.avr-hm.sm .hm-days .d {
+  font-size: 8.5px;
+}
+.avr-hm .hm-days .d .dn {
+  display: block;
+  font-size: 9px;
+  color: var(--fg-subtle);
+  font-weight: 500;
+}
+.avr-hm.sm .hm-days .d .dn {
+  font-size: 7.5px;
+}
+.avr-hm .hm-days .d.wknd {
+  color: oklch(0.58 0.1 35);
+}
+[data-theme="dark"] .avr-hm .hm-days .d.wknd {
+  color: oklch(0.74 0.11 35);
+}
+.avr-hm .hm-body {
+  display: flex;
+}
+.avr-hm .hm-times {
+  width: 34px;
+  flex-shrink: 0;
+  position: relative;
+}
+.avr-hm .hm-times .t {
+  position: absolute;
+  right: 7px;
+  transform: translateY(-50%);
+  font-family: var(--font-mono);
+  font-size: 9.5px;
+  color: var(--fg-subtle);
+}
+.avr-hm.sm .hm-times .t {
+  font-size: 8px;
+  right: 5px;
+}
+.avr-hm .hm-cells {
+  flex: 1;
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  grid-auto-rows: var(--avr-row);
+  border-top: 1px solid hsl(var(--border));
+  border-left: 1px solid hsl(var(--border));
+}
+.avr-hm .hc {
+  border-right: 1px solid hsl(var(--border));
+  border-bottom: 1px dotted color-mix(in oklab, hsl(var(--border)) 65%, transparent);
+  background: hsl(var(--card));
+}
+.avr-hm .hc.hour-line {
+  border-bottom: 1px solid hsl(var(--border));
+}
+.avr-hm .hc.s-all {
+  background: var(--av-yes-strong);
+}
+.avr-hm .hc.s-some {
+  background: var(--av-soft-fill);
+}
+.avr-hm .hc.s-none {
+  background: hsl(var(--card));
+}
+.avr-hm .hc.lvl-1 {
+  background: var(--hm-l1);
+}
+.avr-hm .hc.lvl-2 {
+  background: var(--hm-l2);
+}
+.avr-hm .hc.lvl-3 {
+  background: var(--hm-l3);
+}
+.avr-hm .hc.lvl-4 {
+  background: var(--hm-l4);
+}
+.avr-hm .hc.lvl-5 {
+  background: var(--hm-l5);
 }
 
 /* === Utilities === */

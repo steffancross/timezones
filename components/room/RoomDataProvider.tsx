@@ -20,6 +20,8 @@ interface Props {
   initialWeekAnchor?: string;
   /** Pin `now` (ms) and suppress the live minute tick — for deterministic tests/SSR. */
   now?: number;
+  /** Demo mode: all API writes are no-ops; changes live in memory only. */
+  demo?: boolean;
   children: React.ReactNode;
 }
 
@@ -29,6 +31,7 @@ export function RoomDataProvider({
   viewerTz,
   initialWeekAnchor,
   now: pinnedNow,
+  demo = false,
   children,
 }: Props) {
   const seedNow = pinnedNow ?? Date.now();
@@ -45,6 +48,7 @@ export function RoomDataProvider({
       weekAnchor: initialWeekAnchor ?? currentWeekAnchor(viewerTz, seedNow),
       now: seedNow,
       colorMode,
+      demo,
     });
   }
   const store = storeRef.current;

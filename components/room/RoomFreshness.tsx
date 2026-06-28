@@ -20,6 +20,7 @@ export function RoomFreshness() {
 
   const refetch = useCallback(
     async (force = false) => {
+      if (api.getState().demo) return;
       if (inFlight.current) return;
       const now = Date.now();
       if (!force && now - lastFetch.current < MIN_REFETCH_MS) return;

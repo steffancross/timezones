@@ -24,7 +24,7 @@ export function Footer() {
   return (
     <footer className="border-t border-border bg-secondary/30">
       <div className="mx-auto max-w-6xl px-4 py-10">
-        <div className="grid grid-cols-1 gap-8 md:grid-cols-4">
+        <div className="grid grid-cols-1 gap-8 md:grid-cols-5">
           <div>
             <h3 className="mb-3 text-sm font-semibold">Popular conversions</h3>
             <ul className="space-y-1.5 text-sm">
@@ -114,6 +114,30 @@ export function Footer() {
                   className="text-muted-foreground hover:text-foreground"
                 >
                   Articles
+                </Link>
+              </li>
+            </ul>
+          </div>
+
+          <div>
+            <h3 className="mb-3 text-sm font-semibold">Plan</h3>
+            <ul className="space-y-1.5 text-sm">
+              <li>
+                <Link
+                  prefetch={false}
+                  href="/availability-room"
+                  className="text-muted-foreground hover:text-foreground"
+                >
+                  Rooms
+                </Link>
+              </li>
+              <li>
+                <Link
+                  prefetch={false}
+                  href="/availability-room#create"
+                  className="text-muted-foreground hover:text-foreground"
+                >
+                  Create a room
                 </Link>
               </li>
             </ul>

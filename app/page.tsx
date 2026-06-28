@@ -1,6 +1,7 @@
 import { Converter } from '@/components/converter/Converter';
 import { ConverterStateProvider } from '@/components/converter/ConverterStateProvider';
 import { PairLinks } from '@/components/converter/PairLinks';
+import { AvailabilityRoomPromo } from '@/components/room/AvailabilityRoomPromo';
 import { WebsiteSchema } from '@/components/site/WebsiteSchema';
 import { buildMetadata } from '@/lib/seo/metadata';
 import { parseSearchParams, urlToState } from '@/lib/store/from-url';
@@ -83,6 +84,8 @@ export default async function HomePage({
             </ol>
           </section>
         </article>
+
+        <AvailabilityRoomPromo />
       </ConverterStateProvider>
     </div>
   );
