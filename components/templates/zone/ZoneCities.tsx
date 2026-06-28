@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import { getCitiesForZone } from '@/lib/zones/resolve';
 import type { Zone } from '@/lib/zones/types';
-import { CityChip } from './chips';
+import { CityChip } from '@/components/site/chips';
 
 /** How many cities to surface as chips before pointing at the full directory. */
 const MAX_CITIES = 30;

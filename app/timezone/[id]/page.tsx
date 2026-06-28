@@ -1,6 +1,6 @@
 import { notFound } from 'next/navigation';
 import { getAllZoneSlugs, zones } from '@/data/zones';
-import { ZoneShell } from '@/components/templates/ZoneShell';
+import { ZoneShell } from '@/components/templates/zone/ZoneShell';
 import { getZoneDescription } from '@/lib/zones/descriptions';
 import { formatUtcOffset } from '@/lib/zones/offset';
 import { buildMetadata } from '@/lib/seo/metadata';

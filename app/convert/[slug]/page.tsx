@@ -4,7 +4,7 @@ import { notFound } from 'next/navigation';
 import { Converter } from '@/components/converter/Converter';
 import { ConverterStateProvider } from '@/components/converter/ConverterStateProvider';
 import { Breadcrumbs } from '@/components/site/Breadcrumbs';
-import { PairContent } from '@/components/templates/PairContent';
+import { PairContent } from '@/components/templates/pair/PairContent';
 import { buildMetadata } from '@/lib/seo/metadata';
 import { buildPairDescription, buildPairTitle } from '@/lib/seo/pair-copy';
 import { getCuratedPairSlugs } from '@/lib/sitemap/pair-slugs';

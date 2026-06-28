@@ -1,7 +1,7 @@
 import { getCitiesByIana } from '@/lib/cities/resolve';
 import type { ParsedPair, ZoneOrCity } from '@/lib/slugs/parse';
 import { zoneDisplayNameForIana } from '@/lib/zones/resolve';
-import { AirportChip } from './chips';
+import { AirportChip } from '@/components/site/chips';
 
 interface Props {
   pair: ParsedPair;
