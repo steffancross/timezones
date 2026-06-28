@@ -8,7 +8,7 @@
 // none) — the multi-room-same-device guarantee lives in that WHERE clause.
 
 import { MAX_PARTICIPANTS_PER_ROOM } from './config';
-import { hashPassword, sha256Base64url, verifyPassword } from './crypto';
+import { generateSecret, hashPassword, sha256Base64url, verifyPassword } from './crypto';
 import type { PublicParticipant } from './db';
 import { generateParticipantId } from './id';
 import type { RateLimiter } from './rate-limit';
@@ -324,9 +324,36 @@ export async function claim(
   }
 
   const secretHash = await sha256Base64url(newSecret);
+  // Orphan any other participant in this room that already holds this secret —
+  // happens when the same device mis-claims one slot then claims another.
+  // secret_hash is NOT NULL so we replace with a throwaway hash nobody has a cookie for.
+  const orphanHash = await sha256Base64url(generateSecret());
+  await db
+    .prepare('UPDATE participants SET secret_hash = ? WHERE room_id = ? AND secret_hash = ? AND id != ?')
+    .bind(orphanHash, roomId, secretHash, participantId)
+    .run();
   await db
     .prepare('UPDATE participants SET secret_hash = ?, last_seen_at = ? WHERE id = ?')
     .bind(secretHash, now, row.id)
     .run();
   return { youId: row.id };
+}
+
+// --- leave room (participant deletes their own row) -------------------------
+
+/**
+ * Permanently remove a participant and all their availability data. The cookie
+ * is cleared by the route handler after this returns. Throws
+ * ParticipantNotFoundError if the row is already gone.
+ */
+export async function deleteParticipant(
+  db: D1Database,
+  roomId: string,
+  participantId: string,
+): Promise<void> {
+  const result = await db
+    .prepare('DELETE FROM participants WHERE id = ? AND room_id = ?')
+    .bind(participantId, roomId)
+    .run();
+  if (!result.meta.changes) throw new ParticipantNotFoundError();
 }

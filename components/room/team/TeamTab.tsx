@@ -6,6 +6,7 @@
 // already-memoized from the room-data provider, so hover never re-projects.
 
 import { Popover, PopoverAnchor, PopoverContent } from '@/components/ui/popover';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { useIsMobile } from '@/lib/hooks/use-is-mobile';
 import {
   buildIcs,
@@ -29,7 +30,6 @@ import { useMemo, useState } from 'react';
 import { JustYouSoFar } from '../JustYouSoFar';
 import { RespondersNote } from '../RespondersNote';
 import { useRoomStore } from '../room-store-context';
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { RoomGetStarted } from '../RoomGetStarted';
 import { BreakdownSheet } from './BreakdownSheet';
 import { DayView } from './DayView';
@@ -265,10 +265,15 @@ export function TeamTab({ onAddAvailability }: { onAddAvailability?: () => void 
                 type="button"
                 aria-label="Previous day"
                 onClick={() => {
-                  setDayIndex((i) => Math.max(0, i - 1));
+                  if (dayIndex > 0) {
+                    setDayIndex((i) => i - 1);
+                  } else {
+                    pageWeek(-1);
+                    setDayIndex(6);
+                  }
                   setDayHoverSlot(null);
                 }}
-                disabled={dayIndex === 0}
+                disabled={dayIndex === 0 && !canPrev}
                 className="inline-flex size-7 items-center justify-center rounded text-muted-foreground hover:bg-[var(--hover)] disabled:opacity-40"
               >
                 <ChevronLeft className="size-4" />
@@ -282,11 +287,15 @@ export function TeamTab({ onAddAvailability }: { onAddAvailability?: () => void 
                 type="button"
                 aria-label="Next day"
                 onClick={() => {
-                  setDayIndex((i) => Math.min(6, i + 1));
+                  if (dayIndex < 6) {
+                    setDayIndex((i) => i + 1);
+                  } else {
+                    pageWeek(1);
+                    setDayIndex(0);
+                  }
                   setDayHoverSlot(null);
                 }}
-                disabled={dayIndex === 6}
-                className="inline-flex size-7 items-center justify-center rounded text-muted-foreground hover:bg-[var(--hover)] disabled:opacity-40"
+                className="inline-flex size-7 items-center justify-center rounded text-muted-foreground hover:bg-[var(--hover)]"
               >
                 <ChevronRight className="size-4" />
               </button>
