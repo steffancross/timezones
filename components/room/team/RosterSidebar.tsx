@@ -54,7 +54,7 @@ export function RosterSidebar({ hover, columns, onMemberHover, hoveredMemberId }
   const countedTotal = respondedSelected.length;
   const anyUnresponded = members.some((m) => !m.hasResponded);
 
-  const hoverDayLabel = hover ? columns[hover.day]?.label ?? '' : '';
+  const hoverDayLabel = hover ? (columns[hover.day]?.label ?? '') : '';
   const hoverPillLabel = hover ? `${hoverDayLabel} · ${slotLabel(hover.slot)}` : ' ';
   const hoverCountLabel = hover
     ? colorMode === 'heatmap'
@@ -63,7 +63,7 @@ export function RosterSidebar({ hover, columns, onMemberHover, hoveredMemberId }
     : ' ';
 
   return (
-    <aside className="flex w-60 shrink-0 flex-col gap-1 border-l border-border p-3 text-sm">
+    <aside className="sticky top-0 flex w-60 shrink-0 self-start flex-col gap-1 border-l border-border p-3 text-sm">
       <div className="mb-2 flex items-baseline justify-between">
         <span className="text-[13px] font-semibold tracking-tight">
           {hover ? 'At this time' : 'Counting'}

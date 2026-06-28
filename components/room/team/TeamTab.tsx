@@ -29,6 +29,7 @@ import { useMemo, useState } from 'react';
 import { JustYouSoFar } from '../JustYouSoFar';
 import { RespondersNote } from '../RespondersNote';
 import { useRoomStore } from '../room-store-context';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { RoomGetStarted } from '../RoomGetStarted';
 import { BreakdownSheet } from './BreakdownSheet';
 import { DayView } from './DayView';
@@ -85,7 +86,8 @@ export function TeamTab({ onAddAvailability }: { onAddAvailability?: () => void 
 
   const columns = useMemo(() => buildWeekColumns(weekAnchor), [weekAnchor]);
   const segments = useMemo(() => rowSegments(grid.grade), [grid]);
-  const allFolded = colorMode === 'consensus' && compressed && segments.length === 1 && !!segments[0]?.fold;
+  const allFolded =
+    colorMode === 'consensus' && compressed && segments.length === 1 && !!segments[0]?.fold;
 
   const heatmapLevels = useMemo(() => {
     if (colorMode !== 'heatmap') return null;
@@ -232,116 +234,135 @@ export function TeamTab({ onAddAvailability }: { onAddAvailability?: () => void 
   return (
     <div className="flex flex-col p-4">
       {/* header */}
-      <div className="mb-3 flex items-center gap-2">
-        {zoom === 'week' && (
-          <>
-            <button
-              type="button"
-              aria-label="Previous week"
-              onClick={() => pageWeek(-1)}
-              disabled={!canPrev}
-              className="inline-flex size-7 items-center justify-center rounded text-muted-foreground hover:bg-[var(--hover)] disabled:opacity-40"
-            >
-              <ChevronLeft className="size-4" />
-            </button>
-            <span className="text-sm font-semibold tracking-tight">{weekLabel(weekAnchor)}</span>
-            <button
-              type="button"
-              aria-label="Next week"
-              onClick={() => pageWeek(1)}
-              className="inline-flex size-7 items-center justify-center rounded text-muted-foreground hover:bg-[var(--hover)]"
-            >
-              <ChevronRight className="size-4" />
-            </button>
-          </>
-        )}
-        {zoom === 'day' && (
-          <>
-            <button
-              type="button"
-              aria-label="Previous day"
-              onClick={() => {
-                setDayIndex((i) => Math.max(0, i - 1));
-                setDayHoverSlot(null);
-              }}
-              disabled={dayIndex === 0}
-              className="inline-flex size-7 items-center justify-center rounded text-muted-foreground hover:bg-[var(--hover)] disabled:opacity-40"
-            >
-              <ChevronLeft className="size-4" />
-            </button>
-            <span className="text-sm font-semibold tracking-tight">
-              {columns[dayIndex]
-                ? `${columns[dayIndex].label} · ${DateTime.fromISO(columns[dayIndex].iso).toFormat('MMM d')}`
-                : ''}
-            </span>
-            <button
-              type="button"
-              aria-label="Next day"
-              onClick={() => {
-                setDayIndex((i) => Math.min(6, i + 1));
-                setDayHoverSlot(null);
-              }}
-              disabled={dayIndex === 6}
-              className="inline-flex size-7 items-center justify-center rounded text-muted-foreground hover:bg-[var(--hover)] disabled:opacity-40"
-            >
-              <ChevronRight className="size-4" />
-            </button>
-          </>
-        )}
-
-        <span className="flex-1" />
-
-        {/* Compress is a week-view/consensus concern; heatmap always shows all rows. */}
-        {zoom === 'week' && colorMode === 'consensus' && (
-          <button
-            type="button"
-            onClick={toggleCompress}
-            aria-label={isExpanded ? 'Collapse dead hours' : 'Show full 24 hours'}
-            title={isExpanded ? 'Collapse dead hours' : 'Show full 24 hours'}
-            className="inline-flex size-7 items-center justify-center rounded text-muted-foreground hover:bg-[var(--hover)]"
-          >
-            {isExpanded ? (
-              <FoldVertical className="size-4" />
-            ) : (
-              <UnfoldVertical className="size-4" />
-            )}
-          </button>
-        )}
-
-        <div className="inline-flex overflow-hidden rounded-md border border-border text-xs">
-          {(['consensus', 'heatmap'] as const).map((m) => (
-            <button
-              key={m}
-              type="button"
-              disabled={zoom === 'day'}
-              onClick={() => setColorMode(m)}
-              className={cn(
-                'px-2.5 py-1 capitalize',
-                colorMode === m && zoom === 'week'
-                  ? 'bg-[var(--brand)] text-[var(--brand-fg)]'
-                  : 'hover:bg-[var(--hover)]',
-                zoom === 'day' && 'cursor-not-allowed opacity-40',
-              )}
-            >
-              {m}
-            </button>
-          ))}
+      <div className="mb-3 flex flex-col gap-2 md:flex-row md:items-center">
+        {/* Row 1: week / day navigation */}
+        <div className="flex items-center gap-2">
+          {zoom === 'week' && (
+            <>
+              <button
+                type="button"
+                aria-label="Previous week"
+                onClick={() => pageWeek(-1)}
+                disabled={!canPrev}
+                className="inline-flex size-7 items-center justify-center rounded text-muted-foreground hover:bg-[var(--hover)] disabled:opacity-40"
+              >
+                <ChevronLeft className="size-4" />
+              </button>
+              <span className="text-sm font-semibold tracking-tight">{weekLabel(weekAnchor)}</span>
+              <button
+                type="button"
+                aria-label="Next week"
+                onClick={() => pageWeek(1)}
+                className="inline-flex size-7 items-center justify-center rounded text-muted-foreground hover:bg-[var(--hover)]"
+              >
+                <ChevronRight className="size-4" />
+              </button>
+            </>
+          )}
+          {zoom === 'day' && (
+            <>
+              <button
+                type="button"
+                aria-label="Previous day"
+                onClick={() => {
+                  setDayIndex((i) => Math.max(0, i - 1));
+                  setDayHoverSlot(null);
+                }}
+                disabled={dayIndex === 0}
+                className="inline-flex size-7 items-center justify-center rounded text-muted-foreground hover:bg-[var(--hover)] disabled:opacity-40"
+              >
+                <ChevronLeft className="size-4" />
+              </button>
+              <span className="text-sm font-semibold tracking-tight">
+                {columns[dayIndex]
+                  ? `${columns[dayIndex].label} · ${DateTime.fromISO(columns[dayIndex].iso).toFormat('MMM d')}`
+                  : ''}
+              </span>
+              <button
+                type="button"
+                aria-label="Next day"
+                onClick={() => {
+                  setDayIndex((i) => Math.min(6, i + 1));
+                  setDayHoverSlot(null);
+                }}
+                disabled={dayIndex === 6}
+                className="inline-flex size-7 items-center justify-center rounded text-muted-foreground hover:bg-[var(--hover)] disabled:opacity-40"
+              >
+                <ChevronRight className="size-4" />
+              </button>
+            </>
+          )}
         </div>
 
-        <div className="inline-flex overflow-hidden rounded-md border border-border text-xs">
-          {(['week', 'day'] as const).map((z) => (
+        <span className="hidden flex-1 md:block" />
+
+        {/* Row 2 (mobile) / right side (desktop): view toggles */}
+        <div className="flex items-center gap-2">
+          {/* Compress is a week-view/consensus concern; heatmap always shows all rows. */}
+          {zoom === 'week' && colorMode === 'consensus' && (
             <button
-              key={z}
               type="button"
-              onClick={() => setZoom(z)}
-              className={cn(
-                'px-2.5 py-1 capitalize',
-                zoom === z ? 'bg-[var(--brand)] text-[var(--brand-fg)]' : 'hover:bg-[var(--hover)]',
-              )}
+              onClick={toggleCompress}
+              aria-label={isExpanded ? 'Collapse dead hours' : 'Show full 24 hours'}
+              title={isExpanded ? 'Collapse dead hours' : 'Show full 24 hours'}
+              className="inline-flex size-7 items-center justify-center rounded text-muted-foreground hover:bg-[var(--hover)]"
             >
-              {z}
+              {isExpanded ? (
+                <FoldVertical className="size-4" />
+              ) : (
+                <UnfoldVertical className="size-4" />
+              )}
             </button>
-          ))}
+          )}
+
+          <TooltipProvider>
+            <div className="inline-flex overflow-hidden rounded-md border border-border text-xs">
+              {(
+                [
+                  { mode: 'consensus', tip: 'Only shows slots where everyone is free' },
+                  { mode: 'heatmap', tip: 'Shades each slot by how many people can make it' },
+                ] as const
+              ).map(({ mode: m, tip }) => (
+                <Tooltip key={m}>
+                  <TooltipTrigger asChild>
+                    <button
+                      type="button"
+                      disabled={zoom === 'day'}
+                      onClick={() => setColorMode(m)}
+                      className={cn(
+                        'px-2.5 py-1 capitalize',
+                        colorMode === m && zoom === 'week'
+                          ? 'bg-[var(--brand)] text-[var(--brand-fg)]'
+                          : 'hover:bg-[var(--hover)]',
+                        zoom === 'day' && 'cursor-not-allowed opacity-40',
+                      )}
+                    >
+                      {m}
+                    </button>
+                  </TooltipTrigger>
+                  <TooltipContent side="bottom">{tip}</TooltipContent>
+                </Tooltip>
+              ))}
+            </div>
+          </TooltipProvider>
+
+          <div className="inline-flex overflow-hidden rounded-md border border-border text-xs">
+            {(['week', 'day'] as const).map((z) => (
+              <button
+                key={z}
+                type="button"
+                onClick={() => setZoom(z)}
+                className={cn(
+                  'px-2.5 py-1 capitalize',
+                  zoom === z
+                    ? 'bg-[var(--brand)] text-[var(--brand-fg)]'
+                    : 'hover:bg-[var(--hover)]',
+                )}
+              >
+                {z}
+              </button>
+            ))}
+          </div>
         </div>
       </div>
 

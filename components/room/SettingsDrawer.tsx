@@ -5,7 +5,6 @@
 // ownership — any participant may rename). No Drawer primitive exists, so this
 // reuses the Dialog shell. Wired to PATCH /me and PATCH /room.
 
-import { ThemeToggle } from '@/components/site/ThemeToggle';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
@@ -107,10 +106,7 @@ export function SettingsDrawer({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent data-form-type="other">
         <DialogHeader>
-          <div className="flex items-center justify-between pr-4">
-            <DialogTitle>Settings</DialogTitle>
-            <ThemeToggle />
-          </div>
+          <DialogTitle>Settings</DialogTitle>
         </DialogHeader>
 
         <div className="flex flex-col gap-5">
