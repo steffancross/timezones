@@ -9,10 +9,11 @@ import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { renameRoomRequest, updateIdentityRequest } from '@/lib/rooms/client';
+import { leaveRoomRequest, renameRoomRequest, updateIdentityRequest } from '@/lib/rooms/client';
 import type { PublicParticipant } from '@/lib/rooms/db';
 import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
+import { useRoomStore } from './room-store-context';
 import { TimezoneField } from './TimezoneField';
 
 // Sentinel displayed when a password is already set. We never receive the real
@@ -28,6 +29,7 @@ interface Props {
   roomName: string | null;
   onIdentitySaved?: (participant: PublicParticipant) => void;
   onRoomRenamed?: (name: string) => void;
+  onSwitchPerson?: () => void;
 }
 
 export function SettingsDrawer({
@@ -38,13 +40,18 @@ export function SettingsDrawer({
   roomName,
   onIdentitySaved,
   onRoomRenamed,
+  onSwitchPerson,
 }: Props) {
+  const leaveRoom = useRoomStore((s) => s.leaveRoom);
+
   const [name, setName] = useState(participant.displayName);
   const [timezone, setTimezone] = useState(participant.timezone);
   const [password, setPassword] = useState(participant.hasPassword ? PW_SENTINEL : '');
   const [room, setRoom] = useState(roomName ?? '');
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [leavePhase, setLeavePhase] = useState<'idle' | 'confirming' | 'pending'>('idle');
+  const [leaveConfirm, setLeaveConfirm] = useState('');
 
   // Reset form to current values whenever the modal opens, so a closed-without-
   // saving state doesn't bleed into the next open.
@@ -56,6 +63,8 @@ export function SettingsDrawer({
     setPassword(participant.hasPassword ? PW_SENTINEL : '');
     setRoom(roomName ?? '');
     setError(null);
+    setLeavePhase('idle');
+    setLeaveConfirm('');
   }, [open]);
 
   const isDirtyIdentity =
@@ -182,6 +191,70 @@ export function SettingsDrawer({
           </section>
 
           {error && <p className="text-sm text-destructive">{error}</p>}
+
+          {/* Account */}
+          <section className="flex flex-col gap-3 border-t pt-4">
+            <button
+              type="button"
+              onClick={() => { onSwitchPerson?.(); onOpenChange(false); }}
+              className="self-start text-sm text-muted-foreground hover:text-foreground"
+            >
+              Switch person
+            </button>
+
+            {leavePhase === 'idle' ? (
+              <button
+                type="button"
+                onClick={() => setLeavePhase('confirming')}
+                className="self-start text-sm text-destructive/70 hover:text-destructive"
+              >
+                Leave room
+              </button>
+            ) : (
+              <div className="flex flex-col gap-2 rounded-md border border-destructive/30 bg-destructive/5 p-3">
+                <p className="text-[12px] text-muted-foreground">
+                  This permanently removes your name and all your availability from this room.
+                  This cannot be undone.
+                </p>
+                <Input
+                  value={leaveConfirm}
+                  onChange={(e) => setLeaveConfirm(e.target.value)}
+                  placeholder='type LEAVE to confirm'
+                  autoComplete="off"
+                  data-bwignore="true"
+                  disabled={leavePhase === 'pending'}
+                  className="h-8 text-sm"
+                />
+                <div className="flex items-center gap-2">
+                  <Button
+                    size="sm"
+                    variant="destructive"
+                    disabled={leaveConfirm !== 'LEAVE' || leavePhase === 'pending'}
+                    onClick={async () => {
+                      setLeavePhase('pending');
+                      try {
+                        await leaveRoomRequest(roomId);
+                        leaveRoom();
+                        onOpenChange(false);
+                      } catch {
+                        setLeavePhase('confirming');
+                        setError('Could not leave the room. Try again.');
+                      }
+                    }}
+                  >
+                    {leavePhase === 'pending' ? 'Leaving…' : 'Delete my data'}
+                  </Button>
+                  <button
+                    type="button"
+                    onClick={() => { setLeavePhase('idle'); setLeaveConfirm(''); }}
+                    className="text-sm text-muted-foreground hover:text-foreground"
+                  >
+                    Cancel
+                  </button>
+                </div>
+              </div>
+            )}
+          </section>
 
           <p className="text-[11px] text-muted-foreground/60">
             Rooms are deleted after 180 days without anyone opening them.

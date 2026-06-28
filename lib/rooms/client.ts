@@ -84,6 +84,14 @@ export type AvailabilityPatchInput = {
   overrides?: { set?: Record<string, string>; clear?: string[] };
 };
 
+export async function leaveRoomRequest(roomId: string): Promise<void> {
+  const res = await fetch(`${base(roomId)}/me`, { method: 'DELETE' });
+  if (!res.ok && res.status !== 204) {
+    const data = (await res.json().catch(() => ({}))) as { error?: string };
+    throw new Error(data?.error || `request failed (${res.status})`);
+  }
+}
+
 export function writeAvailabilityRequest(
   roomId: string,
   patch: AvailabilityPatchInput,

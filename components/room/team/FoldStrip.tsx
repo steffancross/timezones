@@ -15,7 +15,7 @@ export function FoldStrip({ from, to, onExpand }: Props) {
     <button
       type="button"
       onClick={onExpand}
-      className="my-[3px] flex h-[23px] w-full items-center gap-2 rounded-[5px] border border-dashed border-border pl-11 pr-3 text-left font-mono text-[10px] text-muted-foreground hover:border-muted-foreground/40"
+      className="mt-[3px] mb-[6px] flex h-[23px] w-full items-center gap-2 rounded-[5px] border border-dashed border-border pl-11 pr-3 text-left font-mono text-[10px] text-muted-foreground hover:border-muted-foreground/40"
       style={{
         background:
           'repeating-linear-gradient(135deg, hsl(var(--muted)) 0 6px, var(--bg) 6px 12px)',

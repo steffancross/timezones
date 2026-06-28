@@ -6,9 +6,11 @@
 // hovered cell's per-person breakdown with the "X free · Y if needed" split,
 // derived from the already-memoized projection (no re-projection).
 
+import { DateTime } from 'luxon';
 import { Check } from 'lucide-react';
 import { useMemo } from 'react';
 import type { SlotState } from '@/lib/rooms/compute';
+import { formatClock } from '@/lib/time/format';
 import { cn } from '@/lib/utils';
 import { useRoomStore } from '../room-store-context';
 import { Avatar } from '../Avatar';
@@ -28,6 +30,7 @@ export function RosterSidebar({ hover, columns, onMemberHover, hoveredMemberId }
   const toggleSelected = useRoomStore((s) => s.toggleSelected);
   const projection = useRoomStore((s) => s.projection);
   const colorMode = useRoomStore((s) => s.colorMode);
+  const viewerTz = useRoomStore((s) => s.viewerTz);
   const members = state.participants;
 
   // Per-person state at the hovered cell, from the projection (compute set only).
@@ -39,6 +42,28 @@ export function RosterSidebar({ hover, columns, onMemberHover, hoveredMemberId }
     }
     return map;
   }, [hover, projection]);
+
+  // Convert the hovered viewer slot to each participant's local time.
+  const participantTimes = useMemo(() => {
+    if (!hover) return null;
+    const iso = columns[hover.day]?.iso;
+    if (!iso) return null;
+    const hour = Math.floor(hover.slot / 2);
+    const minute = (hover.slot % 2) * 30;
+    const baseMillis = DateTime.fromISO(iso, { zone: viewerTz })
+      .set({ hour, minute, second: 0, millisecond: 0 })
+      .toMillis();
+    const map = new Map<string, { time: string; daySuffix: string | null }>();
+    for (const p of members) {
+      if (!p.timezone) continue;
+      const dt = DateTime.fromMillis(baseMillis).setZone(p.timezone);
+      map.set(p.id, {
+        time: formatClock(dt.hour, dt.minute, '12'),
+        daySuffix: dt.toISODate() !== iso ? dt.toFormat('EEE') : null,
+      });
+    }
+    return map;
+  }, [hover, columns, members, viewerTz]);
 
   const respondedSelected = members.filter((m) => m.hasResponded && selected.has(m.id));
   const freeCount = hoverStates
@@ -91,6 +116,7 @@ export function RosterSidebar({ hover, columns, onMemberHover, hoveredMemberId }
         const unresponded = !m.hasResponded;
         const on = selected.has(m.id) && !unresponded;
         const st = hoverStates?.get(m.id);
+        const pt = !unresponded && hover ? participantTimes?.get(m.id) : undefined;
         return (
           // biome-ignore lint/a11y/noStaticElementInteractions: mouse-only hover highlight; no keyboard interaction needed
           <div
@@ -105,6 +131,13 @@ export function RosterSidebar({ hover, columns, onMemberHover, hoveredMemberId }
           >
             <Avatar id={m.id} name={m.displayName} size="sm" />
             <span className="min-w-0 flex-1 truncate">{m.displayName}</span>
+
+            {pt && (
+              <span className="shrink-0 font-mono text-[10px] text-muted-foreground">
+                {pt.time}
+                {pt.daySuffix && <span className="opacity-60"> {pt.daySuffix}</span>}
+              </span>
+            )}
 
             {unresponded ? (
               <span className="rounded bg-[var(--hover)] px-1.5 py-0.5 font-mono text-[10px] text-muted-foreground">

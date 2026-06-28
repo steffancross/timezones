@@ -49,6 +49,8 @@ export interface RoomActions {
   setDirty: (dirty: boolean) => void;
   /** Switch the per-viewer grid color mode and persist to localStorage. */
   setColorMode: (colorMode: 'consensus' | 'heatmap') => void;
+  /** Remove yourself from the room (after DELETE /me succeeds). */
+  leaveRoom: () => void;
   /** Merge a focus-refetched server state without clobbering your unsaved paint. */
   reconcileServerState: (incoming: RoomState & { you?: { participantId: string } | null }) => void;
 }
@@ -161,6 +163,15 @@ export function createRoomStore(seed: RoomStoreSeed) {
       } catch {}
       set({ colorMode });
     },
+
+    leaveRoom: () =>
+      set((s) => {
+        if (!s.youId) return s;
+        const participants = s.state.participants.filter((p) => p.id !== s.youId);
+        const state = { ...s.state, participants };
+        const selected = new Set([...s.selected].filter((id) => id !== s.youId));
+        return { state, youId: null, selected, ...derive({ ...s, state, selected }) };
+      }),
 
     reconcileServerState: (incoming) =>
       set((s) => {

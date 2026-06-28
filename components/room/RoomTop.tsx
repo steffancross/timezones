@@ -6,6 +6,7 @@
 
 import { SettingsDrawer } from '@/components/room/SettingsDrawer';
 import { ShareRoomButton } from '@/components/room/ShareRoomButton';
+import { RecoveryPicker } from '@/components/room/RecoveryPicker';
 import { Button } from '@/components/ui/button';
 import { Settings2 } from 'lucide-react';
 import { useState } from 'react';
@@ -17,7 +18,9 @@ export function RoomTop() {
   const demo = useRoomStore((s) => s.demo);
   const applyMyIdentity = useRoomStore((s) => s.applyMyIdentity);
   const setRoomName = useRoomStore((s) => s.setRoomName);
+  const becomeParticipant = useRoomStore((s) => s.becomeParticipant);
   const [settingsOpen, setSettingsOpen] = useState(false);
+  const [recoveryOpen, setRecoveryOpen] = useState(false);
 
   const you = youId ? state.participants.find((p) => p.id === youId) : undefined;
   const count = state.participants.length;
@@ -61,6 +64,18 @@ export function RoomTop() {
             roomName={state.room.name}
             onIdentitySaved={applyMyIdentity}
             onRoomRenamed={setRoomName}
+            onSwitchPerson={() => { setSettingsOpen(false); setRecoveryOpen(true); }}
+          />
+          <RecoveryPicker
+            open={recoveryOpen}
+            onOpenChange={setRecoveryOpen}
+            roomId={state.room.id}
+            onClaimed={(claimedId) => {
+              const p = state.participants.find((x) => x.id === claimedId);
+              if (p) becomeParticipant(p, claimedId);
+              setRecoveryOpen(false);
+            }}
+            onNew={() => setRecoveryOpen(false)}
           />
         </>
       )}

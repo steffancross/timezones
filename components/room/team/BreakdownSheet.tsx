@@ -6,9 +6,11 @@
 // plus each person's state. Reads the same already-memoized projection the
 // sidebar uses, so no re-projection.
 
+import { DateTime } from 'luxon';
 import { useEffect, useMemo, useState } from 'react';
 import { Drawer, DrawerContent, DrawerHeader, DrawerTitle } from '@/components/ui/drawer';
 import type { SlotState } from '@/lib/rooms/compute';
+import { formatClock } from '@/lib/time/format';
 import { cn } from '@/lib/utils';
 import { Avatar } from '../Avatar';
 import { useRoomStore } from '../room-store-context';
@@ -24,6 +26,7 @@ interface Props {
 export function BreakdownSheet({ cell, columns, onClose }: Props) {
   const state = useRoomStore((s) => s.state);
   const projection = useRoomStore((s) => s.projection);
+  const viewerTz = useRoomStore((s) => s.viewerTz);
   const youId = useRoomStore((s) => s.youId);
   const members = state.participants;
 
@@ -43,6 +46,28 @@ export function BreakdownSheet({ cell, columns, onClose }: Props) {
     }
     return map;
   }, [shown, projection]);
+
+  // Convert the tapped cell to each participant's local time.
+  const participantTimes = useMemo(() => {
+    if (!shown) return null;
+    const iso = columns[shown.day]?.iso;
+    if (!iso) return null;
+    const hour = Math.floor(shown.slot / 2);
+    const minute = (shown.slot % 2) * 30;
+    const baseMillis = DateTime.fromISO(iso, { zone: viewerTz })
+      .set({ hour, minute, second: 0, millisecond: 0 })
+      .toMillis();
+    const map = new Map<string, { time: string; daySuffix: string | null }>();
+    for (const p of members) {
+      if (!p.timezone) continue;
+      const dt = DateTime.fromMillis(baseMillis).setZone(p.timezone);
+      map.set(p.id, {
+        time: formatClock(dt.hour, dt.minute, '12'),
+        daySuffix: dt.toISODate() !== iso ? dt.toFormat('EEE') : null,
+      });
+    }
+    return map;
+  }, [shown, columns, members, viewerTz]);
 
   let freeCount = 0;
   let softCount = 0;
@@ -74,6 +99,7 @@ export function BreakdownSheet({ cell, columns, onClose }: Props) {
             <div className="flex flex-col gap-1 px-4 pb-6">
               {members.map((m) => {
                 const st = states?.get(m.id);
+                const pt = m.hasResponded ? participantTimes?.get(m.id) : undefined;
                 return (
                   <div
                     key={m.id}
@@ -84,6 +110,12 @@ export function BreakdownSheet({ cell, columns, onClose }: Props) {
                   >
                     <Avatar id={m.id} name={m.displayName} size="sm" />
                     <span className="min-w-0 flex-1 truncate text-sm">{m.displayName}</span>
+                    {pt && (
+                      <span className="shrink-0 font-mono text-[10px] text-muted-foreground">
+                        {pt.time}
+                        {pt.daySuffix && <span className="opacity-60"> {pt.daySuffix}</span>}
+                      </span>
+                    )}
                     {!m.hasResponded ? (
                       <span className="rounded bg-[var(--hover)] px-1.5 py-0.5 font-mono text-[10px] text-muted-foreground">
                         hasn't filled
