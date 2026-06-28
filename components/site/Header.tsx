@@ -9,6 +9,7 @@ const navLinks = [
   { href: '/timezones', label: 'Timezones' },
   { href: '/dst', label: 'DST' },
   { href: '/articles', label: 'Articles' },
+  { href: '/availability-room', label: 'Rooms' },
 ];
 
 export function Header() {

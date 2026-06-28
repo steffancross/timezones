@@ -21,6 +21,9 @@ export function JustYouSoFar({ youResponded = true, onAddAvailability }: Props) 
         <p className="mt-0.5 text-sm text-muted-foreground">
           Share the link and your overlap with others will show up here.
         </p>
+        <p className="mt-1 text-xs text-muted-foreground">
+          Save this URL — it&apos;s the only way back into your room.
+        </p>
       </div>
       <div className="flex flex-wrap items-center gap-2">
         <ShareRoomButton label="Share the link" />

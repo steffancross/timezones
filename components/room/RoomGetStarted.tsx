@@ -19,6 +19,9 @@ export function RoomGetStarted({ onAddAvailability }: Props) {
         <p className="mt-1.5 text-sm text-muted-foreground">
           Add your week, then share the link — overlaps appear as people join.
         </p>
+        <p className="mt-1 text-xs text-muted-foreground">
+          Save this URL — it&apos;s the only way back into your room.
+        </p>
       </div>
       <div className="flex flex-wrap items-center justify-center gap-2">
         <Button size="sm" onClick={onAddAvailability}>

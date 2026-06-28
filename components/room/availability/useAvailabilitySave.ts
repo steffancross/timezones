@@ -38,6 +38,13 @@ export function useAvailabilitySave(roomId: string) {
     const set: Record<string, string> = {};
     for (const [date, day] of Object.entries(draft.overrides)) set[date] = day.join('');
 
+    // Demo rooms: skip the API, apply in-memory so the heatmap updates live.
+    if (api.getState().demo) {
+      api.getState().applyMyAvailability({ generalWeek, overrides: set });
+      setStatus('saved');
+      return;
+    }
+
     // Clear any committed dates the draft no longer has (e.g. after a reset).
     const youId = api.getState().youId;
     const committed = youId

@@ -23,6 +23,8 @@ export interface RoomStoreState {
   now: number;
   /** Your availability has unsaved/in-flight edits — a focus refetch must not clobber it. */
   dirty: boolean;
+  /** Demo mode: all API writes are suppressed; changes live in memory only. */
+  demo: boolean;
   /** Per-viewer display preference — persisted to localStorage under 'ar_color_mode'. */
   colorMode: 'consensus' | 'heatmap';
   // Derived — recomputed by the input-changing actions below.
@@ -61,6 +63,7 @@ export type RoomStoreSeed = {
   selected?: Set<string>;
   now?: number;
   colorMode?: 'consensus' | 'heatmap';
+  demo?: boolean;
 };
 
 /** Recompute the cached projection/aggregate from the current inputs. */
@@ -88,6 +91,7 @@ export function createRoomStore(seed: RoomStoreSeed) {
     selected,
     now: seed.now ?? 0,
     dirty: false,
+    demo: seed.demo ?? false,
     colorMode: seed.colorMode ?? ('consensus' as const),
   };
 
