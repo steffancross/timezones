@@ -65,8 +65,8 @@ jobs:
           for attempt in 1 2 3; do
             pnpm exec opennextjs-cloudflare deploy && break
             if [ $attempt -lt 3 ]; then
-              echo "Deploy attempt $attempt failed, retrying in 30s..."
-              sleep 30
+              echo "Deploy attempt $attempt failed, retrying in 10s..."
+              sleep 10
             else
               echo "Deploy failed after $attempt attempts"
               exit 1
