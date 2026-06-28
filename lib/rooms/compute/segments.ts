@@ -6,7 +6,7 @@
 // The engine just returns the segments; the compress/expand control decides
 // whether folds render collapsed.
 
-import { FOLD_MIN, SLOTS_PER_DAY } from '../config';
+import { FOLD_MIN, FOLD_PAD, SLOTS_PER_DAY } from '../config';
 import type { Grade, Segment } from './types';
 
 /** Partition the 48 time-rows into folded (dead run ≥ FOLD_MIN) and visible spans. */
@@ -16,7 +16,11 @@ export function rowSegments(grid: Grade[][]): Segment[] {
     grid.every((row) => (row[k] ?? 'none') === 'none'),
   );
 
-  // Mark only the cells inside a long-enough dead run as foldable.
+  // Mark foldable cells. A maximal dead run [k, j-1] keeps FOLD_PAD slots of
+  // breathing room visible on any side that borders a live region (the run is
+  // maximal, so k-1 / j are live when not at the grid edge). Only the interior
+  // beyond that padding folds, and only if it's still ≥ FOLD_MIN — so a fold
+  // never hugs an availability window.
   const fold = new Array<boolean>(SLOTS_PER_DAY).fill(false);
   let k = 0;
   while (k < SLOTS_PER_DAY) {
@@ -26,8 +30,10 @@ export function rowSegments(grid: Grade[][]): Segment[] {
     }
     let j = k;
     while (j < SLOTS_PER_DAY && dead[j]) j++;
-    if (j - k >= FOLD_MIN) {
-      for (let i = k; i < j; i++) fold[i] = true;
+    const from = k + (k > 0 ? FOLD_PAD : 0); // pad the side touching a live region
+    const to = j - 1 - (j < SLOTS_PER_DAY ? FOLD_PAD : 0);
+    if (to - from + 1 >= FOLD_MIN) {
+      for (let i = from; i <= to; i++) fold[i] = true;
     }
     k = j;
   }

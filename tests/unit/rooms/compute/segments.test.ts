@@ -15,11 +15,12 @@ const liveRange = (from: number, to: number) => {
 };
 
 describe('rowSegments', () => {
-  it('folds a long overnight dead band at the top', () => {
-    // rows 0..7 dead (8 ≥ FOLD_MIN), 8..47 live
+  it('folds a long overnight dead band at the top, leaving 1h padding before live', () => {
+    // rows 0..7 dead, 8..47 live. Top edge isn't padded; the live-adjacent side
+    // keeps FOLD_PAD(2) visible → fold 0..5, pad 6..7.
     expect(rowSegments(gridWithLiveRows(liveRange(8, 47)))).toEqual([
-      { fold: true, from: 0, to: 7 },
-      { fold: false, from: 8, to: 47 },
+      { fold: true, from: 0, to: 5 },
+      { fold: false, from: 6, to: 47 },
     ]);
   });
 
@@ -29,20 +30,22 @@ describe('rowSegments', () => {
     expect(rowSegments(gridWithLiveRows(live))).toEqual([{ fold: false, from: 0, to: 47 }]);
   });
 
-  it('folds a bottom-edge dead band (regression vs old top-only bug)', () => {
-    // 0..39 live, 40..47 dead (8 ≥ FOLD_MIN)
+  it('folds a bottom-edge dead band with 1h padding after live (regression vs old top-only bug)', () => {
+    // 0..39 live, 40..47 dead. Live-adjacent side padded (40..41 visible),
+    // bottom edge not → fold 42..47.
     expect(rowSegments(gridWithLiveRows(liveRange(0, 39)))).toEqual([
-      { fold: false, from: 0, to: 39 },
-      { fold: true, from: 40, to: 47 },
+      { fold: false, from: 0, to: 41 },
+      { fold: true, from: 42, to: 47 },
     ]);
   });
 
-  it('folds a long interior dead run between two live spans', () => {
+  it('folds a long interior dead run, padded on both live-adjacent sides', () => {
+    // dead 10..19 (10 slots); pad 2 each side → fold 12..17, pad 10..11 & 18..19.
     const live = new Set<number>([...liveRange(0, 9), ...liveRange(20, 47)]);
     expect(rowSegments(gridWithLiveRows(live))).toEqual([
-      { fold: false, from: 0, to: 9 },
-      { fold: true, from: 10, to: 19 },
-      { fold: false, from: 20, to: 47 },
+      { fold: false, from: 0, to: 11 },
+      { fold: true, from: 12, to: 17 },
+      { fold: false, from: 18, to: 47 },
     ]);
   });
 

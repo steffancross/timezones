@@ -10,7 +10,7 @@ import { Check } from 'lucide-react';
 import { useMemo } from 'react';
 import type { SlotState } from '@/lib/rooms/compute';
 import { cn } from '@/lib/utils';
-import { useRoomData } from '../room-data-context';
+import { useRoomStore } from '../room-store-context';
 import { Avatar } from '../Avatar';
 import type { HoverCell } from './WeekHeatmap';
 import { slotLabel, type WeekColumn } from './slots';
@@ -21,7 +21,11 @@ interface Props {
 }
 
 export function RosterSidebar({ hover, columns }: Props) {
-  const { state, selected, toggleSelected, projection, youId } = useRoomData();
+  const state = useRoomStore((s) => s.state);
+  const selected = useRoomStore((s) => s.selected);
+  const toggleSelected = useRoomStore((s) => s.toggleSelected);
+  const projection = useRoomStore((s) => s.projection);
+  const youId = useRoomStore((s) => s.youId);
   const members = state.participants;
 
   // Per-person state at the hovered cell, from the projection (compute set only).
@@ -91,7 +95,7 @@ export function RosterSidebar({ hover, columns }: Props) {
                 className="inline-block size-3.5 rounded-[3px] border border-border"
                 style={{
                   background:
-                    st === 'y' ? 'var(--hm-all)' : st === 's' ? 'var(--hatch-soft)' : 'transparent',
+                    st === 'y' ? 'var(--hm-all)' : st === 's' ? 'var(--paint-soft)' : 'transparent',
                 }}
               />
             ) : (

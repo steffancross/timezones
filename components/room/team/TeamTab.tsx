@@ -10,7 +10,7 @@ import { useMemo, useState } from 'react';
 import { currentWeekAnchor, rowSegments } from '@/lib/rooms/compute';
 import { DateTime } from '@/lib/time/luxon';
 import { cn } from '@/lib/utils';
-import { useRoomData } from '../room-data-context';
+import { useRoomStore } from '../room-store-context';
 import { DayView } from './DayView';
 import { Legend } from './Legend';
 import { RosterSidebar } from './RosterSidebar';
@@ -26,7 +26,11 @@ function weekLabel(weekAnchor: string): string {
 }
 
 export function TeamTab() {
-  const { grid, weekAnchor, viewerTz, now, setWeekAnchor } = useRoomData();
+  const grid = useRoomStore((s) => s.grid);
+  const weekAnchor = useRoomStore((s) => s.weekAnchor);
+  const viewerTz = useRoomStore((s) => s.viewerTz);
+  const now = useRoomStore((s) => s.now);
+  const setWeekAnchor = useRoomStore((s) => s.setWeekAnchor);
 
   const [zoom, setZoom] = useState<'week' | 'day'>('week');
   const [compressed, setCompressed] = useState(true);
@@ -55,6 +59,18 @@ export function TeamTab() {
   };
 
   const expandFold = (key: string) => setManuallyExpanded((prev) => new Set(prev).add(key));
+
+  // Treat "anything currently open" as expanded, so the toggle reflects what the
+  // user sees — not just the `compressed` flag (which a manual expand bypasses).
+  const isExpanded = !compressed || manuallyExpanded.size > 0;
+
+  // Authoritative: one click always does the visible thing. Collapsing clears any
+  // manual expands so it fully re-collapses. (Manual expands still persist across
+  // recomputes — only this toggle resets them.)
+  const toggleCompress = () => {
+    setManuallyExpanded(new Set());
+    setCompressed(isExpanded); // expanded → collapse (true); collapsed → expand (false)
+  };
 
   return (
     <div className="flex flex-col p-4">
@@ -85,15 +101,18 @@ export function TeamTab() {
 
         <span className="flex-1" />
 
-        <button
-          type="button"
-          onClick={() => setCompressed((c) => !c)}
-          aria-label={compressed ? 'Show full 24 hours' : 'Collapse dead hours'}
-          title={compressed ? 'Show full 24 hours' : 'Collapse dead hours'}
-          className="inline-flex size-7 items-center justify-center rounded text-muted-foreground hover:bg-[var(--hover)]"
-        >
-          {compressed ? <UnfoldVertical className="size-4" /> : <FoldVertical className="size-4" />}
-        </button>
+        {/* Compress is a week-view concern; the day view is always full-24h scroll. */}
+        {zoom === 'week' && (
+          <button
+            type="button"
+            onClick={toggleCompress}
+            aria-label={isExpanded ? 'Collapse dead hours' : 'Show full 24 hours'}
+            title={isExpanded ? 'Collapse dead hours' : 'Show full 24 hours'}
+            className="inline-flex size-7 items-center justify-center rounded text-muted-foreground hover:bg-[var(--hover)]"
+          >
+            {isExpanded ? <FoldVertical className="size-4" /> : <UnfoldVertical className="size-4" />}
+          </button>
+        )}
 
         <div className="inline-flex overflow-hidden rounded-md border border-border text-xs">
           {(['week', 'day'] as const).map((z) => (
@@ -133,7 +152,6 @@ export function TeamTab() {
         <DayView
           dayIndex={dayIndex}
           columns={columns}
-          compressed={compressed}
           onPageDay={(delta) => setDayIndex((i) => Math.min(6, Math.max(0, i + delta)))}
         />
       )}

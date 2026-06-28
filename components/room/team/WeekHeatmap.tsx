@@ -18,7 +18,7 @@ const SLIVER = 'repeating-linear-gradient(45deg, var(--border-strong) 0 1px, tra
 function cellBackground(grade: Grade, gone: boolean, weekend: boolean): string {
   if (gone) return SLIVER;
   if (grade === 'all') return 'var(--hm-all)';
-  if (grade === 'some') return 'var(--hatch-soft)';
+  if (grade === 'some') return 'var(--paint-soft)'; // solid yellow, matches the paint color
   return weekend ? 'var(--bg)' : 'transparent'; // faint weekend tint on blank cells
 }
 
