@@ -6,6 +6,17 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 A timezone converter web app (Next.js 16 / React 19) deployed to Cloudflare Workers via OpenNext. Single converter component is the heart of the app — pages compose it with different initial states (a free landing page, pair pages, city pages, etc., per `markdowns/G/`).
 
+## Infrastructure failures
+
+When a CI/deploy step that worked before suddenly breaks without any code change, **don't jump to workarounds first**. The right order:
+
+1. **Read the error carefully** — distinguish a network/auth/config failure from a code failure.
+2. **Check upstream first** — search the package's GitHub releases, changelog, and issues for the exact error string. A surprise deploy failure in a third-party tool (opennextjs-cloudflare, wrangler, etc.) often has a recent release that fixes it.
+3. **Check if a dependency version bump is available** — `pnpm update <package>` after finding the fix is cleaner than patching node_modules.
+4. **Only write workaround code (patches, CI hacks) if no upstream fix exists** — and note in a comment why the fix isn't upstream yet.
+
+This applies to: CI deploy failures, Cloudflare API errors, wrangler errors, R2/KV provisioning failures, build tool regressions.
+
 ## Toolchain & versions
 
 - **Node 22 required** (`.nvmrc` pins it). `pnpm` will refuse on Node ≤ 20; if you see "Unsupported engine," run `nvm use 22`.

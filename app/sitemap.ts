@@ -14,6 +14,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
   return [
     { url: `${base}/`, changeFrequency: 'daily', priority: 1.0 },
     { url: `${base}/parse-time`, changeFrequency: 'monthly', priority: 0.9 },
+    { url: `${base}/availability-room`, changeFrequency: 'monthly', priority: 0.8 },
     { url: `${base}/cities`, changeFrequency: 'weekly', priority: 0.9 },
     { url: `${base}/timezones`, changeFrequency: 'weekly', priority: 0.9 },
     { url: `${base}/conversions`, changeFrequency: 'weekly', priority: 0.9 },
